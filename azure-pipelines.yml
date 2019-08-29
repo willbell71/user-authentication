@@ -15,8 +15,9 @@ steps:
     npm i
     ng lint
     ng test
+    ng e2e
     ng build --prod
   displayName: 'Build, test Angular client'
   name: 'AngularBuild'
   workingDirectory: 'login-angular'
-  failOnStderr: true
+  failOnStderr: false
