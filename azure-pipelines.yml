@@ -11,10 +11,11 @@ pool:
 
 steps:
 - script: |
+    npm install -g @angular/cli
     npm i
-    npm run lint
-    npm run test
-    npm run build:prod
+    ng lint
+    ng test
+    ng build --prod
   displayName: 'Build, test Angular client'
   name: 'AngularBuild'
   workingDirectory: 'login-angular'
