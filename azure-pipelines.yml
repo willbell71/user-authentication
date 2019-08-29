@@ -12,9 +12,9 @@ pool:
 steps:
 - script: |
     npm i
-    ng lint
-    ng test
-    ng build --prod
+    npm run lint
+    npm run test
+    npm run build:prod
   displayName: 'Build, test Angular client'
   name: 'AngularBuild'
   workingDirectory: 'login-angular'
