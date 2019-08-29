@@ -11,7 +11,7 @@ pool:
 
 steps:
 - script: |
-    npm install -g @angular/cli
+    sudo npm install -g @angular/cli
     npm i
     ng lint
     ng test
