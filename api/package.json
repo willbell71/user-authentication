@@ -1,7 +1,7 @@
 {
   "name": "api",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "src/app.js",
   "scripts": {
     "test": "nyc --reporter=lcov --reporter=text-summary mocha --recursive",
     "lint": "eslint **/*.js"
