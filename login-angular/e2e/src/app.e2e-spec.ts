@@ -1,16 +1,9 @@
-import { AppPage } from './app.po';
 import { browser, logging } from 'protractor';
 
 describe('workspace-project App', () => {
-  let page: AppPage;
-
-  beforeEach(() => {
-    page = new AppPage();
-  });
-
-  it('should display welcome message', () => {
-    page.navigateTo();
-    expect(page.getTitleText()).toEqual('login-angular app is running!');
+  it('should navigate to login page', () => {
+    browser.get('/login');
+    expect(browser.getCurrentUrl()).toBe('http://localhost:4200/login');
   });
 
   afterEach(async () => {

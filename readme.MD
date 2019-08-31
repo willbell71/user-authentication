@@ -45,7 +45,7 @@ Azure pipeline for GitHub ( CI )
 
 ### NodeJS API
 
-- 1. Set up basic express server boiler plate
+D 1. Set up basic express server boiler plate
 - 2. Set up mongoose / mongo connection
 - 3. Add model for user
 - 4. Add log in route
