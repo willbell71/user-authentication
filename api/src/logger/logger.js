@@ -25,7 +25,7 @@ const _loggerLevels = {
  * @param {number} level - message logger level.
  * @param {string} message - message to write.
  */
-function _write({log, warn, error, assert}, loggerLevel, level, message) {
+function _writeLog({log, warn, error, assert}, loggerLevel, level, message) {
   if (loggerLevel >= level) {
     const date = new Date().toISOString();
     const pid = `${process.pid}`;
@@ -72,7 +72,7 @@ function _getStack() {
 /**
  * Logger
  */
-class Logger {
+class Logger extends Writable {
   /**
    * Constructor
    * @param {LogLine|LogLine[]} log - generic loggers.
@@ -81,6 +81,9 @@ class Logger {
    * @param {LogLine|LogLine[]} assert - assert specific loggers.
    */
   constructor(log, warn, error, assert) {
+    // call parent contructor
+    super();
+
     // set initial logger level to log everything
     this.loggerLevel = _loggerLevels.ALL;
 
@@ -115,48 +118,12 @@ class Logger {
   }
 
   /**
-   * API Logger instance, pass this to Morgan to log API requests.
-   * @return {APILogger} writeable stream.
-   */
-  getAPILogger() {
-    /**
-     * API logger,
-     */
-    class APILogger extends Writable {
-      /**
-       * Constructor
-       * @param {Logger} loggerInstance - logger instance to log with.
-       */
-      constructor(loggerInstance) {
-        super();
-
-        this.logger = loggerInstance;
-      }
-
-      /**
-       * Write some data to the stream
-       * @param {string} chunk - data to write to stream.
-       * @param {string} encoding - data encoding.
-       * @param {function} callback - callback to invoke after writing.
-       */
-      _write(chunk, encoding, callback) {
-        // log message, but not newline on the end of the line
-        this.logger.verbose('API', chunk.slice(0, -1));
-        callback();
-      }
-    }
-
-    // return API logger instance
-    return new APILogger(this);
-  }
-
-  /**
    * Log a message.
    * @param {string} name - name of logger.
    * @param {string} message - message to log.
    */
   debug(name, message) {
-    _write(this.loggers, this.loggerLevel, _loggerLevels.DEBUG, `${name}: ${message}`);
+    _writeLog(this.loggers, this.loggerLevel, _loggerLevels.DEBUG, `${name}: ${message}`);
   }
 
   /**
@@ -165,7 +132,7 @@ class Logger {
    * @param {string} message - message to log.
    */
   verbose(name, message) {
-    _write(this.loggers, this.loggerLevel, _loggerLevels.VERBOSE, `${name}: ${message}`);
+    _writeLog(this.loggers, this.loggerLevel, _loggerLevels.VERBOSE, `${name}: ${message}`);
   }
 
   /**
@@ -174,7 +141,7 @@ class Logger {
    * @param {string} message - message to log.
    */
   info(name, message) {
-    _write(this.loggers, this.loggerLevel, _loggerLevels.INFO, `${name}: ${message}`);
+    _writeLog(this.loggers, this.loggerLevel, _loggerLevels.INFO, `${name}: ${message}`);
   }
 
   /**
@@ -183,7 +150,7 @@ class Logger {
    * @param {string} message - message to log.
    */
   warn(name, message) {
-    _write(this.loggers, this.loggerLevel, _loggerLevels.WARN, `${name}: ${message}`);
+    _writeLog(this.loggers, this.loggerLevel, _loggerLevels.WARN, `${name}: ${message}`);
   }
 
   /**
@@ -191,7 +158,7 @@ class Logger {
    * @param {string} message - error message.
    */
   error(message) {
-    _write(this.loggers, this.loggerLevel, _loggerLevels.ERROR, `ERROR: ${message}`);
+    _writeLog(this.loggers, this.loggerLevel, _loggerLevels.ERROR, `ERROR: ${message}`);
   }
 
   /**
@@ -203,8 +170,22 @@ class Logger {
     if (!condition) {
       // first stack line ([0]) will be us, second line ([1]) will be who called us
       const stack = _getStack();
-      _write(this.loggers, this.loggerLevel, _loggerLevels.ASSERT, `${message} (${stack[1]})`);
+      _writeLog(this.loggers, this.loggerLevel, _loggerLevels.ASSERT, `${message} (${stack[1]})`);
     }
+  }
+
+  // Writable interface
+
+  /**
+   * Write some data to the stream
+   * @param {string} chunk - data to write to stream.
+   * @param {string} encoding - data encoding.
+   * @param {function} callback - callback to invoke after writing.
+   */
+  _write(chunk, encoding, callback) {
+    // log message, but not newline on the end of the line
+    this.verbose('API', chunk.slice(0, -1));
+    callback();
   }
 }
 

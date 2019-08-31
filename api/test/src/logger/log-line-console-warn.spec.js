@@ -1,8 +1,8 @@
 const chai = require('chai');
 const sinon = require('sinon');
 
-const LogLineConsoleWarn = require('../../logger/log-line-console-warn');
-const LogLine = require('../../logger/log-line');
+const LogLineConsoleWarn = require('../../../src/logger/log-line-console-warn');
+const LogLine = require('../../../src/logger/log-line');
 
 const expect = chai.expect;
 
@@ -11,6 +11,8 @@ describe('LogLineConsoleWarn class', () => {
 
   it('should be an instance of LogLine', () => {
     const logger = new LogLineConsoleWarn();
+
+    expect(() => new LogLineConsoleWarn()).to.not.throw();
     expect(logger instanceof LogLine).to.eq(true);
   });
 

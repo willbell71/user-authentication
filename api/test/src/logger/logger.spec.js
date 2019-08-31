@@ -2,12 +2,30 @@ const chai = require('chai');
 const sinon = require('sinon');
 const {Writable} = require('stream');
 
-const Logger = require('../../logger/logger');
+const Logger = require('../../../src/logger/logger');
 
 const expect = chai.expect;
 
 describe('Logger class', () => {
   afterEach(() => sinon.restore());
+
+  it('should return an instance of Writable', () => {
+    const logger = new Logger();
+
+    expect(() => new Logger()).to.not.throw();
+    expect(logger instanceof Writable).to.eq(true);
+  });
+
+  it('should call logger verbose in response to stream write', () => {
+    const logger = new Logger();
+
+    const spy = sinon.spy();
+    logger.verbose = spy;
+
+    logger.write('', () => {});
+
+    expect(spy.callCount).to.eq(1);
+  });
 
   it('should initialise logger level to ALL', () => {
     const logger = new Logger();
@@ -29,7 +47,7 @@ describe('Logger class', () => {
     expect(Array.isArray(logger.loggers.warn)).to.eq(true);
     expect(logger.loggers.warn.length).to.eq(1);
     expect(logger.loggers.warn[0]).to.eq(loggerB);
-    
+
     expect(Array.isArray(logger.loggers.error)).to.eq(true);
     expect(logger.loggers.error.length).to.eq(1);
     expect(logger.loggers.error[0]).to.eq(loggerC);
@@ -51,7 +69,7 @@ describe('Logger class', () => {
     expect(logger.loggers.warn.length).to.eq(2);
     expect(logger.loggers.warn[0]).to.eq('C');
     expect(logger.loggers.warn[1]).to.eq('D');
-    
+
     expect(Array.isArray(logger.loggers.error)).to.eq(true);
     expect(logger.loggers.error.length).to.eq(2);
     expect(logger.loggers.error[0]).to.eq('E');
@@ -79,7 +97,7 @@ describe('Logger class', () => {
 
       expect(levels.length).to.gt(0);
     });
-    
+
     it('should be an array of strings', () => {
       const logger = new Logger();
 
@@ -115,28 +133,6 @@ describe('Logger class', () => {
       logger.setLevel();
 
       expect(logger.loggerLevel).to.eq(100);
-    });
-  });
-
-  describe('getAPILogger', () => {
-    it('should return an instance of Writable', () => {
-      const logger = new Logger();
-
-      const apiLogger = logger.getAPILogger();
-
-      expect(apiLogger instanceof Writable).to.eq(true);
-    });
-
-    it('should call logger verbose', () => {
-      const logger = new Logger();
-
-      const spy = sinon.spy();
-      logger.verbose = spy;
-
-      const apiLogger = logger.getAPILogger();
-      apiLogger.write('', () => {});
-
-      expect(spy.callCount).to.eq(1);
     });
   });
 

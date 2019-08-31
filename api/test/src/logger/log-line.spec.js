@@ -1,12 +1,16 @@
 const chai = require('chai');
 const sinon = require('sinon');
 
-const LogLine = require('../../logger/log-line');
+const LogLine = require('../../../src/logger/log-line');
 
 const expect = chai.expect;
 
 describe('LogLine class', () => {
   afterEach(() => sinon.restore());
+
+  it('should create a log line instance', () => {
+    expect(() => new LogLine()).to.not.throw();
+  });
 
   describe('log', () => {
     it('should call console.log', () => {
