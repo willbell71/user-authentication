@@ -1,0 +1,13 @@
+{
+  "parserOptions": {
+      "ecmaVersion": 2017
+  },
+  "extends": "google",
+  "rules": {
+      "comma-dangle": ["error", "never"],
+      "quotes": ["error", "single"],
+      "max-len": ["error", { "code": 140 }],
+      "arrow-parens": ["error", "as-needed"],
+      "indent": ["error", 2, {"SwitchCase": 1}]
+  }
+}
