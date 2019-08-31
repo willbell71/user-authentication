@@ -20,3 +20,12 @@ steps:
   name: 'AngularBuild'
   workingDirectory: 'login-angular'
   failOnStderr: false
+
+- script: |
+    npm i
+    npm run lint
+    npm test
+  displayName: 'Test, lint NodeJS API'
+  name: 'NodeJSBuild'
+  workingDirectory: 'api'
+  failOnStderr: false
