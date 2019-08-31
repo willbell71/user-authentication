@@ -28,4 +28,4 @@ steps:
   displayName: 'Test, lint NodeJS API'
   name: 'NodeJSBuild'
   workingDirectory: 'api'
-  failOnStderr: true
+  failOnStderr: false
