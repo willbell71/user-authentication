@@ -1,3 +1,6 @@
+// @ts-check
+'use strict';
+
 const LogLine = require('./log-line');
 
 /**
