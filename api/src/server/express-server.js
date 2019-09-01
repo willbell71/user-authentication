@@ -10,6 +10,8 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+const Server = require('./server');
+
 /**
  * Set the root path for an API.
  * @param {Express} app - express app instance.
@@ -23,14 +25,14 @@ function _setPathForAPI(app, path, api) {
 /**
  * Class representing an Express server.
  */
-class ExpressServer {
+class ExpressServer extends Server {
   /**
    * Constructor.
-   * @param {Logger} logger - logger.
-   * @param {any[]} routes - list of paths and associated controllers.
+   * @param {Logger} logger - logger service.
+   * @param {{path: string, controller: API}[]} routes - list of paths and associated controllers.
    */
   constructor(logger, routes) {
-    this.logger = logger;
+    super(logger, routes);
 
     // configure express
     this.app = express();
@@ -52,8 +54,8 @@ class ExpressServer {
     }
 
     // add routes and controllers
-    if (routes) {
-      routes.forEach(route => _setPathForAPI(this.app, route.path, route.controller));
+    if (this.routes) {
+      this.routes.forEach(route => _setPathForAPI(this.app, route.path, route.controller));
     }
   }
 

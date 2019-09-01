@@ -9,13 +9,10 @@ const ExpressAPI = require('./express-api');
 class ExpressTestAPI extends ExpressAPI {
   /**
    * Register User API endpoints with express router.
-   * @param {Logger} logger - logger.
+   * @param {Logger} logger - logger service.
    */
   constructor(logger) {
-    super();
-
-    // store logger
-    this.logger = logger;
+    super(logger);
 
     // register endpoints
     this.router.get('/', this.test);
