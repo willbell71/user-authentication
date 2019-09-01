@@ -3,7 +3,8 @@ const sinon = require('sinon');
 
 const express = require('express');
 
-const ExpressAPI = require('../../../src/express-api/express-api');
+const API = require('../../../src/api/api');
+const ExpressAPI = require('../../../src/api/express-api');
 
 const expect = chai.expect;
 
@@ -16,5 +17,9 @@ describe('ExpressAPI class', () => {
 
     expect(() => new ExpressAPI()).to.not.throw();
     expect(spy.callCount).to.eq(1);
+  });
+
+  it('should be an instance of API', () => {
+    expect(new ExpressAPI() instanceof API).to.eq(true);
   });
 });

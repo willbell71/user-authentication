@@ -3,8 +3,8 @@ const sinon = require('sinon');
 
 const express = require('express');
 
-const ExpressAPI = require('../../../src/express-api/express-api');
-const ExpressTestAPI = require('../../../src/express-api/express-test-api');
+const ExpressAPI = require('../../../src/api/express-api');
+const ExpressTestAPI = require('../../../src/api/express-test-api');
 
 const expect = chai.expect;
 

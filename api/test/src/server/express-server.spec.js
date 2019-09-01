@@ -3,7 +3,8 @@ const http = require('http');
 const chai = require('chai');
 const sinon = require('sinon');
 
-const ExpressServer = require('../../src/express-server');
+const Server = require('../../../src/server/server');
+const ExpressServer = require('../../../src/server/express-server');
 
 const expect = chai.expect;
 
@@ -17,6 +18,7 @@ describe('ExpressServer class', () => {
     });
 
     expect(() => new ExpressServer({info: () => {}}, [{path: '/', controller: {router: () => {}}}])).to.not.throw();
+    expect(new ExpressServer({info: () => {}}) instanceof Server).to.eq(true);
   });
 
   describe('start', () => {
