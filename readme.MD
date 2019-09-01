@@ -23,6 +23,25 @@ Docker compose
 Kubernetes deployment script
 Azure pipeline for GitHub ( CI )
 
+## Development
+
+### Local Set up
+
+Build the Angular app, in the `login-angular` folder
+>`ng build --watch`
+
+Start up docker
+>`docker-compose up`
+
+Use `--build` to force the containers to rebuild themselves
+NOTE - this will reset the db
+>`docker-compose up --build`
+
+The app runs on port `8080`
+
+To stop docker
+>`docker-compose down`
+
 ## TODO
 
 ### Angular
@@ -33,6 +52,8 @@ I 3. Add register page
 I 4. Add dashboard page
 - 5. Integrate NodeJS API
 - 6. Protect dashboard route
+- 7. Refactor forms to a shared component ?
+- 8. Angular animations
 
 ### ReactJS
 
@@ -55,9 +76,9 @@ D 1. Set up basic express server boiler plate
 
 ### Docker
 
-- 1. Set up container for NGINX, to serve clients ( angular and react clients on different hosts )
-- 2. Set up container for Angular client
+I 1. Set up container for NGINX, to serve clients ( angular and react clients on different hosts )
+I 2. Set up container for Angular client
 - 3. Set up container for ReactJS client
-- 4. Set up container for NodeJS API
-- 5. Set up docker compose ( nginx, mongo, node api )
+I 4. Set up container for NodeJS API
+I 5. Set up docker compose ( nginx, mongo, node api )
 - 6. Set up Kubernetes deployment script

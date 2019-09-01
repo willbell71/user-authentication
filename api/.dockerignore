@@ -1,0 +1,7 @@
+.nyc_output/
+coverage/
+test/
+.dockerignore
+.editorconfig
+.eslintrc
+Dockerfile
