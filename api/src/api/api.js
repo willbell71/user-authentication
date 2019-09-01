@@ -1,3 +1,6 @@
+// @ts-check
+'use strict';
+
 /**
  * API class interface.
  */

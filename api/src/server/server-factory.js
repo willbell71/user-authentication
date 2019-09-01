@@ -1,3 +1,6 @@
+// @ts-check
+'use strict';
+
 const ExpressServer = require('./express-server');
 
 /**

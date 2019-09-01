@@ -1,3 +1,6 @@
+// @ts-check
+'use strict';
+
 /**
  * Server class interface.
  */
