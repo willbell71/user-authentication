@@ -1,0 +1,51 @@
+version: "3.0"
+# List containers
+services:
+  # Main NGINX Server
+  nginxserver:
+    container_name: nginxserver
+    restart: always
+    build: .
+    volumes:
+      # Map local folder to container path ( as defined in the Dockerfile )
+      - "./nginx:/etc/nginx/conf.d"
+      - "./login-angular/dist/login-angular:/usr/share/nginx/html"
+    ports:
+      # Expose the port
+      - "8080:80"
+    networks:
+      # List networks that this container can communicate on
+      - internal
+      - external
+    depends_on:
+      - "apiservice"
+  # API Service
+  apiservice:
+    container_name: apiservice
+    restart: always
+    build: ./api/
+    command: npm run watch
+    volumes:
+      - "./api:/usr/src/app"
+      - /usr/src/app/node_modules/
+    networks:
+      - internal
+    depends_on:
+      - "mongodb"
+  # MongoDB Instance ( this becomes our hostname, ie http://mongodb )
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: bobdylan
+      MONGO_INITDB_ROOT_PASSWORD: tangledupinblue
+    networks:
+      # Connect to internal network, so not accessible outside containers
+      - internal
+networks:
+  # Configure networks
+  internal:
+    # Only services inside can access this network
+    internal: true
+  external:
