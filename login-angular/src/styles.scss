@@ -1,1 +1,124 @@
 /* You can add global styles to this file, and also import other style files */
+
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+
+$color-white: #FFFFFF;
+
+$color-gray-900: #1A202C;
+
+$color-blue-700: #2B6CB0;
+$color-blue-900: #2A4365;
+
+$color-red-600: #E53E3E;
+
+// resets
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: $color-gray-900;
+  color: $color-white;
+  font-family: 'Roboto', sans-serif;
+}
+
+a {
+  color: $color-white;
+  font-size: .7rem;
+  font-weight: normal;
+  outline: none;
+  text-decoration: none;
+  text-decoration-style: none;
+}
+
+input {
+  border: 0;
+  font-family: inherit;
+  outline: none;
+}
+
+ul {
+  list-style: none;
+}
+
+// global styles
+
+// buttons
+
+.btn {
+  background-color: $color-blue-900;
+  border-radius: 5px;
+  color: $color-white;
+  cursor: pointer;
+  display: block;
+  font-size: .7rem;
+  margin: 0 auto;
+  padding: 16px 0;
+  text-align: center;
+  transition-duration: 300ms;
+  transition-property: background-color;
+
+  &:hover {
+    background-color: $color-blue-700;
+  }
+
+  &:focus {
+    background-color: $color-blue-700;
+  }
+}
+
+.btn--sm {
+  width: 100px;
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.btn--form {
+  margin: 16px 0;
+}
+
+// forms
+
+.form {
+  margin: 0 auto;
+  width: 400px;
+
+  @media (max-width: 400px) {
+    width: 320px;
+  }
+}
+
+.form__block {
+  margin: auto;
+  width: 90%;
+}
+
+.form__title {
+  padding: 16px 0;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.form__field {
+  display: block;
+  padding: 0 0 16px;
+}
+
+.form__input {
+  border-radius: 5px;
+  display: block;
+  font-size: 2rem;
+  padding: 8px;
+  width: 100%;
+}
+
+.form__field-error {
+  color: $color-red-600;
+}
