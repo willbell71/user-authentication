@@ -27,10 +27,10 @@ Azure pipeline for GitHub ( CI )
 
 ### Angular
 
-- 1. Clear down Angular scaffold
-- 2. Add login page
-- 3. Add register page
-- 4. Add dashboard page
+D 1. Clear down Angular scaffold
+I 2. Add login page
+I 3. Add register page
+I 4. Add dashboard page
 - 5. Integrate NodeJS API
 - 6. Protect dashboard route
 
