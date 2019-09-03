@@ -1,27 +1,27 @@
 const chai = require('chai');
 const sinon = require('sinon');
 
-const LogLineConsoleError = require('../../../src/logger/log-line-console-error');
-const LogLine = require('../../../src/logger/log-line');
+const LogLineConsoleWarn = require('../../../../src/services/logger/log-line-console-warn');
+const LogLine = require('../../../../src/services/logger/log-line');
 
 const expect = chai.expect;
 
-describe('LogLineConsoleError class', () => {
+describe('LogLineConsoleWarn class', () => {
   afterEach(() => sinon.restore());
 
   it('should be an instance of LogLine', () => {
-    const logger = new LogLineConsoleError();
+    const logger = new LogLineConsoleWarn();
 
-    expect(() => new LogLineConsoleError()).to.not.throw();
+    expect(() => new LogLineConsoleWarn()).to.not.throw();
     expect(logger instanceof LogLine).to.eq(true);
   });
 
   describe('log', () => {
-    it('should call console.error', () => {
+    it('should call console.warn', () => {
       const spy = sinon.spy();
-      sinon.replace(console, 'error', spy);
+      sinon.replace(console, 'warn', spy);
 
-      const logger = new LogLineConsoleError();
+      const logger = new LogLineConsoleWarn();
 
       logger.log();
 
@@ -30,9 +30,9 @@ describe('LogLineConsoleError class', () => {
 
     it('should output the date', () => {
       const spy = sinon.spy();
-      sinon.replace(console, 'error', spy);
+      sinon.replace(console, 'warn', spy);
 
-      const logger = new LogLineConsoleError();
+      const logger = new LogLineConsoleWarn();
 
       const dateString = new Date().toISOString();
       logger.log(dateString);
@@ -42,9 +42,9 @@ describe('LogLineConsoleError class', () => {
 
     it('should output the pid', () => {
       const spy = sinon.spy();
-      sinon.replace(console, 'error', spy);
+      sinon.replace(console, 'warn', spy);
 
-      const logger = new LogLineConsoleError();
+      const logger = new LogLineConsoleWarn();
 
       const pid = '123456';
       logger.log('', pid);
@@ -54,9 +54,9 @@ describe('LogLineConsoleError class', () => {
 
     it('should output the message', () => {
       const spy = sinon.spy();
-      sinon.replace(console, 'error', spy);
+      sinon.replace(console, 'warn', spy);
 
-      const logger = new LogLineConsoleError();
+      const logger = new LogLineConsoleWarn();
 
       const message = '--message--';
       logger.log('', '', message);

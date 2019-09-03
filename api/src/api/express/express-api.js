@@ -3,7 +3,7 @@
 
 const express = require('express');
 
-const API = require('./api');
+const API = require('../api');
 
 /**
  * Express API base class.
