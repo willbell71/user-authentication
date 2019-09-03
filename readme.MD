@@ -67,12 +67,12 @@ I 4. Add dashboard page
 ### NodeJS API
 
 D 1. Set up basic express server boiler plate
-- 2. Set up mongoose / mongo connection
-- 3. Add model for user
-- 4. Add log in route
-- 5. Add log out route
-- 6. Add register route
-- 7. Add dummy protected route ( used to populate dashboard with dummy content )
+D 2. Set up mongoose / mongo connection
+D 3. Add model for user
+D 4. Add log in route
+D 5. Add log out route
+D 6. Add register route
+D 7. Add dummy protected route ( used to populate dashboard with dummy content )
 
 ### Docker
 
