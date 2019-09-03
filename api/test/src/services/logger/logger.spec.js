@@ -2,7 +2,7 @@ const chai = require('chai');
 const sinon = require('sinon');
 const {Writable} = require('stream');
 
-const Logger = require('../../../src/logger/logger');
+const Logger = require('../../../../src/services/logger/logger');
 
 const expect = chai.expect;
 

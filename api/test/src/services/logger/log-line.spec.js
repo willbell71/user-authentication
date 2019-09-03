@@ -1,7 +1,7 @@
 const chai = require('chai');
 const sinon = require('sinon');
 
-const LogLine = require('../../../src/logger/log-line');
+const LogLine = require('../../../../src/services/logger/log-line');
 
 const expect = chai.expect;
 
