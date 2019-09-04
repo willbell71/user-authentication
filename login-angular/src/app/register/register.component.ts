@@ -17,6 +17,6 @@ export class RegisterComponent implements OnInit {
   /**
    * On init lifecycle callback.
    */
-  ngOnInit(): void {
+  public ngOnInit(): void {
   }
 }

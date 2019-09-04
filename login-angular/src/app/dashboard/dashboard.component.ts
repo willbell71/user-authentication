@@ -17,6 +17,6 @@ export class DashboardComponent implements OnInit {
   /**
    * On init lifecycle callback.
    */
-  ngOnInit(): void {}
+  public ngOnInit(): void {}
 
 }
