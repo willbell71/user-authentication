@@ -19,8 +19,7 @@ Accept: application/json
   "firstName": "bob",
   "lastName": "dylan",
   "email": "a@a.com",
-  "password": "123456",
-  "confirmPassword": "123456"
+  "password": "123456"
 }
 
 ###

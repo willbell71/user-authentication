@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 
 import { LoginService } from './login-services/login.service';
+import { RegisterService } from './register-services/register.service';
 
 @NgModule({
   declarations: [],
@@ -11,7 +12,8 @@ import { LoginService } from './login-services/login.service';
     HttpClientModule
   ],
   providers: [
-    LoginService
+    LoginService,
+    RegisterService
   ]
 })
 export class CoreModule { }

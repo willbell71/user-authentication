@@ -2,19 +2,22 @@ import { LoginComponent } from './login.component';
 import { Observable, of } from 'rxjs';
 
 describe('LoginComponent', () => {
-  let router;
+  let formValidationService;
   let loginService;
+  let router;
   let component: LoginComponent;
   let event;
 
   describe('login', () => {
     describe('success', () => {
       beforeEach(() => {
-        router = jasmine.createSpyObj('Router', ['navigate']);
+        formValidationService = jasmine.createSpyObj('FormValidationService', ['validator']);
+        formValidationService.validator.and.returnValue(true);
         loginService = jasmine.createSpyObj('LoginService', ['login']);
         loginService.login.and.returnValue(of(true));
+        router = jasmine.createSpyObj('Router', ['navigate']);
 
-        component = new LoginComponent(loginService, router);
+        component = new LoginComponent(formValidationService, loginService, router);
 
         event = jasmine.createSpyObj('Event', ['preventDefault']);
       });
@@ -30,26 +33,10 @@ describe('LoginComponent', () => {
           expect(event.preventDefault).toHaveBeenCalled();
         });
 
-        it('should set email error message', () => {
-          component.errors.email = '';
-          component.formValues.email = '';
-
+        it('should run validation', () => {
           component.login(event);
 
-          expect(component.errors.email).toEqual(jasmine.any(String));
-          expect(component.errors.email.length).toBeGreaterThan(0);
-        });
-
-        it('should set password error message', () => {
-          component.errors.email = '';
-          component.errors.password = '';
-          component.formValues.email = 'a@a.com';
-          component.formValues.password = '';
-
-          component.login(event);
-
-          expect(component.errors.password).toEqual(jasmine.any(String));
-          expect(component.errors.password.length).toBeGreaterThan(0);
+          expect(formValidationService.validator).toHaveBeenCalled();
         });
 
         it('should call login with form values', () => {
@@ -73,11 +60,13 @@ describe('LoginComponent', () => {
 
       describe('failure', () => {
         beforeEach(() => {
-          router = jasmine.createSpyObj('Router', ['navigate']);
+          formValidationService = jasmine.createSpyObj('FormValidationService', ['validator']);
+          formValidationService.validator.and.returnValue(true);
           loginService = jasmine.createSpyObj('LoginService', ['login']);
           loginService.login.and.returnValue(of(false));
+          router = jasmine.createSpyObj('Router', ['navigate']);
 
-          component = new LoginComponent(loginService, router);
+          component = new LoginComponent(formValidationService, loginService, router);
 
           event = jasmine.createSpyObj('Event', ['preventDefault']);
         });
@@ -97,13 +86,15 @@ describe('LoginComponent', () => {
 
       describe('failure', () => {
         beforeEach(() => {
-          router = jasmine.createSpyObj('Router', ['navigate']);
+          formValidationService = jasmine.createSpyObj('FormValidationService', ['validator']);
+          formValidationService.validator.and.returnValue(true);
           loginService = jasmine.createSpyObj('LoginService', ['login']);
           loginService.login.and.returnValue(new Observable(observer => {
             observer.error();
           }));
+          router = jasmine.createSpyObj('Router', ['navigate']);
 
-          component = new LoginComponent(loginService, router);
+          component = new LoginComponent(formValidationService, loginService, router);
 
           event = jasmine.createSpyObj('Event', ['preventDefault']);
         });

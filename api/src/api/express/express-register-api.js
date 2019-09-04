@@ -44,9 +44,6 @@ class ExpressRegisterAPI extends ExpressAPI {
       validator
         .body('password', 'Password must be at least 6 characters')
         .isLength({min: 6}),
-      validator
-        .body('confirmPassword', 'Passwords must match')
-        .custom((value, {req}) => value === req.body.password),
       (req, res, next) => ExpressRequestMiddleware.validateRequestBodyFields(
         this.logger,
         req,
@@ -56,8 +53,7 @@ class ExpressRegisterAPI extends ExpressAPI {
           'firstName',
           'lastName',
           'email',
-          'password',
-          'confirmPassword'
+          'password'
         ]),
       (req, res) => this.register(req, res));
   }

@@ -3,26 +3,27 @@
     <h1 class="form__title">Register</h1>
     <form>
       <label class="form__field" for="first-name">First Name
-        <input class="form__input" id="first-name" type="text">
-        <p class="form__field-error">Error</p>
+        <input [(ngModel)]="formValues.firstName" class="form__input" id="first-name" type="text" name="firstName">
+        <p class="form__field-error">{{ errors.firstName }}</p>
       </label>
       <label class="form__field" for="last-name">Last Name
-        <input class="form__input" id="last-name" type="text">
-        <p class="form__field-error">Error</p>
+        <input [(ngModel)]="formValues.lastName" class="form__input" id="last-name" type="text" name="lastName">
+        <p class="form__field-error">{{ errors.lastName }}</p>
       </label>
       <label class="form__field" for="email">Email
-        <input class="form__input" id="email" type="text">
-        <p class="form__field-error">Error</p>
+        <input [(ngModel)]="formValues.email" class="form__input" id="email" type="text" name="email">
+        <p class="form__field-error">{{ errors.email }}</p>
       </label>
       <label class="form__field" for="password">Password
-        <input class="form__input" id="password" type="password">
-        <p class="form__field-error">Error</p>
+        <input [(ngModel)]="formValues.password" class="form__input" id="password" type="password" name="password">
+        <p class="form__field-error">{{ errors.password }}</p>
       </label>
       <label class="form__field" for="confirm-password">Confirm Password
-        <input class="form__input" id="confirm-password" type="password">
-        <p class="form__field-error">Error</p>
+        <input [(ngModel)]="formValues.confirmPassword" class="form__input" id="confirm-password" type="password" name="confirmPassword">
+        <p class="form__field-error">{{ errors.confirmPassword }}</p>
       </label>
-      <input class="btn btn--block" type="submit" value="Register">
+      <button (click)="register($event)" class="btn btn--block">Register</button>
+      <p class="form__field-error">{{ errors.register }}</p>
       <a routerLink="/login" class="btn btn--block btn--form">Login</a>
     </form>
   </section>

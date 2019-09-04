@@ -47,13 +47,14 @@ To stop docker
 ### Angular
 
 D 1. Clear down Angular scaffold
-I 2. Add login page
-I 3. Add register page
+D 2. Add login page
+D 3. Add register page
 I 4. Add dashboard page
 - 5. Integrate NodeJS API
 - 6. Protect dashboard route
 - 7. Refactor forms to a shared component ?
 - 8. Angular animations
+- 9. Middleware - redirect to login on unauthorised response
 
 ### ReactJS
 
