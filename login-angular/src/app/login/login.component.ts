@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { FormValidationRule } from '../core/form-services/form-validation-rule';
+import { FormValidationService } from '../core/form-services/form-validation.service';
 import { LoginService } from '../core/login-services/login.service';
 
 /**
@@ -49,8 +51,12 @@ export class LoginComponent implements OnInit {
 
   /**
    * Constructor.
+   * @param {FormValidationService} formValidationService - form validation service provider.
+   * @param {LoginService} loginService - user login service provider.
+   * @param {Router} router - router services provider.
    */
-  constructor(private loginService: LoginService,
+  constructor(private formValidationService: FormValidationService,
+              private loginService: LoginService,
               private router: Router) { }
 
   /**
@@ -74,27 +80,24 @@ export class LoginComponent implements OnInit {
    * @return {LoginErrorMessages|void} returns error messages for form or nothing if form values passes validation.
    */
   private validateForm(): LoginErrorMessages|void {
-    const {email, password} = this.formValues;
+    const errors: LoginErrorMessages = {
+      email: '',
+      password: '',
+      login: ''
+    };
 
-    // validate email
-    if (!email || email.length < 3 || -1 === email.indexOf('@')) {
-      return {
-        email: 'Please enter a valid email address',
-        password: '',
-        login: ''
-      };
-    }
+    const validationRules: FormValidationRule[] = [{
+      prop: 'email',
+      error: 'Please enter a valid email address',
+      validator: value => value && value.length > 3 || -1 !== value.indexOf('@')
+    }, {
+      prop: 'password',
+      error: 'Please enter a valid password',
+      validator: value => value
+    }];
 
-    // validate password
-    if (!password) {
-      return {
-        email: '',
-        password: 'Please enter a valid password',
-        login: ''
-      };
-    }
-
-    return;
+    const passed: boolean = this.formValidationService.validator(validationRules, this.formValues, errors);
+    return passed ? undefined : errors;
   }
 
   /**
