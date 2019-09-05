@@ -7,7 +7,7 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     router = jasmine.createSpyObj('Router', ['parseUrl']);
-    sessionStorageService = jasmine.createSpyObj('SessionStorageService', ['setItem', 'getItem']);
+    sessionStorageService = jasmine.createSpyObj('SessionStorageService', ['setItem', 'getItem', 'removeItem']);
     sessionStorageService.getItem.and.returnValue(null);
 
     service = new AuthService(router, sessionStorageService);
@@ -38,6 +38,12 @@ describe('AuthService', () => {
       service.setToken('token');
 
       expect(sessionStorageService.setItem).toHaveBeenCalledWith('token', 'token');
+    });
+
+    it('should remove token on clear', () => {
+      service.setToken();
+
+      expect(sessionStorageService.removeItem).toHaveBeenCalledWith('token');
     });
   });
 

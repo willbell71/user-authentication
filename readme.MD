@@ -60,8 +60,8 @@ To stop docker
 D 1. Clear down Angular scaffold
 D 2. Add login page
 D 3. Add register page
-I 4. Add dashboard page
-I 5. Integrate NodeJS API
+D 4. Add dashboard page
+D 5. Integrate NodeJS API
 D 6. Protect dashboard route
 - 7. Refactor forms to a shared component ?
 - 8. Angular animations
@@ -94,3 +94,7 @@ I 2. Set up container for Angular client
 I 4. Set up container for NodeJS API
 I 5. Set up docker compose ( nginx, mongo, node api )
 - 6. Set up Kubernetes deployment script
+
+### Azure pipelines
+
+- 1. Push built containers to docker hub

@@ -1,10 +1,10 @@
-import { GetSomethingService } from './get-something.service';
+import { ContentService } from './content.service';
 import { Observable, of } from 'rxjs';
 
-describe('GetSomethingService', () => {
+describe('ContentService', () => {
   let httpClient;
   let authService;
-  let service: GetSomethingService;
+  let service: ContentService;
 
   describe('success', () => {
     beforeEach(() => {
@@ -16,7 +16,7 @@ describe('GetSomethingService', () => {
       authService = jasmine.createSpyObj('AuthService', ['getToken']);
       authService.getToken.and.returnValue('token');
 
-      service = new GetSomethingService(httpClient, authService);
+      service = new ContentService(authService, httpClient);
     });
 
     it('should be created', () => {
@@ -24,17 +24,17 @@ describe('GetSomethingService', () => {
     });
 
     it('should make a get request to the getsomething api', () => {
-      service.getSomething().subscribe(() => expect(httpClient.get).toHaveBeenCalled());
+      service.getContent().subscribe(() => expect(httpClient.get).toHaveBeenCalled());
     });
 
     it('should call authService getToken', () => {
-      service.getSomething().subscribe(() => {
+      service.getContent().subscribe(() => {
         expect(authService.getToken).toHaveBeenCalled();
       });
     });
 
     it('should return response on success', () => {
-      service.getSomething().subscribe(response => {
+      service.getContent().subscribe(response => {
         expect(response).toEqual({
           title: 'title',
           body: 'body'
@@ -52,11 +52,11 @@ describe('GetSomethingService', () => {
       authService = jasmine.createSpyObj('AuthService', ['getToken']);
       authService.getToken.and.returnValue('token');
 
-      service = new GetSomethingService(httpClient, authService);
+      service = new ContentService(authService, httpClient);
     });
 
     it('should invoke error on failure', () => {
-      service.getSomething().subscribe(success => {
+      service.getContent().subscribe(success => {
         expect(true).toBeFalsy();
       }, () => {
         expect(true).toBeTruthy();

@@ -22,9 +22,9 @@
         <input [(ngModel)]="formValues.confirmPassword" class="form__input" id="confirm-password" type="password" name="confirmPassword">
         <p class="form__field-error">{{ errors.confirmPassword }}</p>
       </label>
-      <button (click)="register($event)" class="btn btn--block">Register</button>
+      <button (click)="register($event)" class="btn btn--center btn--block">Register</button>
       <p class="form__field-error">{{ errors.register }}</p>
-      <a routerLink="/login" class="btn btn--block btn--form">Login</a>
+      <a routerLink="/login" class="btn btn--center btn--block btn--form">Login</a>
     </form>
   </section>
 </main>

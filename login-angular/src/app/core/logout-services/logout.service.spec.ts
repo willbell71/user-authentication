@@ -9,35 +9,36 @@ describe('LogoutService', () => {
 
   describe('success', () => {
     beforeEach(() => {
-      httpClient = jasmine.createSpyObj('HttpClient', ['get']);
-      httpClient.get.and.returnValue(of({}));
-      authService = jasmine.createSpyObj('AuthService', ['setToken']);
+      httpClient = jasmine.createSpyObj('HttpClient', ['post']);
+      httpClient.post.and.returnValue(of({}));
+      authService = jasmine.createSpyObj('AuthService', ['getToken', 'setToken']);
+      authService.getToken.and.returnValue('token');
 
-      service = new LogoutService(httpClient, authService);
+      service = new LogoutService(authService, httpClient);
     });
 
     it('should be created', () => {
       expect(service).toBeTruthy();
     });
 
-    it('should make a get request to the logout api', () => {
-      service.logout('').subscribe(() => expect(httpClient.get).toHaveBeenCalled());
+    it('should make a post request to the logout api', () => {
+      service.logout().subscribe(() => expect(httpClient.post).toHaveBeenCalled());
     });
 
     it('should send token to api', () => {
-      service.logout('token').subscribe(() => {
-        expect(httpClient.get).toHaveBeenCalledWith(jasmine.any(String), jasmine.any(Object));
+      service.logout().subscribe(() => {
+        expect(httpClient.post).toHaveBeenCalledWith(jasmine.any(String), jasmine.any(Object), jasmine.any(Object));
       });
     });
 
     it('should call authService setToken with undefined', () => {
-      service.logout('').subscribe(() => {
+      service.logout().subscribe(() => {
         expect(authService.setToken).toHaveBeenCalledWith();
       });
     });
 
     it('should return true on success', () => {
-      service.logout('').subscribe(success => {
+      service.logout().subscribe(success => {
         expect(success).toBeTruthy();
       });
     });
@@ -45,17 +46,18 @@ describe('LogoutService', () => {
 
   describe('failure', () => {
     beforeEach(() => {
-      httpClient = jasmine.createSpyObj('HttpClient', ['get']);
-      httpClient.get.and.returnValue(new Observable(observer => {
+      httpClient = jasmine.createSpyObj('HttpClient', ['post']);
+      httpClient.post.and.returnValue(new Observable(observer => {
         observer.error();
       }));
-      authService = jasmine.createSpyObj('AuthService', ['setToken']);
+      authService = jasmine.createSpyObj('AuthService', ['getToken', 'setToken']);
+      authService.getToken.and.returnValue('token');
 
-      service = new LogoutService(httpClient, authService);
+      service = new LogoutService(authService, httpClient);
     });
 
     it('should return false on failure', () => {
-      service.logout('').subscribe(success => {
+      service.logout().subscribe(success => {
         expect(success).toBeFalsy();
       });
     });
