@@ -65,7 +65,7 @@ D 5. Integrate NodeJS API
 D 6. Protect dashboard route
 - 7. Refactor forms to a shared component ?
 - 8. Angular animations
-- 9. Middleware - redirect to login on unauthorised response
+D 9. Interceptor - delete token, if request fails auth ( 401 )
 
 ### ReactJS
 
@@ -85,6 +85,7 @@ D 4. Add log in route
 D 5. Add log out route
 D 6. Add register route
 D 7. Add dummy protected route ( used to populate dashboard with dummy content )
+- 8. Integration tests
 
 ### Docker
 
@@ -94,6 +95,7 @@ I 2. Set up container for Angular client
 I 4. Set up container for NodeJS API
 I 5. Set up docker compose ( nginx, mongo, node api )
 - 6. Set up Kubernetes deployment script
+- 7. NGINX HTTP2
 
 ### Azure pipelines
 
