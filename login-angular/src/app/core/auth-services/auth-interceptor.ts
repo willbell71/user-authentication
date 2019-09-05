@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { AuthService } from './auth.service';
@@ -24,7 +24,7 @@ export class AuthInterceptor implements HttpInterceptor {
    * @param {HttpHandler} next - next handler.
    * @return {Observable<HttpEvent<any>>} event.
    */
-  public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<any> {
     return next
       .handle(req).pipe(
         catchError(err => {
@@ -33,7 +33,7 @@ export class AuthInterceptor implements HttpInterceptor {
             this.authService.setToken();
           }
 
-          return new Observable<HttpEvent<any>>();
+          return throwError('Request failed');
         })
       );
   }
