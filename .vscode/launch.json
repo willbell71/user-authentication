@@ -11,6 +11,14 @@
             "reAttach": true,
             "url": "http://localhost:8080/index.html",
             "webRoot": "${workspaceFolder}/login-angular"
+        },
+        {
+            "name": "Launch ReactJS localhost",
+            "type": "firefox",
+            "request": "launch",
+            "reAttach": true,
+            "url": "http://localhost:9000/index.html",
+            "webRoot": "${workspaceFolder}/login-react"
         }
     ]
 }
