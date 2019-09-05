@@ -30,10 +30,10 @@ describe('ExpressLogOutAPI class', () => {
     expect(expressLogOutAPI.userService).to.eq(3);
   });
 
-  it('should register a GET route for root', () => {
+  it('should register a POST route for root', () => {
     const spy = sinon.spy();
     const stub = sinon.stub().returns({
-      get: spy
+      post: spy
     });
     sinon.replace(express, 'Router', stub);
 
@@ -77,13 +77,18 @@ describe('ExpressLogOutAPI class', () => {
           .logout(req, res);
       });
 
-      it('should return 200 if logout works', done => {
-        const sendStatusStub = sinon.stub().callsFake(() => {
-          expect(sendStatusStub.callCount).to.eq(1);
-          expect(sendStatusStub.args[0][0]).to.eq(200);
+      it('should send {} if logout works', done => {
+        const sendStub = sinon.stub().callsFake(() => {
+          expect(sendStub.callCount).to.eq(1);
+          expect(sendStub.args[0][0]).to.be.an('object');
+          expect(sendStub.args[0][0]).to.be.empty;
           done();
         });
+        const sendStatusStub = sinon.stub().callsFake(() => {
+          done('Called send status');
+        });
         const res = {
+          send: sendStub,
           sendStatus: sendStatusStub
         };
 

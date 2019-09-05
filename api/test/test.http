@@ -24,7 +24,7 @@ Accept: application/json
 
 ###
 
-GET http://localhost:8080/api/v1/logout HTTP/1.1
+POST http://localhost:8080/api/v1/logout HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkNmQ1NDczY2NlOTg1MDBhM2ExMjZkZiIsImlhdCI6MTU2NzQ0ODM1M30.gNIW4J1tJwDbcegqxiCg1Xng7q2GeE2ylfrCBqh7UgM
 
 ###

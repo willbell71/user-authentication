@@ -15,19 +15,18 @@ export class LogoutService {
   /**
    * Constructor.
    */
-  constructor(private httpClient: HttpClient,
-              private authService: AuthService) { }
+  constructor(private authService: AuthService,
+              private httpClient: HttpClient) { }
 
   /**
-   * Logout a user.
-   * @param {string} token - users token.
+   * Logout user.
    * @return {Observable<boolean>} return observable with registration status.
    */
-  public logout(token: string): Observable<boolean> {
+  public logout(): Observable<boolean> {
     const observable: Observable<boolean> = new Observable<boolean>(observer => {
-      this.httpClient.get(`${environment.apiBaseURL}/logout`, {
+      this.httpClient.post<{}>(`${environment.apiBaseURL}/logout`, {}, {
         headers: new HttpHeaders({
-          authorization: `Bearer ${token}`
+          authorization: `Bearer ${this.authService.getToken()}`
         })
       }).subscribe(() => {
         // handle success

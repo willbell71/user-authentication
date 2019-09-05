@@ -1,1 +1,18 @@
-<p>dashboard works!</p>
+<header>
+  <h1 class="header">Dashboard</h1>
+</header>
+
+<main class="container">
+  <section class="content">
+    <button class="btn btn--md" (click)="getSomething()">Get Something</button>
+
+    <article class="content__article">
+      <p>Title: {{ title }}</p>
+      <p>Body: {{ body }}</p>
+    </article>
+  </section>
+
+  <section class="logout">
+    <button class="btn btn--md" (click)="logout()">Logout</button>
+  </section>
+</main>

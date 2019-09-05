@@ -10,9 +10,9 @@
         <input [(ngModel)]="formValues.password" class="form__input" id="password" type="password" name="password">
         <p class="form__field-error">{{ errors.password }}</p>
       </label>
-      <button (click)="login($event)" class="btn btn--block">Login</button>
+      <button (click)="login($event)" class="btn btn--center btn--block">Login</button>
       <p class="form__field-error">{{ errors.login }}</p>
-      <a routerLink="/register" class="btn btn--block btn--form">Register</a>
+      <a routerLink="/register" class="btn btn--center btn--block btn--form">Register</a>
     </form>
   </section>
 </main>

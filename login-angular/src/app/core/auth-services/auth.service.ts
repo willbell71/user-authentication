@@ -43,7 +43,11 @@ export class AuthService implements CanActivate {
     this.token = token;
 
     // store
-    this.sessionStorageService.setItem(this.tokenStorageKey, this.token);
+    if (token) {
+      this.sessionStorageService.setItem(this.tokenStorageKey, this.token);
+    } else {
+      this.sessionStorageService.removeItem(this.tokenStorageKey);
+    }
   }
 
   /**

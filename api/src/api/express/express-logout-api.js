@@ -22,7 +22,7 @@ class ExpressLogOutAPI extends ExpressAPI {
     this.userService = userService;
 
     // register endpoints
-    this.router.get('/',
+    this.router.post('/',
       (req, res, next) => ExpressAuthenticationMiddleware.auth(this.logger, req, res, next, this.authService),
       (req, res, next) => ExpressRequestMiddleware.validateRequestBodyFields(
         this.logger,
@@ -41,7 +41,7 @@ class ExpressLogOutAPI extends ExpressAPI {
   logout(req, res) {
     try {
       this.userService.logout(req.user)
-        .then(() => res.sendStatus(200))
+        .then(() => res.send({}))
         .catch(err => {
           this.logger.error(err.message);
           res.sendStatus(400);
