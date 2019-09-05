@@ -11,6 +11,15 @@ pool:
 
 steps:
 - script: |
+    npm i
+    npm run lint
+    npm test
+  displayName: 'Build, test ReactJS client'
+  name: 'ReactJSBuild'
+  workingDirectory: 'login-react'
+  failOnStderr: false
+
+- script: |
     sudo npm install -g @angular/cli
     npm i
     ng lint
