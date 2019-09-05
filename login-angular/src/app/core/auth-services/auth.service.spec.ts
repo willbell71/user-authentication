@@ -1,28 +1,67 @@
 import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
+  let router;
+  let sessionStorageService;
   let service: AuthService;
 
   beforeEach(() => {
-    service = new AuthService();
+    router = jasmine.createSpyObj('Router', ['parseUrl']);
+    sessionStorageService = jasmine.createSpyObj('SessionStorageService', ['setItem', 'getItem']);
+    sessionStorageService.getItem.and.returnValue(null);
+
+    service = new AuthService(router, sessionStorageService);
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should report not authenticated before setting a token', () => {
-    expect(service.isAuthenticated()).toBeFalsy();
+  it('should be have called getItem', () => {
+    expect(sessionStorageService.getItem).toHaveBeenCalledWith('token');
   });
 
-  it('should set a token', () => {
-    service.setToken('token');
-    expect(service.isAuthenticated()).toBeTruthy();
+  describe('isAuthenticated', () => {
+    it('should report not authenticated before setting a token', () => {
+      expect(service.isAuthenticated()).toBeFalsy();
+    });
   });
 
-  it('should get a token', () => {
-    service.setToken('token');
+  describe('setToken', () => {
+    it('should set a token', () => {
+      service.setToken('token');
 
-    expect(service.getToken()).toEqual('token');
+      expect(service.isAuthenticated()).toBeTruthy();
+    });
+
+    it('should store token on set', () => {
+      service.setToken('token');
+
+      expect(sessionStorageService.setItem).toHaveBeenCalledWith('token', 'token');
+    });
+  });
+
+  describe('getToken', () => {
+    it('should get a token', () => {
+      service.setToken('token');
+
+      expect(service.getToken()).toEqual('token');
+    });
+  });
+
+  describe('canActivate', () => {
+    it('should return true if authenticated', () => {
+      service.setToken('token');
+
+      service.canActivate(null, null)
+        .subscribe(allowed => expect(allowed).toEqual(true), () => expect(true).toBeFalsy());
+    });
+
+    it('should navigate if not authenticated', () => {
+      service.setToken(null);
+
+      service.canActivate(null, null)
+        .subscribe(() => expect(router.parseUrl).toHaveBeenCalledWith('/login'), () => expect(true).toBeFalsy());
+    });
   });
 });

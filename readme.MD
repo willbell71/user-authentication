@@ -27,6 +27,17 @@ Azure pipeline for GitHub ( CI )
 
 ### Local Set up
 
+Add a `.env` file to root of api
+```
+LOGINAPI_NAME="development"
+LOGINAPI_PORT=3000
+LOGINAPI_LOG_LEVEL="ALL"
+LOGINAPI_USE_COMPRESSION=true
+LOGINAPI_DISABLE_CORS=true
+LOGINAPI_DB_CONNECTION="mongodb://bobdylan:tangledupinblue@mongodb/loginappdb?authSource=admin"
+```
+Note - Mongo credentials need to match those in the docker compose yml
+
 Build the Angular app, in the `login-angular` folder
 >`ng build --watch`
 
@@ -50,8 +61,8 @@ D 1. Clear down Angular scaffold
 D 2. Add login page
 D 3. Add register page
 I 4. Add dashboard page
-- 5. Integrate NodeJS API
-- 6. Protect dashboard route
+I 5. Integrate NodeJS API
+D 6. Protect dashboard route
 - 7. Refactor forms to a shared component ?
 - 8. Angular animations
 - 9. Middleware - redirect to login on unauthorised response
