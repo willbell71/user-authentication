@@ -69,10 +69,10 @@ D 9. Interceptor - delete token, if request fails auth ( 401 )
 
 ### ReactJS
 
-- 1. Set up simple ReactJS build system with webpack, babel etc.
-- 2. Add login page
-- 3. Add register page
-- 4. Add dashboard page
+D 1. Set up simple ReactJS build system with webpack, babel etc.
+I 2. Add login page
+I 3. Add register page
+I 4. Add dashboard page
 - 5. Integrate NodeJS API using Fetch
 - 6. Protect dashboard route
 
