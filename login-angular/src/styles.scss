@@ -48,6 +48,14 @@ ul {
 
 // global styles
 
+// header
+
+.header {
+  padding: 32px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
 // buttons
 
 .btn {
@@ -109,12 +117,6 @@ ul {
 .form__block {
   margin: auto;
   width: 90%;
-}
-
-.form__title {
-  padding: 16px 0;
-  text-align: center;
-  text-transform: uppercase;
 }
 
 .form__field {
