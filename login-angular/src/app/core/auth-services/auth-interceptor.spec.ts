@@ -66,7 +66,7 @@ describe('AuthInterceptor', () => {
 
       setTimeout(() => {
         expect(authService.setToken).toHaveBeenCalled();
-      }, 100);
+      }, 500);
     });
   });
 });
