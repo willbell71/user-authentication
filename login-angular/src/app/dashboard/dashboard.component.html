@@ -6,11 +6,11 @@
   <section class="content">
     <button class="btn btn--md" (click)="getSomething()">Get Something</button>
 
-    <article *ngIf="title" class="content__article">
+    <article class="content__article">
       <h6 class="content__article-title">Title</h6>
-      <p>{{ title }}</p>
+      <p>{{ title | unavailable }}</p>
       <h6 class="content__article-title">Body</h6>
-      <p>{{ body }}</p>
+      <p>{{ body | unavailable }}</p>
     </article>
   </section>
 
