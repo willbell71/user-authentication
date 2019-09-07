@@ -3,7 +3,10 @@ const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   mode: 'development',
-  entry: './src/app.jsx',
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js']
+  },
+  entry: './src/app.tsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'app.bundle.js'
@@ -16,9 +19,15 @@ module.exports = {
   },
   module: {
     rules: [{
-      test: /\.jsx$/,
-      exclude: /(node_modules)/,
-      use: ['babel-loader']
+      test: /\.ts(x?)$/,
+      exclude: /node_modules/,
+      use: [{
+        loader: 'ts-loader'
+      }]
+    }, {
+      enforce: 'pre',
+      test: /\.js$/,
+      loader: 'source-map-loader'
     }, {
       test: /\.scss$/,
       use: [
