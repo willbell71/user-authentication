@@ -2,13 +2,13 @@ import * as React from 'react';
 import * as enzyme from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
 
-import {Dashboard} from './dashboard';
+import {Login} from './login';
 
 enzyme.configure({ adapter: new Adapter() });
 
-describe('Dashboard', () => {
+describe('Login', () => {
   it('should render', () => {
-    const wrapper = enzyme.shallow(<Dashboard/>);
-    expect(wrapper.find('h1').length).toEqual(1);
-  })
+    const wrapper = enzyme.shallow(<Login/>);
+    expect(wrapper.find('Header').length).toEqual(1);
+  });
 });
