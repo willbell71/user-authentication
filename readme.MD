@@ -67,9 +67,9 @@ D 6. Protect dashboard route
 - 8. Angular animations
 D 9. Interceptor - delete token, if request fails auth ( 401 )
 
-### ReactJS
+### ReactTS
 
-D 1. Set up simple ReactJS build system with webpack, babel etc.
+D 1. Set up a React build system using Typescript.
 I 2. Add login page
 I 3. Add register page
 I 4. Add dashboard page

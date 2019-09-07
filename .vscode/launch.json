@@ -13,12 +13,12 @@
             "webRoot": "${workspaceFolder}/login-angular"
         },
         {
-            "name": "Launch ReactJS localhost",
+            "name": "Launch ReactTS localhost",
             "type": "firefox",
             "request": "launch",
             "reAttach": true,
             "url": "http://localhost:9000/index.html",
-            "webRoot": "${workspaceFolder}/login-react"
-        }
+            "webRoot": "${workspaceFolder}/login-reactts"
+        }        
     ]
 }

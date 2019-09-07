@@ -1,36 +1,37 @@
 {
-  "parser": "babel-eslint",
-  "env": {
-      "browser": true,
-      "es6": true
-  },
-  "extends": [
-      "google"
-  ],
-  "globals": {
-      "Atomics": "readonly",
-      "SharedArrayBuffer": "readonly"
-  },
-  "parserOptions": {
-      "ecmaFeatures": {
-          "jsx": true
-      },
-      "ecmaVersion": 2018,
-      "sourceType": "module"
-  },
-  "plugins": [
-      "react"
-  ],
-  "settings": {
-      "react": {
-          "version": "detect"
-      }
-  },
-  "rules": {
+    "env": {
+        "browser": true,
+        "es6": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended"
+    ],
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react",
+        "@typescript-eslint"
+    ],
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    },
+    "rules": {
       "react/jsx-no-undef": "error",
       "react/jsx-no-duplicate-props": "error",
       "react/jsx-key": "error",
-      "react/jsx-filename-extension": "error",
       "react/void-dom-elements-no-children": "error",
       "react/state-in-constructor": "error",
       "react/sort-prop-types": "error",
@@ -53,5 +54,5 @@
       "no-invalid-this": 0,
       "comma-dangle": ["error", "never"],
       "max-len": ["error", {"code": 140}]
-  }
+     }
 }
