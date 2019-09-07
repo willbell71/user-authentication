@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import {Header} from '../shared/header/header';
 import './styles.scss';
 
 /**
@@ -8,6 +9,6 @@ import './styles.scss';
  */
 export function Dashboard(): JSX.Element {
   return (
-    <h1>Dashboard</h1>
+    <Header title="Dashboard"/>
   );
 }

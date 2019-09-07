@@ -11,7 +11,7 @@
     "watch": "webpack --watch",
     "serve": "webpack-dev-server --devtool=source-map",
     "lint": "eslint src/**/*.tsx",
-    "test": "jest --coverage"
+    "test": "jest --verbose --coverage"
   },
   "keywords": [],
   "author": "",

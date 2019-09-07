@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import {Header} from '../shared/header/header';
+
 import './styles.scss';
 
 /**
@@ -8,6 +10,6 @@ import './styles.scss';
  */
 export function Register(): JSX.Element {
   return (
-    <h1>Register</h1>
+    <Header title="Register"/>
   );
 }
