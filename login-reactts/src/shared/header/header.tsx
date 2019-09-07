@@ -11,18 +11,14 @@ type Props = {
 };
 
 /**
- * Header component.
+ * Render.
+ * @param {Props} props - component properties.
+ * @return {JSX.Element} render.
  */
-export class Header extends React.Component<Props> {
-  /**
-   * Render.
-   * @return {JSX.Element} render.
-   */
-  render(): JSX.Element {
-    return (
-      <header>
-        <h1 className="header">{ this.props.title }</h1>
-      </header>
-    )
-  }
+export function Header(props: Props): JSX.Element {
+  return (
+    <header>
+      <h1 className="header">{ props.title }</h1>
+    </header>
+  );
 }
