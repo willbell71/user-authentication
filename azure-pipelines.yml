@@ -14,6 +14,7 @@ steps:
     npm i
     npm run lint
     npm test
+    npm run build
   displayName: 'Build, test ReactTS client'
   name: 'ReactTSBuild'
   workingDirectory: 'login-reactts'

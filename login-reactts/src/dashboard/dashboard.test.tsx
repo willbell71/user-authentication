@@ -41,8 +41,18 @@ describe('Dashboard', () => {
   });
 
   describe('getSomething', () => {
+    it('should run', () => {
+      wrapper.instance().getSomething();
+
+      expect(true).toBeTruthy();
+    });
   });
 
   describe('logout', () => {
+    it('should run', () => {
+      wrapper.instance().logout();
+
+      expect(true).toBeTruthy();
+    });
   });
 });
