@@ -6,9 +6,12 @@ import {Login} from './login';
 
 enzyme.configure({ adapter: new Adapter() });
 
+afterEach(() => jest.restoreAllMocks());
+
 describe('Login', () => {
   it('should render', () => {
-    const wrapper = enzyme.shallow(<Login/>);
+    const wrapper: enzyme.ShallowWrapper<{}> = enzyme.shallow(<Login/>);
     expect(wrapper.find('Header').length).toEqual(1);
+    expect(wrapper.find('Header').prop('title')).toEqual('Login');
   });
 });

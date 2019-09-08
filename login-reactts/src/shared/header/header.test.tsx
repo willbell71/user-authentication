@@ -6,14 +6,16 @@ import {Header} from './header';
 
 enzyme.configure({ adapter: new Adapter() });
 
+let wrapper: enzyme.ShallowWrapper<{}>;
+beforeEach(() => wrapper = enzyme.shallow(<Header title="title"/>));
+afterEach(() => jest.restoreAllMocks());
+
 describe('Header', () => {
   it('should render', () => {
-    const wrapper = enzyme.shallow(<Header title="title"/>);
     expect(wrapper.find('h1').length).toEqual(1);
   });
 
   it('should set the title text', () => {
-    const wrapper = enzyme.shallow(<Header title="title"/>);
     expect(wrapper.find('h1').text()).toEqual("title");
   });
 });

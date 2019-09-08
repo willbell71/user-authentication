@@ -33,7 +33,6 @@
       "react/jsx-no-duplicate-props": "error",
       "react/jsx-key": "error",
       "react/void-dom-elements-no-children": "error",
-      "react/state-in-constructor": "error",
       "react/sort-prop-types": "error",
       "react/self-closing-comp": "error",
       "react/require-default-props": "error",

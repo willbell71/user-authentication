@@ -6,9 +6,12 @@ import {Register} from './register';
 
 enzyme.configure({ adapter: new Adapter() });
 
+afterEach(() => jest.restoreAllMocks());
+
 describe('Register', () => {
   it('should render', () => {
-    const wrapper = enzyme.shallow(<Register/>);
+    const wrapper: enzyme.ShallowWrapper<{}> = enzyme.shallow(<Register/>);
     expect(wrapper.find('Header').length).toEqual(1);
+    expect(wrapper.find('Header').prop('title')).toEqual('Register');
   });
 });
