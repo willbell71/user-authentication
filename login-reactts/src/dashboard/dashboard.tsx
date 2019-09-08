@@ -2,21 +2,24 @@ import * as React from 'react';
 
 import {Header} from '../shared/header/header';
 import {Unavailable} from './unavailable/unavailable';
+
 import './styles.scss';
 
-type Props = {};
-
+/**
+ * Component state.
+ * @property {string} title? - title of content, if available.
+ * @property {string} body? - body of content, if available.
+ */
 type State = {
   title?: string;
   body?: string;
 };
 
 /**
- * Dashboard component render.
- * @return {JSX.Element} render.
+ * Dashboard component.
  */
-export class Dashboard extends React.Component<Props, State> {
-  // @member {State} state - component state
+export class Dashboard extends React.Component<{}, State> {
+  // @member {State} state - component state.
   public state: State = {
     title: undefined,
     body: undefined
@@ -25,12 +28,12 @@ export class Dashboard extends React.Component<Props, State> {
   /**
    * Get something from API.
    */
-  public getSomething = () => {}
+  public getSomething = (): void => {}
 
   /**
    * Log out user.
    */
-  public logout = () => {};
+  public logout = (): void => {};
 
   /**
    * Render.
