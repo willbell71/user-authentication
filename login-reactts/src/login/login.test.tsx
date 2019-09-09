@@ -68,15 +68,71 @@ describe('Login', () => {
     expect(wrapper.find('Link').prop('to')).toEqual('/register');
   });
 
+  it('should render a redirect when logged in', () => {
+    wrapper.setState({loggedIn: true});
+
+    expect(wrapper.find('Redirect').length).toEqual(1);
+  });
+
   describe('login', () => {
-    it('should run', () => {
+    it('should call preventDefault', () => {
       const spy: jest.Mock = jest.fn();
       const event: unknown = {
         preventDefault: spy
       };
+
+      window.fetch = jest.fn().mockImplementation(() => Promise.resolve());
       wrapper.instance().login(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
 
       expect(spy).toHaveBeenCalled();
+    });
+
+    it('should call fetch', () => {
+      const event: unknown = {
+        preventDefault: jest.fn()
+      };
+
+      window.fetch = jest.fn().mockImplementation(() => Promise.resolve());
+      wrapper.instance().login(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+
+      expect(window.fetch).toHaveBeenCalled();
+    });
+
+    it('should set loggedIn on success', () => {
+      const event: unknown = {
+        preventDefault: jest.fn()
+      };
+
+      window.fetch = jest.fn().mockImplementation(() => Promise.resolve({
+        status: 200
+      }));
+      wrapper.instance().login(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+
+      setTimeout(() => expect(wrapper.instance().state.loggedIn).toBeTruthy(), 100);
+    });
+
+    it('should set error on non 200 success', () => {
+      const event: unknown = {
+        preventDefault: jest.fn()
+      };
+
+      window.fetch = jest.fn().mockImplementation(() => Promise.resolve({
+        status: 400
+      }));
+      wrapper.instance().login(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+
+      setTimeout(() => expect(wrapper.instance().state.errors.login.length).toBeGreaterThan(0));
+    });
+
+    it('should set error on failure', () => {
+      const event: unknown = {
+        preventDefault: jest.fn()
+      };
+
+      window.fetch = jest.fn().mockImplementation(() => Promise.reject());
+      wrapper.instance().login(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+
+      setTimeout(() => expect(wrapper.instance().state.errors.login.length).toBeGreaterThan(0));
     });
   });
 });
