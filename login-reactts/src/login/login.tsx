@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {Link} from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
-import {FormField} from '../shared/form-field/form-field';
-import {Header} from '../shared/header/header';
+import { FormField } from '../shared/form-field/form-field';
+import { Header } from '../shared/header/header';
 
 import './styles.scss';
 
@@ -31,6 +31,7 @@ type Field = {
  * @property {string} errors.email - form email input error.
  * @property {string} errors.password - form password input error.
  * @property {string} errors.login - login action error.
+ * @property {boolean} loggedIn - logged in.
  */
 type State = {
   formValues: {
@@ -41,7 +42,8 @@ type State = {
     email: string,
     password: string,
     login: string
-  }
+  },
+  loggedIn: boolean
 };
 
 /**
@@ -59,7 +61,8 @@ export class Login extends React.Component<{}, State> {
       email: '',
       password: '',
       login: ''
-    }  
+    },
+    loggedIn: false
   };
 
   /**
@@ -67,7 +70,6 @@ export class Login extends React.Component<{}, State> {
    * @param {React.ChangeEvent<HTMLInputElement>} event - event that fired change.
    */
   private changeInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    console.log('changeInput');
     let fieldName: string = event.target.name;
     let value: string = event.target.value;
     this.setState((state: State) => ({
@@ -83,6 +85,52 @@ export class Login extends React.Component<{}, State> {
    */
   public login = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
     event.preventDefault();
+
+    // clear previous errors
+    this.setState({
+      errors: {
+        email: '',
+        password: '',
+        login: ''
+      }
+    });
+
+    // validate form
+
+    // login
+    fetch('http://localhost:8080/api/v1/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: this.state.formValues.email,
+        password: this.state.formValues.password
+      })
+    })
+      .then((res: Response) => {
+        if (200 === res.status) {
+          // flagged logged in
+          this.setState({loggedIn: true});
+        } else {
+          // display error
+          this.setState((state: State) => ({
+            errors: {
+              ...state.errors,
+              login: 'Please try again'
+            }
+          }));          
+        }
+      })
+      .catch(() => this.setState((state: State) => {
+        console.log('catch');
+        return {
+          errors: {
+            ...state.errors,
+            login: 'Please check your connection and try again'
+          }
+        };
+      }));
   };
 
   /**
@@ -109,29 +157,33 @@ export class Login extends React.Component<{}, State> {
 
     return (
       <>
-        <Header title="Login"/>
-        <main className="form">
-          <section className="form__block">
-            <form>
-              {
-                fields.map((field: Field) => (
-                  <FormField
-                    key={ field.id}
-                    id={ field.id }
-                    label={ field.label }
-                    type={ field.type }
-                    name={ field.name }
-                    value={ field.value }
-                    changeInput={ this.changeInput }
-                    error={ field.error }/>
-                ))
-              }
-              <button onClick={this.login} className="btn btn--center btn--block">Login</button>
-              <p className="form__field-error">{ this.state.errors.login }</p>
-              <Link to="/register" className="btn btn--center btn--block btn--form">Register</Link>
-            </form>
-          </section>
-        </main>
+        {this.state.loggedIn ? <Redirect to="/"/> :
+          <>
+            <Header title="Login"/>
+            <main className="form">
+              <section className="form__block">
+                <form>
+                  {
+                    fields.map((field: Field) => (
+                      <FormField
+                        key={ field.id}
+                        id={ field.id }
+                        label={ field.label }
+                        type={ field.type }
+                        name={ field.name }
+                        value={ field.value }
+                        changeInput={ this.changeInput }
+                        error={ field.error }/>
+                    ))
+                  }
+                  <button onClick={this.login} className="btn btn--center btn--block">Login</button>
+                  <p className="form__field-error">{ this.state.errors.login }</p>
+                  <Link to="/register" className="btn btn--center btn--block btn--form">Register</Link>
+                </form>
+              </section>
+            </main>
+          </>
+        }
       </>
     );
   }
