@@ -35,6 +35,16 @@ steps:
     npm i
     npm run lint
     npm test
+    npm run build
+  displayName: 'Test, lint, build NodeTS API'
+  name: 'NodeTSBuild'
+  workingDirectory: 'api-ts'
+  failOnStderr: false
+
+- script: |
+    npm i
+    npm run lint
+    npm test
   displayName: 'Test, lint NodeJS API'
   name: 'NodeJSBuild'
   workingDirectory: 'api'
