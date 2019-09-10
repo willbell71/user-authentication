@@ -74,6 +74,13 @@ describe('Login', () => {
     expect(wrapper.find('Redirect').length).toEqual(1);
   });
 
+  it('should redirect to dashboard on logged in', () => {
+    wrapper.instance().setState({loggedIn: true});
+
+    expect(wrapper.find('Redirect').length).toEqual(1);
+    expect(wrapper.find('Redirect').first().prop('to')).toEqual('/');
+  });
+
   describe('login', () => {
     it('should call preventDefault', () => {
       const spy: jest.Mock = jest.fn();

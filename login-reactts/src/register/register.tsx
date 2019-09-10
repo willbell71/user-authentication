@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {Link} from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
-import {FormField} from '../shared/form-field/form-field';
-import {Header} from '../shared/header/header';
+import { FormField } from '../shared/form-field/form-field';
+import { Header } from '../shared/header/header';
 
 import './styles.scss';
 
@@ -53,7 +53,8 @@ type State = {
     password: string,
     confirmPassword: string,
     register: string
-  }
+  },
+  loggedIn: boolean
 };
 
 /**
@@ -76,7 +77,8 @@ export class Register extends React.Component<{}, State> {
       password: '',
       confirmPassword: '',
       register: ''
-    }  
+    },
+    loggedIn: false
   };
 
   /**
@@ -99,6 +101,57 @@ export class Register extends React.Component<{}, State> {
    */
   public register = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
     event.preventDefault();
+
+    // clear previous errors
+    this.setState({
+      errors: {
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        register: ''
+      }
+    });
+
+    // validate form
+
+    // login
+    fetch('http://localhost:8080/api/v1/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        firstName: this.state.formValues.firstName,
+        lastName: this.state.formValues.lastName,
+        email: this.state.formValues.email,
+        password: this.state.formValues.password,
+        confirmPassword: this.state.formValues.confirmPassword
+      })
+    })
+      .then((res: Response) => {
+        if (200 === res.status) {
+          // flagged logged in
+          this.setState({loggedIn: true});
+        } else {
+          // display error
+          this.setState((state: State) => ({
+            errors: {
+              ...state.errors,
+              register: 'Please try again'
+            }
+          }));          
+        }
+      })
+      .catch(() => this.setState((state: State) => {
+        return {
+          errors: {
+            ...state.errors,
+            register: 'Please check your connection and try again'
+          }
+        };
+      }));
   };
 
   /**
@@ -146,6 +199,7 @@ export class Register extends React.Component<{}, State> {
 
     return (
       <>
+        {this.state.loggedIn && <Redirect to="/"/>}
         <Header title="Register"/>
         <main className="form">
           <section className="form__block">
