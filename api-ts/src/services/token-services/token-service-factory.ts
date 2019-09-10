@@ -24,7 +24,7 @@ export class TokenServiceFactory implements IFactory<ITokenService> {
   /**
    * Register a service with the factory.
    * @param {string} type - type to register service as.
-   * @param {T} service - service to register for name.
+   * @param {ITokenService} service - service to register for name.
    */
   public registerService(type: string, service: ITokenService): void {
     this.services[type] = service;
@@ -33,7 +33,7 @@ export class TokenServiceFactory implements IFactory<ITokenService> {
   /**
    * Return a service based on type.
    * @param {string} type - type of service to return.
-   * @return {T} service.
+   * @return {ITokenService} service.
    */
   public createService(type: string): ITokenService {
     const service: ITokenService = this.services[type];
