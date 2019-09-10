@@ -123,7 +123,6 @@ export class Login extends React.Component<{}, State> {
         }
       })
       .catch(() => this.setState((state: State) => {
-        console.log('catch');
         return {
           errors: {
             ...state.errors,
@@ -157,33 +156,30 @@ export class Login extends React.Component<{}, State> {
 
     return (
       <>
-        {this.state.loggedIn ? <Redirect to="/"/> :
-          <>
-            <Header title="Login"/>
-            <main className="form">
-              <section className="form__block">
-                <form>
-                  {
-                    fields.map((field: Field) => (
-                      <FormField
-                        key={ field.id}
-                        id={ field.id }
-                        label={ field.label }
-                        type={ field.type }
-                        name={ field.name }
-                        value={ field.value }
-                        changeInput={ this.changeInput }
-                        error={ field.error }/>
-                    ))
-                  }
-                  <button onClick={this.login} className="btn btn--center btn--block">Login</button>
-                  <p className="form__field-error">{ this.state.errors.login }</p>
-                  <Link to="/register" className="btn btn--center btn--block btn--form">Register</Link>
-                </form>
-              </section>
-            </main>
-          </>
-        }
+        {this.state.loggedIn && <Redirect to="/"/>}
+        <Header title="Login"/>
+        <main className="form">
+          <section className="form__block">
+            <form>
+              {
+                fields.map((field: Field) => (
+                  <FormField
+                    key={ field.id}
+                    id={ field.id }
+                    label={ field.label }
+                    type={ field.type }
+                    name={ field.name }
+                    value={ field.value }
+                    changeInput={ this.changeInput }
+                    error={ field.error }/>
+                ))
+              }
+              <button onClick={this.login} className="btn btn--center btn--block">Login</button>
+              <p className="form__field-error">{ this.state.errors.login }</p>
+              <Link to="/register" className="btn btn--center btn--block btn--form">Register</Link>
+            </form>
+          </section>
+        </main>
       </>
     );
   }

@@ -12,7 +12,6 @@ afterEach(() => jest.restoreAllMocks());
 
 describe('Register', () => {
   it('should render', () => {
-    const wrapper: enzyme.ShallowWrapper<{}> = enzyme.shallow(<Register/>);
     expect(wrapper.find('Header').length).toEqual(1);
     expect(wrapper.find('Header').prop('title')).toEqual('Register');
   });
@@ -120,15 +119,72 @@ describe('Register', () => {
     expect(wrapper.find('Link').prop('to')).toEqual('/login');
   });
 
+  it('should redirect to dashboard on logged in', () => {
+    wrapper.instance().setState({loggedIn: true});
+
+    expect(wrapper.find('Redirect').length).toEqual(1);
+    expect(wrapper.find('Redirect').first().prop('to')).toEqual('/');
+  });
+
   describe('register', () => {
-    it('should run', () => {
+    it('should call preventDefault', () => {
       const spy: jest.Mock = jest.fn();
       const event: unknown = {
         preventDefault: spy
       };
+
+      window.fetch = jest.fn().mockImplementation(() => Promise.resolve());
       wrapper.instance().register(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
 
       expect(spy).toHaveBeenCalled();
+    });
+
+    it('should call fetch', () => {
+      const event: unknown = {
+        preventDefault: jest.fn()
+      };
+
+      window.fetch = jest.fn().mockImplementation(() => Promise.resolve());
+      wrapper.instance().register(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+
+      expect(window.fetch).toHaveBeenCalled();
+    });
+
+    it('should set loggedIn on success', () => {
+      const event: unknown = {
+        preventDefault: jest.fn()
+      };
+
+      window.fetch = jest.fn().mockImplementation(() => Promise.resolve({
+        status: 200
+      }));
+      wrapper.instance().register(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+
+      setTimeout(() => expect(wrapper.instance().state.loggedIn).toBeTruthy(), 100);
+    });
+
+    it('should set error on non 200 success', () => {
+      const event: unknown = {
+        preventDefault: jest.fn()
+      };
+
+      window.fetch = jest.fn().mockImplementation(() => Promise.resolve({
+        status: 400
+      }));
+      wrapper.instance().register(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+
+      setTimeout(() => expect(wrapper.instance().state.errors.register.length).toBeGreaterThan(0));
+    });
+
+    it('should set error on failure', () => {
+      const event: unknown = {
+        preventDefault: jest.fn()
+      };
+
+      window.fetch = jest.fn().mockImplementation(() => Promise.reject());
+      wrapper.instance().register(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+
+      setTimeout(() => expect(wrapper.instance().state.errors.register.length).toBeGreaterThan(0));
     });
   });
 });
