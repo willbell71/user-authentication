@@ -29,6 +29,7 @@
     "pm2": "^3.5.1"
   },
   "devDependencies": {
+    "@types/bcrypt": "^3.0.0",
     "@types/jest": "^24.0.18",
     "@types/jsonwebtoken": "^8.3.3",
     "@types/node": "^12.7.4",

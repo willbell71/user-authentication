@@ -11,9 +11,14 @@ import { LogLineConsoleWarn } from './services/logger/log-line-console-warn';
 import { LogLineConsoleError } from './services/logger/log-line-console-error';
 
 import { IFactory } from './services/ifactory';
+
 import { ITokenService } from './services/token-services/itoken-service';
 import { TokenServiceFactory } from './services/token-services/token-service-factory';
 import { JWTTokenService } from './services/token-services/jwt-token-service';
+
+import { IPasswordService } from './services/password-service/ipassword-service';
+import { PasswordServiceFactory } from './services/password-service/password-service-factory';
+import { BCryptPasswordService } from './services/password-service/bcrypt-password-service';
 
 // create logger
 const logger: ILogger = new Logger(new LogLineConsoleLog(),
@@ -26,3 +31,7 @@ logger.info('App', `running in mode: ${process.env.LOGINAPI_NAME}`);
 // create token service factory
 const tokenServiceFactory: IFactory<ITokenService> = new TokenServiceFactory(logger);
 tokenServiceFactory.registerService('jwt', new JWTTokenService());
+
+// create password service factory
+const passwordServiceFactory: IFactory<IPasswordService> = new PasswordServiceFactory(logger);
+passwordServiceFactory.registerService('bcrypt', new BCryptPasswordService());
