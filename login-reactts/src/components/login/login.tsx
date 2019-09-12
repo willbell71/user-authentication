@@ -1,8 +1,12 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { AnyAction, bindActionCreators, Dispatch } from 'redux';
 import { Link, Redirect } from 'react-router-dom';
 
 import { FormField } from '../shared/form-field/form-field';
 import { Header } from '../shared/header/header';
+import { loginAction } from '../../store/actions/login/login-action';
+import { LoginState } from '../../store/reducers/login-reducer';
 
 import './styles.scss';
 
@@ -25,13 +29,23 @@ type Field = {
 };
 
 /**
+ * Props.
+ * @property {loginAction} actions.login - login action.
+ * @property {LoginState} login - login state.
+ */
+export type Props = {
+  actions: {
+    login: typeof loginAction
+  },
+  login: LoginState
+};
+
+/**
  * Component state.
  * @property {string} formValues.email - form email input value.
  * @property {string} formValues.password - form password input value.
  * @property {string} errors.email - form email input error.
  * @property {string} errors.password - form password input error.
- * @property {string} errors.login - login action error.
- * @property {boolean} loggedIn - logged in.
  */
 type State = {
   formValues: {
@@ -40,17 +54,15 @@ type State = {
   },
   errors: {
     email: string,
-    password: string,
-    login: string
-  },
-  loggedIn: boolean
+    password: string
+  }
 };
 
 /**
  * Login component render.
  * @return {JSX.Element} render.
  */
-export class Login extends React.Component<{}, State> {
+export class LoginComponent extends React.Component<Props, State> {
   // @member {State} state - component state.
   public state: State = {
     formValues: {
@@ -59,10 +71,8 @@ export class Login extends React.Component<{}, State> {
     },
     errors: {
       email: '',
-      password: '',
-      login: ''
-    },
-    loggedIn: false
+      password: ''
+    }
   };
 
   /**
@@ -90,46 +100,14 @@ export class Login extends React.Component<{}, State> {
     this.setState({
       errors: {
         email: '',
-        password: '',
-        login: ''
+        password: ''
       }
     });
 
     // validate form
 
     // login
-    fetch('http://localhost:8080/api/v1/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: this.state.formValues.email,
-        password: this.state.formValues.password
-      })
-    })
-      .then((res: Response) => {
-        if (200 === res.status) {
-          // flagged logged in
-          this.setState({loggedIn: true});
-        } else {
-          // display error
-          this.setState((state: State) => ({
-            errors: {
-              ...state.errors,
-              login: 'Please try again'
-            }
-          }));          
-        }
-      })
-      .catch(() => this.setState((state: State) => {
-        return {
-          errors: {
-            ...state.errors,
-            login: 'Please check your connection and try again'
-          }
-        };
-      }));
+    this.props.actions.login(this.state.formValues.email, this.state.formValues.password);
   };
 
   /**
@@ -156,7 +134,7 @@ export class Login extends React.Component<{}, State> {
 
     return (
       <>
-        {this.state.loggedIn && <Redirect to="/"/>}
+        {this.props.login.token && <Redirect to="/"/>}
         <Header title="Login"/>
         <main className="form">
           <section className="form__block">
@@ -175,7 +153,7 @@ export class Login extends React.Component<{}, State> {
                 ))
               }
               <button onClick={this.login} className="btn btn--center btn--block">Login</button>
-              <p className="form__field-error">{ this.state.errors.login }</p>
+              <p className="form__field-error">{ this.props.login.error }</p>
               <Link to="/register" className="btn btn--center btn--block btn--form">Register</Link>
             </form>
           </section>
@@ -185,3 +163,17 @@ export class Login extends React.Component<{}, State> {
   }
 }
 
+// map store state to props
+export const mapStateToProps = (state: {login: LoginState}) => ({
+  login: state.login
+});
+
+// map store actions to props
+export const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
+  actions: bindActionCreators({
+    login: loginAction
+  }, dispatch)
+});
+
+// connect component to store and export wrapper
+export const Login = connect(mapStateToProps, mapDispatchToProps)(LoginComponent);

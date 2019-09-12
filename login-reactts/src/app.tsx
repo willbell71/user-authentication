@@ -1,10 +1,12 @@
 import * as React from 'react';
 import * as reactDOM from 'react-dom';
-import {BrowserRouter, Redirect,　Route, Switch} from 'react-router-dom';
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { Provider } from 'react-redux';
 
-import {Dashboard} from './dashboard/dashboard';
-import {Login} from './login/login';
-import {Register} from './register/register';
+import { AppStore } from './store/app-store';
+import { Dashboard } from './components/dashboard/dashboard';
+import { Login } from './components/login/login';
+import { Register } from './components/register/register';
 
 import './styles.scss';
 
@@ -14,14 +16,16 @@ import './styles.scss';
  */
 function App(): JSX.Element {
   return (
-    <BrowserRouter>
-      <Switch>
-        <Route path="/" exact component={Dashboard}/>
-        <Route path="/login" component={Login}/>
-        <Route path="/register" component={Register}/>
-        <Redirect from="*" to="/"/>
-      </Switch>
-    </BrowserRouter>
+    <Provider store={AppStore.getStore()}>
+      <BrowserRouter>
+        <Switch>
+          <Route path="/" exact component={Dashboard}/>
+          <Route path="/login" component={Login}/>
+          <Route path="/register" component={Register}/>
+          <Redirect from="*" to="/"/>
+        </Switch>
+      </BrowserRouter>
+    </Provider>      
   );
 }
 

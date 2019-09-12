@@ -51,6 +51,7 @@
       "react/jsx-uses-react": "error",
       "react/jsx-uses-vars": "error",
       "no-invalid-this": 0,
+      "no-unused-vars": "off",
       "comma-dangle": ["error", "never"],
       "max-len": ["error", {"code": 140}]
      }

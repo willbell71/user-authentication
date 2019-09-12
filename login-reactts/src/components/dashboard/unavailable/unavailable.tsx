@@ -4,10 +4,10 @@ import './styles.scss';
 
 /**
  * Component props.
- * @property {string} value? - value to render, if available.
+ * @property {string | null} value? - value to render, if available.
  */
 type Props = {
-  value?: string;
+  value?: string | null;
 };
 
 /**

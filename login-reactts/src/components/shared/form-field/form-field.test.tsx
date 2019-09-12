@@ -10,11 +10,19 @@ let changeInput: jest.Mock;
 let wrapper: enzyme.ShallowWrapper<{}>;
 beforeEach(() => {
   changeInput = jest.fn();
-  wrapper = enzyme.shallow(<FormField id="id" label="label" type="text" name="name" value="value" changeInput={ changeInput } error="error"/>);
+  wrapper = enzyme.shallow(<FormField
+    id="id"
+    label="label"
+    type="text"
+    name="name"
+    value="value"
+    changeInput={ changeInput }
+    error="error"/>
+  );
 });
 afterEach(() => jest.restoreAllMocks());
 
-describe('Register', () => {
+describe('FormField', () => {
   it('should render', () => {
     expect(wrapper.find('label').length).toEqual(1);
   });
