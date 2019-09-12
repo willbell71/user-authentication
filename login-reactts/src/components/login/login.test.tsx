@@ -1,19 +1,54 @@
 import * as React from 'react';
 import * as enzyme from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
+import { AnyAction, Dispatch } from 'redux';
 
-import { Login} from './login';
+import { LoginComponent, mapDispatchToProps, mapStateToProps, Props } from './login';
+import { LoginState } from '../../store/reducers/login-reducer';
+import { Action } from '../../store/actions/action';
+import { LoginActionPayload } from '../../store/actions/login/tlogin-action-payload';
 
 enzyme.configure({ adapter: new Adapter() });
 
-let wrapper: enzyme.ShallowWrapper<{}, {}, Login>;
-beforeEach(() => wrapper = enzyme.shallow(<Login/>));
+let props: Props;
+let wrapper: enzyme.ShallowWrapper<{}, {}, LoginComponent>;
+beforeEach(() => {
+  props = {
+    actions: {
+      login: jest.fn()
+    },
+    login: {
+      token: null,
+      error: null
+    }
+  };
+  wrapper = enzyme.shallow(<LoginComponent {...props}/>);
+});
 afterEach(() => jest.restoreAllMocks());
 
 describe('Login', () => {
   it('should render', () => {
     expect(wrapper.find('Header').length).toEqual(1);
     expect(wrapper.find('Header').prop('title')).toEqual('Login');
+  });
+
+  it('should map state to props', () => {
+    const state: {login: LoginState} = mapStateToProps({
+      login: {
+        token: 'token',
+        error: 'error'
+      }
+    });
+
+    expect(state.login.token).toEqual('token');
+    expect(state.login.error).toEqual('error');
+  });
+
+  it('should map dispatch to props', () => {
+    const map: {actions: {login: (email: string, password: string) =>
+      (dispatch: (action: Action<LoginActionPayload>) => void) => Promise<any> }} =
+      mapDispatchToProps('func' as unknown as Dispatch<AnyAction>);
+    expect(map.actions.login).toBeTruthy();
   });
 
   it('should render a form field for email', () => {
@@ -53,11 +88,10 @@ describe('Login', () => {
   });
 
   it('should render an error for login state', () => {
-    wrapper.setState({
-      errors: {
-        email: '',
-        password: '',    
-        login: 'login'
+    wrapper.setProps({
+      login: {
+        token: null,
+        error: 'login'
       }
     });
     expect(wrapper.find('p').last().text()).toEqual('login');
@@ -69,13 +103,23 @@ describe('Login', () => {
   });
 
   it('should render a redirect when logged in', () => {
-    wrapper.setState({loggedIn: true});
+    wrapper.setProps({
+      login: {
+        token: 'token',
+        error: null
+      }
+    });
 
     expect(wrapper.find('Redirect').length).toEqual(1);
   });
 
   it('should redirect to dashboard on logged in', () => {
-    wrapper.instance().setState({loggedIn: true});
+    wrapper.setProps({
+      login: {
+        token: 'token',
+        error: null
+      }
+    });
 
     expect(wrapper.find('Redirect').length).toEqual(1);
     expect(wrapper.find('Redirect').first().prop('to')).toEqual('/');
@@ -88,58 +132,9 @@ describe('Login', () => {
         preventDefault: spy
       };
 
-      window.fetch = jest.fn().mockImplementation(() => Promise.resolve());
       wrapper.instance().login(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
 
       expect(spy).toHaveBeenCalled();
-    });
-
-    it('should call fetch', () => {
-      const event: unknown = {
-        preventDefault: jest.fn()
-      };
-
-      window.fetch = jest.fn().mockImplementation(() => Promise.resolve());
-      wrapper.instance().login(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
-
-      expect(window.fetch).toHaveBeenCalled();
-    });
-
-    it('should set loggedIn on success', () => {
-      const event: unknown = {
-        preventDefault: jest.fn()
-      };
-
-      window.fetch = jest.fn().mockImplementation(() => Promise.resolve({
-        status: 200
-      }));
-      wrapper.instance().login(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
-
-      setTimeout(() => expect(wrapper.instance().state.loggedIn).toBeTruthy(), 100);
-    });
-
-    it('should set error on non 200 success', () => {
-      const event: unknown = {
-        preventDefault: jest.fn()
-      };
-
-      window.fetch = jest.fn().mockImplementation(() => Promise.resolve({
-        status: 400
-      }));
-      wrapper.instance().login(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
-
-      setTimeout(() => expect(wrapper.instance().state.errors.login.length).toBeGreaterThan(0));
-    });
-
-    it('should set error on failure', () => {
-      const event: unknown = {
-        preventDefault: jest.fn()
-      };
-
-      window.fetch = jest.fn().mockImplementation(() => Promise.reject());
-      wrapper.instance().login(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
-
-      setTimeout(() => expect(wrapper.instance().state.errors.login.length).toBeGreaterThan(0));
     });
   });
 });

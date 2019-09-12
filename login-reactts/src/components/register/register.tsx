@@ -1,8 +1,12 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { AnyAction, bindActionCreators, Dispatch } from 'redux';
 import { Link, Redirect } from 'react-router-dom';
 
 import { FormField } from '../shared/form-field/form-field';
 import { Header } from '../shared/header/header';
+import { registerAction } from '../../store/actions/login/register-action';
+import { LoginState } from '../../store/reducers/login-reducer';
 
 import './styles.scss';
 
@@ -25,6 +29,18 @@ type Field = {
 };
 
 /**
+ * Props.
+ * @property {registerAction} actions.register - register action.
+ * @property {LoginState} login - login state.
+ */
+export type Props = {
+  actions: {
+    register: typeof registerAction
+  },
+  login: LoginState
+};
+
+/**
  * Component state.
  * @property {string} formValues.firstName - form first name input value.
  * @property {string} formValues.lastName - form last name input value.
@@ -36,7 +52,6 @@ type Field = {
  * @property {string} errors.email - form email input error.
  * @property {string} errors.password - form password input error.
  * @property {string} errors.confirmPassword - form confirm password input error.
- * @property {string} errors.register - register action error.
  */
 type State = {
   formValues: {
@@ -51,16 +66,14 @@ type State = {
     lastName: string,
     email: string,
     password: string,
-    confirmPassword: string,
-    register: string
-  },
-  loggedIn: boolean
+    confirmPassword: string
+  }
 };
 
 /**
  * Register component.
  */
-export class Register extends React.Component<{}, State> {
+export class RegisterComponent extends React.Component<Props, State> {
   // @member {State} state - component state.
   public state: State = {
     formValues: {
@@ -75,10 +88,8 @@ export class Register extends React.Component<{}, State> {
       lastName: '',
       email: '',
       password: '',
-      confirmPassword: '',
-      register: ''
-    },
-    loggedIn: false
+      confirmPassword: ''
+    }
   };
 
   /**
@@ -109,49 +120,18 @@ export class Register extends React.Component<{}, State> {
         lastName: '',
         email: '',
         password: '',
-        confirmPassword: '',
-        register: ''
+        confirmPassword: ''
       }
     });
 
     // validate form
 
-    // login
-    fetch('http://localhost:8080/api/v1/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        firstName: this.state.formValues.firstName,
-        lastName: this.state.formValues.lastName,
-        email: this.state.formValues.email,
-        password: this.state.formValues.password,
-        confirmPassword: this.state.formValues.confirmPassword
-      })
-    })
-      .then((res: Response) => {
-        if (200 === res.status) {
-          // flagged logged in
-          this.setState({loggedIn: true});
-        } else {
-          // display error
-          this.setState((state: State) => ({
-            errors: {
-              ...state.errors,
-              register: 'Please try again'
-            }
-          }));          
-        }
-      })
-      .catch(() => this.setState((state: State) => {
-        return {
-          errors: {
-            ...state.errors,
-            register: 'Please check your connection and try again'
-          }
-        };
-      }));
+    // register
+    this.props.actions.register(this.state.formValues.firstName,
+      this.state.formValues.lastName,
+      this.state.formValues.email,
+      this.state.formValues.password
+    );
   };
 
   /**
@@ -199,7 +179,7 @@ export class Register extends React.Component<{}, State> {
 
     return (
       <>
-        {this.state.loggedIn && <Redirect to="/"/>}
+        {this.props.login.token && <Redirect to="/"/>}
         <Header title="Register"/>
         <main className="form">
           <section className="form__block">
@@ -218,7 +198,7 @@ export class Register extends React.Component<{}, State> {
                 ))
               }
               <button onClick={this.register} className="btn btn--center btn--block">Register</button>
-              <p className="form__field-error">{ this.state.errors.register }</p>
+              <p className="form__field-error">{ this.props.login.error }</p>
               <Link to="/login" className="btn btn--center btn--block btn--form">Login</Link>
             </form>
           </section>
@@ -227,3 +207,18 @@ export class Register extends React.Component<{}, State> {
     );
   }
 }
+
+// map store state to props
+export const mapStateToProps = (state: {login: LoginState}) => ({
+  login: state.login
+});
+
+// map store actions to props
+export const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
+  actions: bindActionCreators({
+    register: registerAction
+  }, dispatch)
+});
+
+// connect component to store and export wrapper
+export const Register = connect(mapStateToProps, mapDispatchToProps)(RegisterComponent);
