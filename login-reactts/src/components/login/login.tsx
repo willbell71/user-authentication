@@ -59,18 +59,14 @@ export type Props = {
  * Component state.
  * @property {string} formValues.email - form email input value.
  * @property {string} formValues.password - form password input value.
- * @property {string} errors.email - form email input error.
- * @property {string} errors.password - form password input error.
+ * @property {LoginErrorMessages} errors - form input errors.
  */
 type State = {
   formValues: {
     email: string,
     password: string
   },
-  errors: {
-    email: string,
-    password: string
-  }
+  errors: LoginErrorMessages
 };
 
 /**

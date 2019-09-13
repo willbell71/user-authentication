@@ -74,7 +74,7 @@ D 2. Add login page
 D 3. Add register page
 D 4. Add dashboard page
 D 5. Integrate NodeJS API using Fetch
-- 6. Protect dashboard route
+D 6. Protect dashboard route
 
 ### NodeJS API
 
