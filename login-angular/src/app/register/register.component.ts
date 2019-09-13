@@ -121,7 +121,7 @@ export class RegisterComponent implements OnInit {
     }, {
       prop: 'email',
       error: 'Please enter a valid email address',
-      validator: value => value && value.length > 3 || -1 !== value.indexOf('@')
+      validator: value => value && value.length > 3 && -1 !== value.indexOf('@')
     }, {
       prop: 'password',
       error: 'Please enter a valid password',

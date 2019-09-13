@@ -20,7 +20,8 @@ beforeEach(() => {
     login: {
       token: null,
       error: null
-    }  
+    },
+    validator: () => true
   };
   wrapper = enzyme.shallow(<RegisterComponent {...props}/>);
 });
@@ -173,5 +174,258 @@ describe('Register', () => {
 
       expect(spy).toHaveBeenCalled();
     });
+
+    it('should fail first name validation if no value', () => {
+      const event: unknown = {
+        preventDefault: jest.fn()
+      };
+
+      wrapper.setProps({
+        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+          const valid: boolean = validationRules[0].validator('');
+          if (!valid) errorMsgs.firstName = 'error';
+          return valid;
+        }
+      });
+  
+      wrapper.instance().register(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+
+      expect(wrapper.instance().state.errors.firstName).toEqual('error');
+    });
+
+    it('should pass first name validation for a valid first name', () => {
+      const event: unknown = {
+        preventDefault: jest.fn()
+      };
+
+      wrapper.setProps({
+        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+          const valid: boolean = validationRules[0].validator('aaaaaa');
+          if (valid) errorMsgs.firstName = 'success';
+          return false;
+        }
+      });
+  
+      wrapper.instance().register(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+
+      expect(wrapper.instance().state.errors.firstName).toEqual('success');
+    });    
+
+    it('should fail last name validation if no value', () => {
+      const event: unknown = {
+        preventDefault: jest.fn()
+      };
+
+      wrapper.setProps({
+        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+          const valid: boolean = validationRules[1].validator('');
+          if (!valid) errorMsgs.lastName = 'error';
+          return valid;
+        }
+      });
+  
+      wrapper.instance().register(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+
+      expect(wrapper.instance().state.errors.lastName).toEqual('error');
+    });
+
+    it('should pass last name validation for a valid last name', () => {
+      const event: unknown = {
+        preventDefault: jest.fn()
+      };
+
+      wrapper.setProps({
+        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+          const valid: boolean = validationRules[1].validator('aaaaaa');
+          if (valid) errorMsgs.lastName = 'success';
+          return false;
+        }
+      });
+  
+      wrapper.instance().register(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+
+      expect(wrapper.instance().state.errors.lastName).toEqual('success');
+    });    
+
+    it('should fail email validation if too short', () => {
+      const event: unknown = {
+        preventDefault: jest.fn()
+      };
+
+      wrapper.setProps({
+        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+          const valid: boolean = validationRules[2].validator('a');
+          if (!valid) errorMsgs.email = 'error';
+          return valid;
+        }
+      });
+  
+      wrapper.instance().register(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+
+      expect(wrapper.instance().state.errors.email).toEqual('error');
+    });
+
+    it('should fail email validation if no @', () => {
+      const event: unknown = {
+        preventDefault: jest.fn()
+      };
+
+      wrapper.setProps({
+        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+          const valid: boolean = validationRules[2].validator('aaaaaa');
+          if (!valid) errorMsgs.email = 'error';
+          return valid;
+        }
+      });
+  
+      wrapper.instance().register(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+
+      expect(wrapper.instance().state.errors.email).toEqual('error');
+    });
+
+    it('should pass email validation for a valid email', () => {
+      const event: unknown = {
+        preventDefault: jest.fn()
+      };
+
+      wrapper.setProps({
+        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+          const valid: boolean = validationRules[2].validator('aaa@aaa');
+          if (valid) errorMsgs.email = 'success';
+          return false;
+        }
+      });
+  
+      wrapper.instance().register(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+
+      expect(wrapper.instance().state.errors.email).toEqual('success');
+    });
+
+    it('should fail password validation if no value', () => {
+      const event: unknown = {
+        preventDefault: jest.fn()
+      };
+
+      wrapper.setProps({
+        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+          const valid: boolean = validationRules[3].validator('');
+          if (!valid) errorMsgs.password = 'error';
+          return valid;
+        }
+      });
+  
+      wrapper.instance().register(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+
+      expect(wrapper.instance().state.errors.password).toEqual('error');
+    });
+
+    it('should fail password validation if value not long enough', () => {
+      const event: unknown = {
+        preventDefault: jest.fn()
+      };
+
+      wrapper.setProps({
+        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+          const valid: boolean = validationRules[4].validator('aaa');
+          if (!valid) errorMsgs.password = 'error';
+          return valid;
+        }
+      });
+  
+      wrapper.instance().register(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+
+      expect(wrapper.instance().state.errors.password).toEqual('error');
+    });
+
+    it('should pass password validation for a valid password', () => {
+      const event: unknown = {
+        preventDefault: jest.fn()
+      };
+
+      wrapper.setProps({
+        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+          const valid: boolean = validationRules[3].validator('aaaaaa');
+          if (valid) errorMsgs.password = 'success';
+          return false;
+        }
+      });
+  
+      wrapper.instance().register(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+
+      expect(wrapper.instance().state.errors.password).toEqual('success');
+    });
+
+    it('should pass password validation for a valid password', () => {
+      const event: unknown = {
+        preventDefault: jest.fn()
+      };
+
+      wrapper.setProps({
+        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+          const valid: boolean = validationRules[4].validator('aaaaaa');
+          if (valid) errorMsgs.password = 'success';
+          return false;
+        }
+      });
+  
+      wrapper.instance().register(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+
+      expect(wrapper.instance().state.errors.password).toEqual('success');
+    });
+
+    it('should fail confirm password validation if password dont match', () => {
+      const event: unknown = {
+        preventDefault: jest.fn()
+      };
+
+      wrapper.instance().setState({
+        formValues: {
+          firstName: '',
+          lastName: '',
+          email: '',
+          password: '123456',
+          confirmPassword: ''
+        }
+      });
+      wrapper.setProps({
+        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+          const valid: boolean = validationRules[5].validator('aaaaaa');
+          if (!valid) errorMsgs.confirmPassword = 'error';
+          return valid;
+        }
+      });
+  
+      wrapper.instance().register(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+
+      expect(wrapper.instance().state.errors.confirmPassword).toEqual('error');
+    });
+
+    it('should pass confirm password validation for matching passwords', () => {
+      const event: unknown = {
+        preventDefault: jest.fn()
+      };
+
+      wrapper.instance().setState({
+        formValues: {
+          firstName: '',
+          lastName: '',
+          email: '',
+          password: '123456',
+          confirmPassword: ''
+        }
+      });
+      wrapper.setProps({
+        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+          const valid: boolean = validationRules[5].validator('123456');
+          if (valid) errorMsgs.confirmPassword = 'success';
+          return false;
+        }
+      });
+  
+      wrapper.instance().register(event as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+
+      expect(wrapper.instance().state.errors.confirmPassword).toEqual('success');
+    });
+
   });
 });
