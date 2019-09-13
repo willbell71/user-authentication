@@ -1,8 +1,11 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedComponentClass } from 'react-redux';
 import { AnyAction, bindActionCreators, Dispatch } from 'redux';
 import { Redirect } from 'react-router-dom';
 
+import { Action } from '../../store/actions/action';
+import { LoginActionPayload } from '../../store/actions/login/tlogin-action-payload';
+import { SomethingActionPayload } from '../../store/actions/something/tsomething-action-payload';
 import { Header } from '../shared/header/header';
 import { Unavailable } from './unavailable/unavailable';
 import { logoutAction } from '../../store/actions/login/logout-action';
@@ -35,14 +38,14 @@ export class DashboardComponent extends React.Component<Props, {}> {
   /**
    * Get something from API.
    */
-  public getSomething = (): void => {
+  public getSomething: () => void = (): void => {
     this.props.actions.getSomething();
-  }
+  };
 
   /**
    * Log out user.
    */
-  public logout = (): void => {
+  public logout: () => void = (): void => {
     this.props.actions.logout();
   };
 
@@ -77,13 +80,19 @@ export class DashboardComponent extends React.Component<Props, {}> {
 }
 
 // map store state to props
-export const mapStateToProps = (state: {login: LoginState, something: SomethingState}) => ({
-  login: state.login,
-  something: state.something
-});
+export const mapStateToProps: (state: {login: LoginState, something: SomethingState}) => {login: LoginState, something: SomethingState} =
+  (state: {login: LoginState, something: SomethingState}) => ({
+    login: state.login,
+    something: state.something
+  });
 
 // map store actions to props
-export const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
+export const mapDispatchToProps: (dispatch: Dispatch<AnyAction>) => {
+  actions: {
+    logout: () => (dispatch: (action: Action<LoginActionPayload>) => void) => Promise<any>,
+    getSomething: () => (dispatch: (action: Action<SomethingActionPayload>) => void) => Promise<any>
+  }
+} = (dispatch: Dispatch<AnyAction>) => ({
   actions: bindActionCreators({
     logout: logoutAction,
     getSomething: getSomethingAction
@@ -91,4 +100,5 @@ export const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
 });
 
 // connect component to store and export wrapper
-export const Dashboard = connect(mapStateToProps, mapDispatchToProps)(DashboardComponent);
+export const Dashboard: ConnectedComponentClass<typeof DashboardComponent, any> =
+  connect(mapStateToProps, mapDispatchToProps)(DashboardComponent);

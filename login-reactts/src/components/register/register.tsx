@@ -1,8 +1,10 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedComponentClass } from 'react-redux';
 import { AnyAction, bindActionCreators, Dispatch } from 'redux';
 import { Link, Redirect } from 'react-router-dom';
 
+import { Action } from '../../store/actions/action';
+import { LoginActionPayload } from '../../store/actions/login/tlogin-action-payload';
 import { FormField } from '../shared/form-field/form-field';
 import { Header } from '../shared/header/header';
 import { registerAction } from '../../store/actions/login/register-action';
@@ -96,7 +98,7 @@ export class RegisterComponent extends React.Component<Props, State> {
    * Change input field value.
    * @param {React.ChangeEvent<HTMLInputElement>} event - event that fired change.
    */
-  private changeInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  private changeInput: (event: React.ChangeEvent<HTMLInputElement>) => void = (event: React.ChangeEvent<HTMLInputElement>): void => {
     let fieldName: string = event.target.name;
     let value: string = event.target.value;
     this.setState((state: State) => ({
@@ -110,29 +112,30 @@ export class RegisterComponent extends React.Component<Props, State> {
   /**
    * Register a new user.
    */
-  public register = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
-    event.preventDefault();
+  public register: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void =
+    (event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
+      event.preventDefault();
 
-    // clear previous errors
-    this.setState({
-      errors: {
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
-      }
-    });
+      // clear previous errors
+      this.setState({
+        errors: {
+          firstName: '',
+          lastName: '',
+          email: '',
+          password: '',
+          confirmPassword: ''
+        }
+      });
 
-    // validate form
+      // validate form
 
-    // register
-    this.props.actions.register(this.state.formValues.firstName,
-      this.state.formValues.lastName,
-      this.state.formValues.email,
-      this.state.formValues.password
-    );
-  };
+      // register
+      this.props.actions.register(this.state.formValues.firstName,
+        this.state.formValues.lastName,
+        this.state.formValues.email,
+        this.state.formValues.password
+      );
+    };
 
   /**
    * Render
@@ -209,16 +212,22 @@ export class RegisterComponent extends React.Component<Props, State> {
 }
 
 // map store state to props
-export const mapStateToProps = (state: {login: LoginState}) => ({
+export const mapStateToProps: (state: {login: LoginState}) => {login: LoginState} = (state: {login: LoginState}) => ({
   login: state.login
 });
 
 // map store actions to props
-export const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
+export const mapDispatchToProps: (dispatch: Dispatch<AnyAction>) => {
+  actions: {
+    register: (firstName: string, lastName: string, email: string, password: string) =>
+      (dispatch: (action: Action<LoginActionPayload>) => void) => Promise<any>
+  }
+} = (dispatch: Dispatch<AnyAction>) => ({
   actions: bindActionCreators({
     register: registerAction
   }, dispatch)
 });
 
 // connect component to store and export wrapper
-export const Register = connect(mapStateToProps, mapDispatchToProps)(RegisterComponent);
+export const Register: ConnectedComponentClass<typeof RegisterComponent, any> =
+  connect(mapStateToProps, mapDispatchToProps)(RegisterComponent);

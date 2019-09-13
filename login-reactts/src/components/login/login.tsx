@@ -1,8 +1,10 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedComponentClass } from 'react-redux';
 import { AnyAction, bindActionCreators, Dispatch } from 'redux';
 import { Link, Redirect } from 'react-router-dom';
 
+import { Action } from '../../store/actions/action';
+import { LoginActionPayload } from '../../store/actions/login/tlogin-action-payload';
 import { FormField } from '../shared/form-field/form-field';
 import { Header } from '../shared/header/header';
 import { loginAction } from '../../store/actions/login/login-action';
@@ -79,7 +81,7 @@ export class LoginComponent extends React.Component<Props, State> {
    * Change input field value.
    * @param {React.ChangeEvent<HTMLInputElement>} event - event that fired change.
    */
-  private changeInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  private changeInput: (event: React.ChangeEvent<HTMLInputElement>) => void = (event: React.ChangeEvent<HTMLInputElement>): void => {
     let fieldName: string = event.target.name;
     let value: string = event.target.value;
     this.setState((state: State) => ({
@@ -93,22 +95,23 @@ export class LoginComponent extends React.Component<Props, State> {
   /**
    * Login.
    */
-  public login = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
-    event.preventDefault();
+  public login: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void =
+    (event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
+      event.preventDefault();
 
-    // clear previous errors
-    this.setState({
-      errors: {
-        email: '',
-        password: ''
-      }
-    });
+      // clear previous errors
+      this.setState({
+        errors: {
+          email: '',
+          password: ''
+        }
+      });
 
-    // validate form
+      // validate form
 
-    // login
-    this.props.actions.login(this.state.formValues.email, this.state.formValues.password);
-  };
+      // login
+      this.props.actions.login(this.state.formValues.email, this.state.formValues.password);
+    };
 
   /**
    * Render.
@@ -164,16 +167,20 @@ export class LoginComponent extends React.Component<Props, State> {
 }
 
 // map store state to props
-export const mapStateToProps = (state: {login: LoginState}) => ({
+export const mapStateToProps: (state: {login: LoginState}) => {login: LoginState} = (state: {login: LoginState}) => ({
   login: state.login
 });
 
 // map store actions to props
-export const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
+export const mapDispatchToProps: (dispatch: Dispatch<AnyAction>) => {
+  actions: {
+    login: (email: string, password: string) => (dispatch: (action: Action<LoginActionPayload>) => void) => Promise<any>
+  }
+} = (dispatch: Dispatch<AnyAction>) => ({
   actions: bindActionCreators({
     login: loginAction
   }, dispatch)
 });
 
 // connect component to store and export wrapper
-export const Login = connect(mapStateToProps, mapDispatchToProps)(LoginComponent);
+export const Login: ConnectedComponentClass<typeof LoginComponent, any> = connect(mapStateToProps, mapDispatchToProps)(LoginComponent);
