@@ -1,7 +1,7 @@
-import { PasswordServiceFactory } from "./password-service-factory";
+import { PasswordServiceFactory } from './password-service-factory';
 
-import { IFactory } from "../ifactory";
-import { IPasswordService } from "./ipassword-service";
+import { IFactory } from '../ifactory';
+import { IPasswordService } from './ipassword-service';
 
 import { ILogLine } from '../logger/ilog-line';
 import { ILogger } from '../logger/ilogger';

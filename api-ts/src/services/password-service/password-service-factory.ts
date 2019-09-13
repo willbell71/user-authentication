@@ -2,7 +2,7 @@ import { IFactory } from '../ifactory';
 import { ILogger } from '../logger/ilogger';
 import { IPasswordService } from './ipassword-service';
 
-type PasswordServices = {[key:string]: IPasswordService};
+type PasswordServices = {[key: string]: IPasswordService};
 
 /**
  * Password service factory.
@@ -17,7 +17,7 @@ export class PasswordServiceFactory implements IFactory<IPasswordService> {
    * Constructor.
    * @param {ILogger} logger - logger service.
    */
-  constructor(logger: ILogger) {
+  public constructor(logger: ILogger) {
     this.logger = logger;
   }
 
@@ -33,7 +33,7 @@ export class PasswordServiceFactory implements IFactory<IPasswordService> {
   /**
    * Return a service based on type.
    * @param {string} type - type of service to return.
-   * @return {ITokenService} service.
+   * @return {IPasswordService} service.
    */
   public createService(type: string): IPasswordService {
     const service: IPasswordService = this.services[type];

@@ -2,7 +2,7 @@ import { IFactory } from '../ifactory';
 import { ILogger } from '../logger/ilogger';
 import { ITokenService } from './itoken-service';
 
-type TokenServices = {[key:string]: ITokenService};
+type TokenServices = {[key: string]: ITokenService};
 
 /**
  * Token service factory.
@@ -17,7 +17,7 @@ export class TokenServiceFactory implements IFactory<ITokenService> {
    * Constructor.
    * @param {ILogger} logger - logger service.
    */
-  constructor(logger: ILogger) {
+  public constructor(logger: ILogger) {
     this.logger = logger;
   }
 

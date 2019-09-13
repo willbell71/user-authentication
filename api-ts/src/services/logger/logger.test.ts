@@ -1,9 +1,9 @@
-import { Writable } from "stream";
+import { Writable } from 'stream';
 
-import { Logger } from "./logger";
-import { ELoggerLevel } from "./elogger-level";
-import { ILogger } from "./ilogger";
-import { ILogLine } from "./ilog-line";
+import { Logger } from './logger';
+import { ELoggerLevel } from './elogger-level';
+import { ILogger } from './ilogger';
+import { ILogLine } from './ilog-line';
 
 let logLineSpy: jest.Mock;
 let warnLineSpy: jest.Mock;
@@ -214,10 +214,10 @@ describe('Logger', () => {
         log: jest.fn()
       };
 
-      const logger: Logger = new Logger(logLine, otherLogLine, otherLogLine, otherLogLine);
-      logger.setLevel(ELoggerLevel.ALL);
+      const localLogger: Logger = new Logger(logLine, otherLogLine, otherLogLine, otherLogLine);
+      localLogger.setLevel(ELoggerLevel.ALL);
 
-      logger._write('test', 'utf8', () => {});
+      localLogger._write('test', 'utf8', () => {});
 
       expect(logLine.log).toHaveBeenCalledTimes(1);
       expect(otherLogLine.log).toHaveBeenCalledTimes(0);
@@ -231,10 +231,10 @@ describe('Logger', () => {
         log: jest.fn()
       };
 
-      const logger: Logger = new Logger(logLine, otherLogLine, otherLogLine, otherLogLine);
-      logger.setLevel(ELoggerLevel.NONE);
+      const localLogger: Logger = new Logger(logLine, otherLogLine, otherLogLine, otherLogLine);
+      localLogger.setLevel(ELoggerLevel.NONE);
 
-      logger._write('test', 'utf8', () => {});
+      localLogger._write('test', 'utf8', () => {});
 
       expect(logLine.log).toHaveBeenCalledTimes(0);
       expect(otherLogLine.log).toHaveBeenCalledTimes(0);
@@ -246,10 +246,10 @@ describe('Logger', () => {
       };
       const spy: jest.Mock = jest.fn();
 
-      const logger: Logger = new Logger(logLine, logLine, logLine, logLine);
-      logger.setLevel(ELoggerLevel.ALL);
+      const localLogger: Logger = new Logger(logLine, logLine, logLine, logLine);
+      localLogger.setLevel(ELoggerLevel.ALL);
 
-      logger._write('test', 'utf8', spy);
+      localLogger._write('test', 'utf8', spy);
 
       expect(spy).toHaveBeenCalledTimes(1);
     });

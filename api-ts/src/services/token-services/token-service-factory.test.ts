@@ -1,7 +1,7 @@
-import { TokenServiceFactory } from "./token-service-factory";
+import { TokenServiceFactory } from './token-service-factory';
 
-import { IFactory } from "../ifactory";
-import { ITokenService } from "./itoken-service";
+import { IFactory } from '../ifactory';
+import { ITokenService } from './itoken-service';
 
 import { ILogLine } from '../logger/ilog-line';
 import { ILogger } from '../logger/ilogger';

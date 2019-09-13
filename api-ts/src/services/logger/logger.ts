@@ -1,5 +1,5 @@
 import * as process from 'process';
-import { Writable } from "stream";
+import { Writable } from 'stream';
 
 import { ILogger } from './ilogger';
 import { ILogLine } from './ilog-line';
@@ -34,7 +34,7 @@ export class Logger extends Writable implements ILogger {
     super();
 
     // initial loggers
-    const setKey = (key: ILogLine|ILogLine[]): ILogLine[] => Array.isArray(key) ? key : [key];
+    const setKey: (key: ILogLine|ILogLine[]) => ILogLine[] = (key: ILogLine|ILogLine[]): ILogLine[] => Array.isArray(key) ? key : [key];
     this.loggers = {
       log: setKey(log),
       warn: setKey(warn),
@@ -52,8 +52,8 @@ export class Logger extends Writable implements ILogger {
    */
   private writeLog(loggers: Loggers, loggerLevel: number, level: number, message: string): void {
     if (loggerLevel >= level) {
-      const date = new Date().toISOString();
-      const pid = `${process.pid}`;
+      const date: string = new Date().toISOString();
+      const pid: string = `${process.pid}`;
 
       switch (level) {
         case ELoggerLevel.ASSERT: loggers.assert.forEach((logger: ILogLine) => logger.log(date, pid, message)); break;
@@ -73,9 +73,9 @@ export class Logger extends Writable implements ILogger {
     return stack.split('\n')
       // first line is error, remove that
       // second line is this function, remove that
-      .filter((_, count) => count > 1)
+      .filter((_: string, count: number) => count > 1)
       // tidy line, just want function, file and line
-      .map(line => line.replace(/\s{4}at\s/, ''));
+      .map((line: string) => line.replace(/\s{4}at\s/, ''));
   }
  
   /**
@@ -138,7 +138,7 @@ export class Logger extends Writable implements ILogger {
   public assert(condition: boolean, message: string): void {
     if (!condition) {
       // first stack line ([0]) will be us, second line ([1]) will be who called us
-      const stack = this.getStack();
+      const stack: string[] = this.getStack();
       this.writeLog(this.loggers, this.loggerLevel, ELoggerLevel.ASSERT, `${message} (${stack[1]})`);
     }
   }
@@ -151,7 +151,7 @@ export class Logger extends Writable implements ILogger {
    * @param {string} encoding - data encoding.
    * @param {() => void} callback - callback to invoke after writing.
    */
-  public _write(chunk: string, encoding: string, callback: () => void) {
+  public _write(chunk: string, encoding: string, callback: () => void): void {
     // log message, but not newline on the end of the line
     this.verbose('API', chunk.slice(0, -1));
     callback();
