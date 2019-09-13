@@ -70,10 +70,10 @@ D 9. Interceptor - delete token, if request fails auth ( 401 )
 ### ReactTS
 
 D 1. Set up a React build system using Typescript.
-I 2. Add login page
-I 3. Add register page
-I 4. Add dashboard page
-- 5. Integrate NodeJS API using Fetch
+D 2. Add login page
+D 3. Add register page
+D 4. Add dashboard page
+D 5. Integrate NodeJS API using Fetch
 - 6. Protect dashboard route
 
 ### NodeJS API
