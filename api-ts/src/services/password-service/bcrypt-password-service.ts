@@ -7,14 +7,9 @@ import { IPasswordService } from './ipassword-service';
  */
 export class BCryptPasswordService implements IPasswordService {
   // number of salt rounds
-  private saltRounds: number;
-
-  /**
-   * Constructor.
-   * @param {number} saltRounds? - number of salt rounds.
-   */
-  public constructor(saltRounds: number = 10) {
-    this.saltRounds = saltRounds;
+  private _saltRounds: number = 10;
+  public set saltRounds(saltRounds: number) {
+    this._saltRounds = saltRounds;
   }
 
   /**
@@ -27,7 +22,7 @@ export class BCryptPasswordService implements IPasswordService {
       resolve: ((value?: string | PromiseLike<string> | undefined) => void),
       reject: ((reason?: Error) => void)
     ): void => {
-      bcrypt.genSalt(this.saltRounds, (saltErr: Error, salt: string) => {
+      bcrypt.genSalt(this._saltRounds, (saltErr: Error, salt: string) => {
         if (!saltErr) {
           bcrypt.hash(password, salt, (hashErr: Error, hash: string) => {
             if (!hashErr) {

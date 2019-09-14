@@ -26,6 +26,14 @@ describe('JWTTokenService', () => {
         .catch(() => done());
     });
 
+    it('should change secret', (done: jest.DoneCallback) => {
+      const jwtTokenService: JWTTokenService = new JWTTokenService();
+      jwtTokenService.secret = '';
+      jwtTokenService.encrypt('test')
+        .then(() => done('invoked then block'))
+        .catch(() => done());
+    });
+
     it('should return token on success', (done: jest.DoneCallback) => {
       tokenService.encrypt({})
         .then((token: string) => {

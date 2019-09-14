@@ -5,9 +5,9 @@ export interface IFactory<T> {
   /**
    * Register a service with the factory.
    * @param {string} type - type to register service as.
-   * @param {T} service - service to register for name.
+   * @param {{new(): T}} service - service to register for name.
    */
-  registerService: (type: string, service: T) => void;
+  registerService: (type: string, service: {new(): T}) => void;
 
   /**
    * Return a service based on type.

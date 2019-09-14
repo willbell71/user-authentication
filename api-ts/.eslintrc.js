@@ -1,15 +1,10 @@
 module.exports = {
   parser: '@typescript-eslint/parser', // Specifies the ESLint parser
   extends: [
-    'plugin:react/recommended', // Uses the recommended rules from @eslint-plugin-react
-    'plugin:@typescript-eslint/recommended', // Uses the recommended rules from @typescript-eslint/eslint-plugin
+    'plugin:@typescript-eslint/recommended' // Uses the recommended rules from @typescript-eslint/eslint-plugin
   ],
   parserOptions: {
-    ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
-    sourceType: 'module', // Allows for the use of imports
-    ecmaFeatures: {
-      jsx: true, // Allows for the parsing of JSX
-    },
+    ecmaVersion: 2018 // Allows for the parsing of modern ECMAScript features
   },
   rules: {
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
@@ -46,11 +41,7 @@ module.exports = {
     '@typescript-eslint/no-inferrable-types': 'off',
     '@typescript-eslint/interface-name-prefix': ['error', 'always'],
     '@typescript-eslint/member-ordering': ['error', {classes: ['constructor', 'private-instance-method', 'public-instance-method']}],
-    '@typescript-eslint/explicit-member-accessibility': 'error'
-  },
-  settings: {
-    react: {
-      version: 'detect', // Tells eslint-plugin-react to automatically detect the version of React to use
-    },
-  },
+    '@typescript-eslint/explicit-member-accessibility': 'error',
+    '@typescript-eslint/no-non-null-assertion': 'off'
+  }
 };

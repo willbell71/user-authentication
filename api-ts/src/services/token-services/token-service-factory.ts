@@ -2,7 +2,7 @@ import { IFactory } from '../ifactory';
 import { ILogger } from '../logger/ilogger';
 import { ITokenService } from './itoken-service';
 
-type TokenServices = {[key: string]: ITokenService};
+type TokenServices = {[key: string]: { new(): ITokenService}};
 
 /**
  * Token service factory.
@@ -24,9 +24,9 @@ export class TokenServiceFactory implements IFactory<ITokenService> {
   /**
    * Register a service with the factory.
    * @param {string} type - type to register service as.
-   * @param {ITokenService} service - service to register for name.
+   * @param {{new(): ITokenService}} service - service to register for name.
    */
-  public registerService(type: string, service: ITokenService): void {
+  public registerService(type: string, service: {new(): ITokenService}): void {
     this.services[type] = service;
   }
 
@@ -36,11 +36,11 @@ export class TokenServiceFactory implements IFactory<ITokenService> {
    * @return {ITokenService} service.
    */
   public createService(type: string): ITokenService {
-    const service: ITokenService = this.services[type];
+    const service: {new(): ITokenService} = this.services[type];
     if (!service) {
       this.logger.error(`Unhandled token service type - ${type}`);
       throw (new Error(`Unhandled token service type - ${type}`));
     }
-    return service;
+    return new service();
   }
 }
