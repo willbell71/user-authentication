@@ -36,30 +36,42 @@ export class MongoDBService implements IDBService {
    * @param {ILogger} logger - logger services provider.
    * @param {string} connection - connection string.
    * @param {SchemaMapping[]} schema - entity names and schemas.
+   * @return {Promise<void>} promise on connection completion.
    */
-  public connect(logger: ILogger, connection: string, schema: SchemaMapping[]): void {
+  public connect(logger: ILogger, connection: string, schema: SchemaMapping[]): Promise<void> {
     this.logger = logger;
-    this.schema = schema;
+    this.schema = schema;    
 
-    // connect to mongo
-    mongoose.connect(connection, {
-      useNewUrlParser: true
-    })
-      .then(() => this.logger!.info('MongoDBService', 'Mongo database connected'))
-      .catch(() => this.logger!.error('Failed to connect to mongo db'));
+    return new Promise<void>((
+      resolve: ((value?: void | PromiseLike<void> | undefined) => void),
+      reject: ((reason?: Error) => void)
+    ): void => {
+      // connect to mongo
+      mongoose.connect(connection, {
+        useNewUrlParser: true
+      })
+        .then(() => {
+          this.logger!.info('MongoDBService', 'Mongo database connected');
 
-    // generate mongoose schemas and mappings
-    this.mappings = {};
-    if (this.schema) {
-      this.schema.forEach((entity: SchemaMapping) => {
-        const {name, schemaDefinition}: {name: string; schemaDefinition: mongoose.SchemaDefinition} = entity;
-        const mSchema: mongoose.Schema = new mongoose.Schema(schemaDefinition);
-        this.mappings![name] = {
-          schema: mSchema,
-          model: mongoose.model(name, mSchema)
-        };
-      });
-    }    
+          // generate mongoose schemas and mappings
+          this.mappings = {};
+          this.schema!.forEach((entity: SchemaMapping) => {
+            const {name, schemaDefinition}: {name: string; schemaDefinition: mongoose.SchemaDefinition} = entity;
+            const mSchema: mongoose.Schema = new mongoose.Schema(schemaDefinition);
+            this.mappings![name] = {
+              schema: mSchema,
+              model: mongoose.model(name, mSchema)
+            };
+          });
+
+          resolve();
+        })
+        .catch(() => {
+          this.logger!.error('Failed to connect to mongo db');
+
+          reject();
+        });
+    });
   }
 
   /**
@@ -70,14 +82,14 @@ export class MongoDBService implements IDBService {
   public async create(entityType: string): Promise<DBServiceEntity> {
     if (this.mappings) {
       // get model from mongoose mappings
-      const model: EntityMapping = this.mappings[entityType];
+      const model: EntityMapping | undefined = this.mappings[entityType];
       if (model) {
-        const EntityModel: mongoose.Model<EntityModel> = model.model;
+        const EntityClass: mongoose.Model<EntityModel> = model.model;
 
         // create a new instance
         let entity: mongoose.Model<EntityModel>;
         try {
-          entity = new EntityModel();
+          entity = new EntityClass();
         } catch (_) {
           throw (new Error('Failed to instantiate new entity'));
         }
@@ -99,9 +111,7 @@ export class MongoDBService implements IDBService {
    * @param {DBServiceValue} value - value to set on property.
    */
   public setProp(entity: DBServiceEntity, propName: string, value: DBServiceValue): void {
-    if (entity) {
-      entity[propName] = value;
-    }
+    entity[propName] = value;
   }
 
   /**
@@ -111,7 +121,7 @@ export class MongoDBService implements IDBService {
    * @return {DBServiceValue} value of property on entity.
    */
   public getProp(entity: DBServiceEntity, propName: string): DBServiceValue {
-    return entity ? entity[propName] : undefined;
+    return entity[propName];
   }
 
   /**
@@ -120,12 +130,8 @@ export class MongoDBService implements IDBService {
    * @return {Promise<boolean>} success.
    */
   public async save(entity: DBServiceEntity): Promise<boolean> {
-    if (entity) {
-      await entity.save();
-      return true;
-    } else {
-      throw new Error('No entity to save');
-    }
+    await entity.save();
+    return true;
   }
 
   /**
