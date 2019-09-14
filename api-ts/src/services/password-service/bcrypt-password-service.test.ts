@@ -30,8 +30,9 @@ describe('BCryptPasswordService', () => {
     });
 
     it('should handled an error from genSalt', (done: jest.DoneCallback) => {
-      passwordService = new BCryptPasswordService(0);
-      passwordService.encrypt('password')
+      const bCryptPasswordService: BCryptPasswordService = new BCryptPasswordService();
+      bCryptPasswordService.saltRounds = 0;
+      bCryptPasswordService.encrypt('password')
         .then(() => done('Invoked then block'))
         .catch((err: Error) => {
           expect(err.message).toEqual('Failed to generate salt for password hashing');

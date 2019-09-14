@@ -7,6 +7,13 @@ import { ILogLine } from '../logger/ilog-line';
 import { ILogger } from '../logger/ilogger';
 import { Logger } from '../logger/logger';
 
+class TokenTestService implements ITokenService {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public encrypt(payload: string | object | Buffer): Promise<string> { return new Promise<string>((): void => {}); }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public decrypt(token: string): Promise<string | object | Buffer> { return new Promise<string | object | Buffer>((): void => {}); }
+}
+
 let logLineSpy: jest.Mock;
 let warnLineSpy: jest.Mock;
 let errorLineSpy: jest.Mock;
@@ -17,7 +24,6 @@ let error: ILogLine;
 let assert: ILogLine;
 let logger: ILogger;
 let factory: IFactory<ITokenService>;
-let tokenService: ITokenService;
 beforeEach(() => {
   logLineSpy = jest.fn().mockImplementation(() => {});
   warnLineSpy = jest.fn().mockImplementation(() => {});
@@ -30,19 +36,17 @@ beforeEach(() => {
   assert = {log: assertLineSpy};
   logger = new Logger(log, warn, error, assert);
 
-  factory = new TokenServiceFactory(logger);
-  tokenService = {
-    encrypt: jest.fn(),
-    decrypt: jest.fn()        
-  };
-  factory.registerService('test', tokenService);
+  factory = new TokenServiceFactory(logger);  
+  factory.registerService('test', TokenTestService);
 });
 afterEach(() => jest.restoreAllMocks());
 
 describe('TokenServiceFactory', () => {
   it('should return a registered service', () => {
-    const jwtTokenService: ITokenService = factory.createService('test');
-    expect(jwtTokenService).toEqual(tokenService);
+    const tokenService: ITokenService = factory.createService('test');
+    expect(tokenService).toBeTruthy();
+    expect(tokenService instanceof TokenTestService).toBeTruthy();
+
   });
 
   it('should throw and log for unknown type', () => {

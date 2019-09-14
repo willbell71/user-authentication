@@ -7,14 +7,9 @@ import {ITokenService} from './itoken-service';
  */
 export class JWTTokenService implements ITokenService {
   // secret
-  private secret: string;
-
-  /**
-   * Constructor.
-   * @param {string} secret? - encryption secret.
-   */
-  public constructor(secret?: string) {
-    this.secret = secret || 'timeflies';
+  private _secret: string = 'timeflies';
+  public set secret(secret: string) {
+    this._secret = secret;
   }
 
   /**
@@ -27,7 +22,7 @@ export class JWTTokenService implements ITokenService {
       resolve: ((value?: string | PromiseLike<string> | undefined) => void),
       reject: ((reason?: Error) => void)
     ): void => {
-      jwt.sign(payload, this.secret, (err: Error, token: string) => {
+      jwt.sign(payload, this._secret, (err: Error, token: string) => {
         if (!err) {
           resolve(token);
         } else {
@@ -47,7 +42,7 @@ export class JWTTokenService implements ITokenService {
       resolve: ((value?: string | object | Buffer | PromiseLike<string | object | Buffer> | undefined) => void),
       reject: ((reason?: Error) => void)
     ): void => {
-      jwt.verify(token, this.secret, (err: Error, decoded: string | object | Buffer) => {
+      jwt.verify(token, this._secret, (err: Error, decoded: string | object | Buffer) => {
         if (!err) {
           resolve(decoded);
         } else {

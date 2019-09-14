@@ -2,7 +2,7 @@ import { IFactory } from '../ifactory';
 import { ILogger } from '../logger/ilogger';
 import { IPasswordService } from './ipassword-service';
 
-type PasswordServices = {[key: string]: IPasswordService};
+type PasswordServices = {[key: string]: { new(): IPasswordService}};
 
 /**
  * Password service factory.
@@ -24,9 +24,9 @@ export class PasswordServiceFactory implements IFactory<IPasswordService> {
   /**
    * Register a service with the factory.
    * @param {string} type - type to register service as.
-   * @param {IPasswordService} service - service to register for name.
+   * @param {{new(): IPasswordService}} service - service to register for name.
    */
-  public registerService(type: string, service: IPasswordService): void {
+  public registerService(type: string, service: {new(): IPasswordService}): void {
     this.services[type] = service;
   }
 
@@ -36,11 +36,11 @@ export class PasswordServiceFactory implements IFactory<IPasswordService> {
    * @return {IPasswordService} service.
    */
   public createService(type: string): IPasswordService {
-    const service: IPasswordService = this.services[type];
+    const service: {new(): IPasswordService} = this.services[type];
     if (!service) {
       this.logger.error(`Unhandled password service type - ${type}`);
       throw (new Error(`Unhandled password service type - ${type}`));
     }
-    return service;
+    return new service();
   }
 }

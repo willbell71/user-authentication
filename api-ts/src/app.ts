@@ -20,6 +20,10 @@ import { IPasswordService } from './services/password-service/ipassword-service'
 import { PasswordServiceFactory } from './services/password-service/password-service-factory';
 import { BCryptPasswordService } from './services/password-service/bcrypt-password-service';
 
+import { IDBService } from './services/db/idb-service';
+import { DBServiceFactory } from './services/db/db-service-factory';
+import { MongoDBService } from './services/db/mongo-db-service';
+
 // create logger
 const logger: ILogger = new Logger(new LogLineConsoleLog(),
   new LogLineConsoleWarn(),
@@ -30,8 +34,12 @@ logger.info('App', `running in mode: ${process.env.LOGINAPI_NAME}`);
 
 // create token service factory
 const tokenServiceFactory: IFactory<ITokenService> = new TokenServiceFactory(logger);
-tokenServiceFactory.registerService('jwt', new JWTTokenService());
+tokenServiceFactory.registerService('jwt', JWTTokenService);
 
 // create password service factory
 const passwordServiceFactory: IFactory<IPasswordService> = new PasswordServiceFactory(logger);
-passwordServiceFactory.registerService('bcrypt', new BCryptPasswordService());
+passwordServiceFactory.registerService('bcrypt', BCryptPasswordService);
+
+// create db service factory
+const dbServiceFactory: IFactory<IDBService> = new DBServiceFactory(logger);
+dbServiceFactory.registerService('mongo', MongoDBService);
