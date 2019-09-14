@@ -9,7 +9,7 @@ import { Logger } from '../logger/logger';
 
 class DBTestService implements IDBService {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/no-empty-function,@typescript-eslint/no-explicit-any
-  public connect(logger: ILogger, connection: string, schema: any[]): void {}
+  public connect(logger: ILogger, connection: string, schema: any[]): Promise<void> { return new Promise<void>((): void => {}); }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public create(entityType: string): Promise<DBServiceEntity> { return new Promise<DBServiceEntity>((): void => {}); }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/no-empty-function

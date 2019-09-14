@@ -18,8 +18,9 @@ export interface IDBService {
    * @param {ILogger} logger - logger services provider.
    * @param {string} connection - connection string.
    * @param {DBServiceSchema[]} schema - entities and associated schemas.
+   * @return {Promise<void>} promise on connection completion.
    */
-  connect: (logger: ILogger, connection: string, schema: DBServiceSchema[]) => void;
+  connect: (logger: ILogger, connection: string, schema: DBServiceSchema[]) => Promise<void>;
 
   /**
    * Create a new instance of an entity type.
