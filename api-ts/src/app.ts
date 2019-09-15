@@ -1,3 +1,10 @@
+import * as express from 'express';
+import * as helmet from 'helmet';
+import * as compression from 'compression';
+import * as morgan from 'morgan';
+import * as bodyParser from 'body-parser';
+import * as cors from 'cors';
+
 import { config } from './config/config';
 
 import { Logger } from './services/logger/logger';
@@ -20,6 +27,9 @@ import { BCryptPasswordService } from './services/password-service/bcrypt-passwo
 import { IDBService } from './services/db/idb-service';
 import { DBServiceFactory } from './services/db/db-service-factory';
 import { MongoDBService } from './services/db/mongo-db-service';
+import { IServerService } from './services/server/iserver-service';
+
+import { ExpressServer } from './services/server/express-server/express-server';
 
 // create logger
 const logger: ILogger = new Logger(new LogLineConsoleLog(),
@@ -56,3 +66,22 @@ dbService.connect(logger,
       token: String
     }
   }]);
+
+// create server
+const server: IServerService<express.RequestHandler, express.Router> = new ExpressServer();
+// register middleware
+server.registerMiddleware(helmet());
+if (config.useCompression) {
+  logger.info('App', 'Compression middleware enabled');
+  server.registerMiddleware(compression());
+}
+server.registerMiddleware(morgan('dev', {stream: logger} as unknown as morgan.Options));
+server.registerMiddleware(bodyParser.urlencoded({extended: true}));
+server.registerMiddleware(bodyParser.text());
+server.registerMiddleware(bodyParser.json({type: 'application/json'}));
+if (config.disableCORS) {
+  logger.info('App', 'CORS disabled');
+  server.registerMiddleware(cors());
+}
+// start server
+server.start(logger, config.port);
