@@ -15,7 +15,7 @@ class DBTestService implements IDBService {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public create(entityType: string): Promise<TDBServiceEntity> { return new Promise<TDBServiceEntity>((): void => {}); }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/no-empty-function
-  public setProp(entity: TDBServiceEntity, propName: string, value: TDBServiceValue): void {}
+  public setProp(entity: TDBServiceEntity, propName: string, value?: TDBServiceValue): void {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public getProp(entity: TDBServiceEntity, propName: string): TDBServiceValue { return ''; }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

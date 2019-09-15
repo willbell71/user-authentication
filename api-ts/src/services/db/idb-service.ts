@@ -27,9 +27,9 @@ export interface IDBService {
    * Set a property value on a given entity.
    * @param {DBServiceEntity} entity - data entity set property on.
    * @param {string} propName - name of property to set.
-   * @param {DBServiceValue} value - value to set on property.
+   * @param {DBServiceValue} value? - value to set on property.
    */
-  setProp: (entity: TDBServiceEntity, propName: string, value: TDBServiceValue) => void;
+  setProp: (entity: TDBServiceEntity, propName: string, value?: TDBServiceValue) => void;
 
   /**
    * Get the value of a given property on a data enity.
