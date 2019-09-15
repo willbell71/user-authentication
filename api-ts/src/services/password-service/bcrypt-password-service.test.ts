@@ -1,3 +1,17 @@
+jest.mock('bcrypt', () => {
+  const genSalt: jest.Mock = jest.fn().mockImplementation((saltRounds: number, cb: (a: string | null, b: string) => void) =>
+    cb(saltRounds ? null : 'gensalt error', 'salt'));
+  const hash: jest.Mock = jest.fn().mockImplementation((password: string, salt: string, cb: (a: string | null, b: string) => void) =>
+    cb(password ? null : 'hash error', 'hash'));
+  const compare: jest.Mock = jest.fn().mockImplementation((password: string, hash_: string, cb: (a: string | null, b: boolean) => void) =>
+    cb(password ? null : 'compare error', password === hash_));
+  
+  return {
+    genSalt,
+    hash,
+    compare
+  };
+});
 import * as bcrypt from 'bcrypt';
 
 import { BCryptPasswordService } from './bcrypt-password-service';

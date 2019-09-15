@@ -1,8 +1,7 @@
 import { IFactory } from '../ifactory';
 import { ILogger } from '../logger/ilogger';
 import { IPasswordService } from './ipassword-service';
-
-type PasswordServices = {[key: string]: { new(): IPasswordService}};
+import { TFactoryServices } from '../tfactory-services';
 
 /**
  * Password service factory.
@@ -11,7 +10,7 @@ export class PasswordServiceFactory implements IFactory<IPasswordService> {
   // logger
   private logger: ILogger;
   // registered services
-  private services: PasswordServices = {};
+  private services: TFactoryServices<IPasswordService> = {};
 
   /**
    * Constructor.

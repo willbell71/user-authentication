@@ -1,13 +1,7 @@
 import { ILogger } from '../logger/ilogger';
-
-export type DBServiceSchema = {
-  name: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  schemaDefinition: any;
-};
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type DBServiceEntity = any;
-export type DBServiceValue = string | number | boolean | Date;
+import { TDBServiceEntity } from './tdb-service-entity';
+import { TDBServiceSchema } from './tdb-service-schema';
+import { TDBServiceValue } from './tdb-service-value';
 
 /**
  * DB service interface.
@@ -20,14 +14,14 @@ export interface IDBService {
    * @param {DBServiceSchema[]} schema - entities and associated schemas.
    * @return {Promise<void>} promise on connection completion.
    */
-  connect: (logger: ILogger, connection: string, schema: DBServiceSchema[]) => Promise<void>;
+  connect: (logger: ILogger, connection: string, schema: TDBServiceSchema[]) => Promise<void>;
 
   /**
    * Create a new instance of an entity type.
    * @param {string} entityType - entity type to create.
    * @return {Promise<DBServiceEntity>} new entity instance.
    */
-  create: (entityType: string) => Promise<DBServiceEntity>;
+  create: (entityType: string) => Promise<TDBServiceEntity>;
 
   /**s
    * Set a property value on a given entity.
@@ -35,7 +29,7 @@ export interface IDBService {
    * @param {string} propName - name of property to set.
    * @param {DBServiceValue} value - value to set on property.
    */
-  setProp: (entity: DBServiceEntity, propName: string, value: DBServiceValue) => void;
+  setProp: (entity: TDBServiceEntity, propName: string, value: TDBServiceValue) => void;
 
   /**
    * Get the value of a given property on a data enity.
@@ -43,14 +37,14 @@ export interface IDBService {
    * @param {string} propName - name of property to get value for.
    * @return {DBServiceValue} value of property on entity.
    */
-  getProp: (entity: DBServiceEntity, propName: string) => DBServiceValue;
+  getProp: (entity: TDBServiceEntity, propName: string) => TDBServiceValue;
 
   /**
    * Save a given entity back to the db.
    * @param {DBServiceEntity} entity - entity to save.
    * @return {Promise<boolean>} success.
    */
-  save: (entity: DBServiceEntity) => Promise<boolean>;
+  save: (entity: TDBServiceEntity) => Promise<boolean>;
 
   /**
    * Fetch entities of type who's property matches the given value.
@@ -59,5 +53,5 @@ export interface IDBService {
    * @param {DBServiceValue} value - value to find.
    * @return {Promise<DBServiceEntity>} entity fetched.
    */
-  fetch: (entityType: string, propName: string, value: DBServiceValue) => Promise<DBServiceEntity>;
+  fetch: (entityType: string, propName: string, value: TDBServiceValue) => Promise<TDBServiceEntity>;
 }

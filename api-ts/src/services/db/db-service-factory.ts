@@ -1,8 +1,7 @@
 import { IFactory } from '../ifactory';
 import { ILogger } from '../logger/ilogger';
 import { IDBService } from './idb-service';
-
-type DBServices = {[key: string]: { new(): IDBService}};
+import { TFactoryServices } from '../tfactory-services';
 
 /**
  * DB service factory.
@@ -11,7 +10,7 @@ export class DBServiceFactory implements IFactory<IDBService> {
   // logger
   private logger: ILogger;
   // registered services
-  private services: DBServices = {};
+  private services: TFactoryServices<IDBService> = {};
 
   /**
    * Constructor.

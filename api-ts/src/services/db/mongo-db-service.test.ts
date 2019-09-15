@@ -1,3 +1,44 @@
+jest.mock('mongoose', () => {
+  const connect: jest.Mock = jest.fn().mockImplementation((connection: string) => {
+    return new Promise((
+      resolve: ((value?: string | PromiseLike<string> | undefined) => void),
+      reject: ((reason?: string) => void)
+    ): void => {
+      if (connection) {
+        resolve('');
+      } else {
+        reject('');
+      }
+    });
+  });
+  
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  function TestModel(): void {}
+  TestModel.findById = function(): Promise<string> {
+    return new Promise((
+      resolve: ((value?: string | PromiseLike<string> | undefined) => void)
+    ): void => {
+      resolve('findById');
+    });
+  };
+  TestModel.findOne = function(): Promise<string> {
+    return new Promise((
+      resolve: ((value?: string | PromiseLike<string> | undefined) => void)
+    ): void => {
+      resolve('findOne');
+    });
+  };
+  const model: jest.Mock = jest.fn().mockImplementation((name: string) => name.length > 1 ? TestModel : undefined);
+  const Schema: jest.Mock = jest.fn().mockImplementation(() => {});
+  const Model: jest.Mock = jest.fn().mockImplementation(() => {});
+  
+  return {
+    connect,
+    model,
+    Schema,
+    Model
+  };
+});
 import * as mongoose from 'mongoose';
 
 import { ILogger } from '../logger/ilogger';

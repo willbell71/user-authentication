@@ -1,7 +1,9 @@
 import { DBServiceFactory } from './db-service-factory';
 
 import { IFactory } from '../ifactory';
-import { DBServiceEntity, DBServiceValue, IDBService } from './idb-service';
+import { IDBService } from './idb-service';
+import { TDBServiceEntity } from './tdb-service-entity';
+import { TDBServiceValue } from './tdb-service-value';
 
 import { ILogLine } from '../logger/ilog-line';
 import { ILogger } from '../logger/ilogger';
@@ -11,16 +13,16 @@ class DBTestService implements IDBService {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/no-empty-function,@typescript-eslint/no-explicit-any
   public connect(logger: ILogger, connection: string, schema: any[]): Promise<void> { return new Promise<void>((): void => {}); }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public create(entityType: string): Promise<DBServiceEntity> { return new Promise<DBServiceEntity>((): void => {}); }
+  public create(entityType: string): Promise<TDBServiceEntity> { return new Promise<TDBServiceEntity>((): void => {}); }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/no-empty-function
-  public setProp(entity: DBServiceEntity, propName: string, value: DBServiceValue): void {}
+  public setProp(entity: TDBServiceEntity, propName: string, value: TDBServiceValue): void {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public getProp(entity: DBServiceEntity, propName: string): DBServiceValue { return ''; }
+  public getProp(entity: TDBServiceEntity, propName: string): TDBServiceValue { return ''; }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public save(entity: DBServiceEntity): Promise<boolean> { return new Promise<boolean>((): void => {}); }
+  public save(entity: TDBServiceEntity): Promise<boolean> { return new Promise<boolean>((): void => {}); }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public fetch(entityType: string, propName: string, value: DBServiceValue): Promise<DBServiceEntity> {
-    return new Promise<DBServiceEntity>((): void => {});
+  public fetch(entityType: string, propName: string, value: TDBServiceValue): Promise<TDBServiceEntity> {
+    return new Promise<TDBServiceEntity>((): void => {});
   }
 }
 

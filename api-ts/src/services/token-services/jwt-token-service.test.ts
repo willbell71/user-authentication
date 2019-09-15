@@ -1,3 +1,14 @@
+jest.mock('jsonwebtoken', () => {
+  const sign: jest.Mock = jest.fn().mockImplementation((payload: string, secret: string, cb: (a: string | null, b: string) => void) =>
+    cb((payload && secret) ? null : 'Error', 'token'));
+  const verify: jest.Mock = jest.fn().mockImplementation((token: string, secret: string, cb: (a: string | null, b: string) => void) =>
+    cb((token && secret) ? null : 'Error', 'payload'));
+  
+  return {
+    sign,
+    verify
+  };
+});
 import * as jwt from 'jsonwebtoken';
 
 import { JWTTokenService } from './jwt-token-service';

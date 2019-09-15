@@ -80,7 +80,7 @@ export class Logger extends Writable implements ILogger {
  
   /**
    * Set current log level.
-   * @param {LoggerLevel} level - new log level
+   * @param {ELoggerLevel} level - new log level
    */
   public setLevel(level: ELoggerLevel): void {
     this.loggerLevel = level;
