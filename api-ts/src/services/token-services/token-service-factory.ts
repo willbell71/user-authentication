@@ -1,8 +1,7 @@
 import { IFactory } from '../ifactory';
 import { ILogger } from '../logger/ilogger';
 import { ITokenService } from './itoken-service';
-
-type TokenServices = {[key: string]: { new(): ITokenService}};
+import { TFactoryServices } from '../tfactory-services';
 
 /**
  * Token service factory.
@@ -11,7 +10,7 @@ export class TokenServiceFactory implements IFactory<ITokenService> {
   // logger
   private logger: ILogger;
   // registered services
-  private services: TokenServices = {};
+  private services: TFactoryServices<ITokenService> = {};
 
   /**
    * Constructor.

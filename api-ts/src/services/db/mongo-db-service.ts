@@ -1,7 +1,9 @@
 import * as mongoose from 'mongoose';
 
-import { IDBService, DBServiceEntity,　DBServiceValue } from './idb-service';
+import { IDBService } from './idb-service';
 import { ILogger } from '../logger/ilogger';
+import { TDBServiceEntity } from './tdb-service-entity';
+import { TDBServiceValue } from './tdb-service-value';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type EntityModel = any;
@@ -77,9 +79,9 @@ export class MongoDBService implements IDBService {
   /**
    * Create a new instance of an entity type.
    * @param {string} entityType - entity type to create.
-   * @return {Promise<DBServiceEntity>} new entity instance.
+   * @return {Promise<TDBServiceEntity>} new entity instance.
    */
-  public async create(entityType: string): Promise<DBServiceEntity> {
+  public async create(entityType: string): Promise<TDBServiceEntity> {
     if (this.mappings) {
       // get model from mongoose mappings
       const model: EntityMapping | undefined = this.mappings[entityType];
@@ -106,11 +108,11 @@ export class MongoDBService implements IDBService {
 
   /**
    * Set a property value on a given entity.
-   * @param {DBServiceEntity} entity - data entity set property on.
+   * @param {TDBServiceEntity} entity - data entity set property on.
    * @param {string} propName - name of property to set.
-   * @param {DBServiceValue} value - value to set on property.
+   * @param {TDBServiceValue} value - value to set on property.
    */
-  public setProp(entity: DBServiceEntity, propName: string, value: DBServiceValue): void {
+  public setProp(entity: TDBServiceEntity, propName: string, value: TDBServiceValue): void {
     entity[propName] = value;
   }
 
@@ -120,7 +122,7 @@ export class MongoDBService implements IDBService {
    * @param {string} propName - name of property to get value for.
    * @return {DBServiceValue} value of property on entity.
    */
-  public getProp(entity: DBServiceEntity, propName: string): DBServiceValue {
+  public getProp(entity: TDBServiceEntity, propName: string): TDBServiceValue {
     return entity[propName];
   }
 
@@ -129,7 +131,7 @@ export class MongoDBService implements IDBService {
    * @param {DBServiceEntity} entity - entity to save.
    * @return {Promise<boolean>} success.
    */
-  public async save(entity: DBServiceEntity): Promise<boolean> {
+  public async save(entity: TDBServiceEntity): Promise<boolean> {
     await entity.save();
     return true;
   }
@@ -141,7 +143,7 @@ export class MongoDBService implements IDBService {
    * @param {DBServiceValue} value - value to find.
    * @return {Promise<DBServiceEntity>} entity fetched.
    */
-  public async fetch(entityType: string, propName: string, value: DBServiceValue): Promise<DBServiceEntity> {
+  public async fetch(entityType: string, propName: string, value: TDBServiceValue): Promise<TDBServiceEntity> {
     if (this.mappings) {
       // get model from mongoose mappings
       const model: EntityMapping = this.mappings[entityType];
