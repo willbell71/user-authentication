@@ -29,12 +29,12 @@ Azure pipeline for GitHub ( CI )
 
 Add a `.env` file to root of api
 ```
-LOGINAPI_NAME="development"
-LOGINAPI_PORT=3000
-LOGINAPI_LOG_LEVEL="ALL"
-LOGINAPI_USE_COMPRESSION=true
-LOGINAPI_DISABLE_CORS=true
-LOGINAPI_DB_CONNECTION="mongodb://bobdylan:tangledupinblue@mongodb/loginappdb?authSource=admin"
+MODE="development"
+PORT=3000
+LOG_LEVEL="ALL"
+USE_COMPRESSION=true
+DISABLE_CORS=true
+DB_CONNECTION="mongodb://bobdylan:tangledupinblue@mongodb/loginappdb?authSource=admin"
 ```
 Note - Mongo credentials need to match those in the docker compose yml
 
