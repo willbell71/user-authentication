@@ -112,7 +112,7 @@ export class MongoDBService implements IDBService {
    * @param {string} propName - name of property to set.
    * @param {TDBServiceValue} value - value to set on property.
    */
-  public setProp(entity: TDBServiceEntity, propName: string, value: TDBServiceValue): void {
+  public setProp(entity: TDBServiceEntity, propName: string, value?: TDBServiceValue): void {
     entity[propName] = value;
   }
 
