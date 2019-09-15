@@ -1,6 +1,6 @@
 import { ILogger } from '../logger/ilogger';
 
-import { IServerRouteHandler } from './Iserver-route-handler';
+import { IServerRouteHandler } from './iserver-route-handler';
 
 /**
  * Server interface.
