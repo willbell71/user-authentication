@@ -3,7 +3,7 @@ import * as express from 'express';
 
 import { ILogger } from '../../logger/ilogger';
 import { IServerService } from '../iserver-service';
-import { IServerRouteHandler } from '../Iserver-route-handler';
+import { IServerRouteHandler } from '../iserver-route-handler';
 
 /**
  * Server interface.
