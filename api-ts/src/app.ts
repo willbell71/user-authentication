@@ -1,7 +1,4 @@
-
-require('dotenv').config();
-
-import * as process from 'process';
+import { config } from './config/config';
 
 import { Logger } from './services/logger/logger';
 import { ILogger } from './services/logger/ilogger';
@@ -29,8 +26,8 @@ const logger: ILogger = new Logger(new LogLineConsoleLog(),
   new LogLineConsoleWarn(),
   new LogLineConsoleError(),
   new LogLineConsoleError());
-logger.setLevel(ELoggerLevel[(process.env.LOGINAPI_LOG_LEVEL || 'ALL') as keyof typeof ELoggerLevel]);
-logger.info('App', `running in mode: ${process.env.LOGINAPI_NAME}`);
+logger.setLevel(ELoggerLevel[config.logLevel as keyof typeof ELoggerLevel]);
+logger.info('App', `running in mode: ${config.mode}`);
 
 // create token service factory
 const tokenServiceFactory: IFactory<ITokenService> = new TokenServiceFactory(logger);
@@ -43,3 +40,19 @@ passwordServiceFactory.registerService('bcrypt', BCryptPasswordService);
 // create db service factory
 const dbServiceFactory: IFactory<IDBService> = new DBServiceFactory(logger);
 dbServiceFactory.registerService('mongo', MongoDBService);
+
+// create db service
+const dbService: IDBService = dbServiceFactory.createService('mongo');
+dbService.connect(logger,
+  config.dbConnection,
+  [{
+    name: 'User',
+    schemaDefinition: {
+      firstName: String,
+      lastName: String,
+      email: {type: String, index: true, unique: true},
+      password: String,
+      lastLogin: Date,
+      token: String
+    }
+  }]);
