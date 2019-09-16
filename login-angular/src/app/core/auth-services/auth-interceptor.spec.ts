@@ -40,11 +40,12 @@ describe('AuthInterceptor', () => {
       interceptor = new AuthInterceptor(authService);
     });
 
-    it('should not call setToken on error with 400', () => {
+    it('should not call setToken on error with 400', (done) => {
       interceptor.intercept(request, next);
 
       setTimeout(() => {
         expect(authService.setToken).not.toHaveBeenCalled();
+        done();
       }, 100);
     });
   });
@@ -61,11 +62,12 @@ describe('AuthInterceptor', () => {
       interceptor = new AuthInterceptor(authService);
     });
 
-    it('should call setToken on error with 401', () => {
+    it('should call setToken on error with 401', (done) => {
       interceptor.intercept(request, next);
 
       setTimeout(() => {
         expect(authService.setToken).toHaveBeenCalled();
+        done();
       }, 500);
     });
   });
