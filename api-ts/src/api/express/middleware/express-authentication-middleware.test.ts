@@ -7,6 +7,13 @@ import { IAuthService } from '../../../model/auth/iauth-service';
 import { TDBServiceEntity } from '../../../services/db/tdb-service-entity';
 import { ExpressAuthenticationMiddleware } from './express-authentication-middleware';
 
+declare module 'Express' {
+  // eslint-disable-next-line @typescript-eslint/interface-name-prefix
+  interface Request {
+    user?: TDBServiceEntity;
+  }
+}
+
 let logLineSpy: jest.Mock;
 let warnLineSpy: jest.Mock;
 let errorLineSpy: jest.Mock;
