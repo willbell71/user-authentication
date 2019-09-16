@@ -21,10 +21,16 @@ describe('AuthInterceptor', () => {
       expect(interceptor).toBeTruthy();
     });
 
-    it('should call next handle', () => {
-      interceptor.intercept(request, next);
-
-      expect(next.handle).toHaveBeenCalled();
+    it('should call next handle', done => {
+      interceptor.intercept(request, next)
+        .subscribe(() => {
+        }, () => {
+          expect(true).toBeFalsy();
+          done();
+        }, () => {
+          expect(next.handle).toHaveBeenCalled();
+          done();
+        });
     });
   });
 
@@ -40,12 +46,18 @@ describe('AuthInterceptor', () => {
       interceptor = new AuthInterceptor(authService);
     });
 
-    it('should not call setToken on error with 400', () => {
-      interceptor.intercept(request, next);
-
-      setTimeout(() => {
-        expect(authService.setToken).not.toHaveBeenCalled();
-      }, 100);
+    it('should not call setToken on error with 400', done => {
+      interceptor.intercept(request, next)
+        .subscribe(() => {
+          expect(true).toBeFalsy();
+          done();
+        }, () => {
+          expect(authService.setToken).not.toHaveBeenCalled();
+          done();
+        }, () => {
+          expect(true).toBeFalsy();
+          done();
+        });
     });
   });
 
@@ -61,12 +73,18 @@ describe('AuthInterceptor', () => {
       interceptor = new AuthInterceptor(authService);
     });
 
-    it('should call setToken on error with 401', () => {
-      interceptor.intercept(request, next);
-
-      setTimeout(() => {
-        expect(authService.setToken).toHaveBeenCalled();
-      }, 500);
+    it('should call setToken on error with 401', done => {
+      interceptor.intercept(request, next)
+        .subscribe(() => {
+          expect(true).toBeFalsy();
+          done();
+        }, () => {
+          expect(authService.setToken).toHaveBeenCalled();
+          done();
+        }, () => {
+          expect(true).toBeFalsy();
+          done();
+        });
     });
   });
 });
