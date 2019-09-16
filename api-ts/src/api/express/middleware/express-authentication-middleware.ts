@@ -4,13 +4,6 @@ import { ILogger } from '../../../services/logger/ilogger';
 import { TDBServiceEntity } from '../../../services/db/tdb-service-entity';
 import { IAuthService } from '../../../model/auth/iauth-service';
 
-declare module 'Express' {
-  // eslint-disable-next-line @typescript-eslint/interface-name-prefix
-  interface Request {
-    user?: TDBServiceEntity;
-  }
-}
-
 /**
  * Express middleware for validating request body properties against a whitelist.
  */
@@ -24,7 +17,7 @@ export class ExpressAuthenticationMiddleware {
    * @param {IAuthService} authService - authentication service.
    */
   public static auth(logger: ILogger,
-    req: Request,
+    req: Request & {user?: TDBServiceEntity},
     res: Response,
     next: NextFunction,
     authService: IAuthService): void {
