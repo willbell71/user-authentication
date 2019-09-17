@@ -9,7 +9,7 @@ services:
     volumes:
       # Map local folder to container path ( as defined in the Dockerfile )
       - "./nginx:/etc/nginx/conf.d"
-      - "./login-angular/dist/login-angular:/usr/share/nginx/html"
+      - "./login-reactts/dist:/usr/share/nginx/html"
     ports:
       # Expose the port
       - "8080:80"
@@ -23,10 +23,10 @@ services:
   apiservice:
     container_name: apiservice
     restart: always
-    build: ./api/
+    build: ./api-ts/
     command: npm run watch
     volumes:
-      - "./api:/usr/src/app"
+      - "./api-ts/out:/usr/src/app"
       - /usr/src/app/node_modules/
     networks:
       - internal

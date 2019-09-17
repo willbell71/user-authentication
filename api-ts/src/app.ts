@@ -1,4 +1,4 @@
-import * as express from 'express';
+import { RequestHandler, Router } from 'express';
 import * as helmet from 'helmet';
 import * as compression from 'compression';
 import * as morgan from 'morgan';
@@ -30,6 +30,17 @@ import { MongoDBService } from './services/db/mongo-db-service';
 import { IServerService } from './services/server/iserver-service';
 
 import { ExpressServer } from './services/server/express-server/express-server';
+
+import { IUserService } from './model/user/iuser-service';
+import { UserService } from './model/user/user-service';
+
+import { IAuthService } from './model/auth/iauth-service';
+import { AuthService } from './model/auth/auth-service';
+
+import { ExpressLoginAPI } from './api/express/express-login-api';
+import { ExpressLogoutAPI } from './api/express/express-logout-api';
+import { ExpressRegisterAPI } from './api/express/express-register-api';
+import { ExpressGetSomethingAPI } from './api/express/express-get-something-api';
 
 // create logger
 const logger: ILogger = new Logger(new LogLineConsoleLog(),
@@ -67,8 +78,21 @@ dbService.connect(logger,
     }
   }]);
 
+// create user service
+const userService: IUserService = new UserService(logger,
+  tokenServiceFactory.createService('jwt'),
+  dbService,
+  passwordServiceFactory.createService('bcrypt')
+);
+
+// create auth service
+const authService: IAuthService = new AuthService(logger,
+  tokenServiceFactory.createService('jwt'),
+  dbService
+);
+
 // create server
-const server: IServerService<express.RequestHandler, express.Router> = new ExpressServer();
+const server: IServerService<RequestHandler, Router> = new ExpressServer();
 // register middleware
 server.registerMiddleware(helmet());
 if (config.useCompression) {
@@ -83,5 +107,10 @@ if (config.disableCORS) {
   logger.info('App', 'CORS disabled');
   server.registerMiddleware(cors());
 }
+// register routes
+server.registerRoute('/api/v1/login', new ExpressLoginAPI(logger, userService));
+server.registerRoute('/api/v1/logout', new ExpressLogoutAPI(logger, authService, userService));
+server.registerRoute('/api/v1/register', new ExpressRegisterAPI(logger, userService));
+server.registerRoute('/api/v1/getsomething', new ExpressGetSomethingAPI(logger, authService));
 // start server
 server.start(logger, config.port);

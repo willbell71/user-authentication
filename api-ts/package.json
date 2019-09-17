@@ -9,7 +9,15 @@
   "scripts": {
     "test": "jest src/**/* --verbose --coverage",
     "build": "tsc",
-    "lint": "eslint --ext .ts,.js src/"
+    "build:package": "tsc && cp package.json ./out && cp .env ./out",
+    "lint": "eslint --ext .ts,.js src/",
+    "watch": "pm2-runtime start process.yml --watch",
+    "serve": "npm i && pm2 start process.yml",
+    "serve:production": "npm i && pm2 start process.yml --env production",
+    "serve:docker": "pm2-runtime start process.yml --env production",
+    "restart": "pm2 restart process.yml",
+    "stop": "pm2 stop process.yml",
+    "logs": "pm2 logs"
   },
   "keywords": [],
   "author": "",
