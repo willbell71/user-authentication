@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "jest src/**/* --verbose --coverage",
-    "build": "tsc && cp package.json ./out && cp .env ./out",
+    "build": "tsc",
+    "build:package": "tsc && cp package.json ./out && cp .env ./out",
     "lint": "eslint --ext .ts,.js src/",
     "watch": "pm2-runtime start process.yml --watch",
     "serve": "npm i && pm2 start process.yml",
