@@ -4,4 +4,4 @@
  */
 export enum ESomethingActions {
   GET = 'GET'
-};
+}

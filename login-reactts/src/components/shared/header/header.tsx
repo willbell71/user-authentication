@@ -6,7 +6,7 @@ import './styles.scss';
  * Component props.
  * @property {string} title - header title text.
  */
-type Props = {
+type TProps = {
   title: string;
 };
 
@@ -15,7 +15,7 @@ type Props = {
  * @param {Props} props - component properties.
  * @return {JSX.Element} render.
  */
-export function Header(props: Props): JSX.Element {
+export function Header(props: TProps): JSX.Element {
   return (
     <header>
       <h1 className="header">{ props.title }</h1>

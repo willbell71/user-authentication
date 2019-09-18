@@ -3,14 +3,15 @@ import * as enzyme from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
 import { AnyAction, Dispatch } from 'redux';
 
-import { mapDispatchToProps, mapStateToProps, Props, RegisterComponent } from './register';
-import { LoginState } from '../../store/reducers/login-reducer';
-import { Action } from '../../store/actions/action';
-import { LoginActionPayload } from '../../store/actions/login/tlogin-action-payload';
+import { mapDispatchToProps, mapStateToProps, RegisterComponent, TProps } from './register';
+import { TAction } from '../../store/actions/taction';
+import { TFormValidationRule} from '../../tform-validation-rule';
+import { TLoginActionPayload } from '../../store/actions/login/tlogin-action-payload';
+import { TLoginState } from '../../store/reducers/login-reducer';
 
 enzyme.configure({ adapter: new Adapter() });
 
-let props: Props;
+let props: TProps;
 let wrapper: enzyme.ShallowWrapper<{}, {}, RegisterComponent>;
 beforeEach(() => {
   props = {
@@ -34,7 +35,7 @@ describe('Register', () => {
   });
 
   it('should map state to props', () => {
-    const state: {login: LoginState} = mapStateToProps({
+    const state: {login: TLoginState} = mapStateToProps({
       login: {
         token: 'token',
         error: 'error'
@@ -47,7 +48,7 @@ describe('Register', () => {
 
   it('should map dispatch to props', () => {
     const map: {actions: {register: (firstName: string, lastName: string, email: string, password: string) =>
-      (dispatch: (action: Action<LoginActionPayload>) => void) => Promise<any> }} =
+      (dispatch: (action: TAction<TLoginActionPayload>) => void) => Promise<void> }} =
       mapDispatchToProps('func' as unknown as Dispatch<AnyAction>);
     expect(map.actions.register).toBeTruthy();
   });
@@ -57,7 +58,7 @@ describe('Register', () => {
   });
 
   it('should set first name value', () => {
-    const prop: (a: any) => void = wrapper.find('FormField').first().prop('changeInput');
+    const prop: (a: {target: {}}) => void = wrapper.find('FormField').first().prop('changeInput');
     prop({
       target: {
         name: 'firstName',
@@ -73,7 +74,7 @@ describe('Register', () => {
   });
 
   it('should set last name value', () => {
-    const prop: (a: any) => void = wrapper.find('FormField').first().prop('changeInput');
+    const prop: (a: {target: {}}) => void = wrapper.find('FormField').first().prop('changeInput');
     prop({
       target: {
         name: 'lastName',
@@ -89,7 +90,7 @@ describe('Register', () => {
   });
 
   it('should set email value', () => {
-    const prop: (a: any) => void = wrapper.find('FormField').first().prop('changeInput');
+    const prop: (a: {target: {}}) => void = wrapper.find('FormField').first().prop('changeInput');
     prop({
       target: {
         name: 'email',
@@ -105,7 +106,7 @@ describe('Register', () => {
   });
 
   it('should set password value', () => {
-    const prop: (a: any) => void = wrapper.find('FormField').first().prop('changeInput');
+    const prop: (a: {target: {}}) => void = wrapper.find('FormField').first().prop('changeInput');
     prop({
       target: {
         name: 'password',
@@ -121,7 +122,7 @@ describe('Register', () => {
   });
 
   it('should set confirm password value', () => {
-    const prop: (a: any) => void = wrapper.find('FormField').first().prop('changeInput');
+    const prop: (a: {target: {}}) => void = wrapper.find('FormField').first().prop('changeInput');
     prop({
       target: {
         name: 'confirmPassword',
@@ -181,7 +182,8 @@ describe('Register', () => {
       };
 
       wrapper.setProps({
-        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+        validator: (validationRules: TFormValidationRule[],
+          values: {[key: string]: string}, errorMsgs: {[key: string]: string}): boolean => {
           const valid: boolean = validationRules[0].validator('');
           if (!valid) errorMsgs.firstName = 'error';
           return valid;
@@ -199,7 +201,8 @@ describe('Register', () => {
       };
 
       wrapper.setProps({
-        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+        validator: (validationRules: TFormValidationRule[],
+          values: {[key: string]: string}, errorMsgs: {[key: string]: string}): boolean => {
           const valid: boolean = validationRules[0].validator('aaaaaa');
           if (valid) errorMsgs.firstName = 'success';
           return false;
@@ -217,7 +220,8 @@ describe('Register', () => {
       };
 
       wrapper.setProps({
-        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+        validator: (validationRules: TFormValidationRule[],
+          values: {[key: string]: string}, errorMsgs: {[key: string]: string}): boolean => {
           const valid: boolean = validationRules[1].validator('');
           if (!valid) errorMsgs.lastName = 'error';
           return valid;
@@ -235,7 +239,8 @@ describe('Register', () => {
       };
 
       wrapper.setProps({
-        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+        validator: (validationRules: TFormValidationRule[],
+          values: {[key: string]: string}, errorMsgs: {[key: string]: string}): boolean => {
           const valid: boolean = validationRules[1].validator('aaaaaa');
           if (valid) errorMsgs.lastName = 'success';
           return false;
@@ -253,7 +258,8 @@ describe('Register', () => {
       };
 
       wrapper.setProps({
-        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+        validator: (validationRules: TFormValidationRule[],
+          values: {[key: string]: string}, errorMsgs: {[key: string]: string}): boolean => {
           const valid: boolean = validationRules[2].validator('a');
           if (!valid) errorMsgs.email = 'error';
           return valid;
@@ -271,7 +277,8 @@ describe('Register', () => {
       };
 
       wrapper.setProps({
-        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+        validator: (validationRules: TFormValidationRule[],
+          values: {[key: string]: string}, errorMsgs: {[key: string]: string}): boolean => {
           const valid: boolean = validationRules[2].validator('aaaaaa');
           if (!valid) errorMsgs.email = 'error';
           return valid;
@@ -289,7 +296,8 @@ describe('Register', () => {
       };
 
       wrapper.setProps({
-        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+        validator: (validationRules: TFormValidationRule[],
+          values: {[key: string]: string}, errorMsgs: {[key: string]: string}): boolean => {
           const valid: boolean = validationRules[2].validator('aaa@aaa');
           if (valid) errorMsgs.email = 'success';
           return false;
@@ -307,7 +315,8 @@ describe('Register', () => {
       };
 
       wrapper.setProps({
-        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+        validator: (validationRules: TFormValidationRule[],
+          values: {[key: string]: string}, errorMsgs: {[key: string]: string}): boolean => {
           const valid: boolean = validationRules[3].validator('');
           if (!valid) errorMsgs.password = 'error';
           return valid;
@@ -325,7 +334,8 @@ describe('Register', () => {
       };
 
       wrapper.setProps({
-        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+        validator: (validationRules: TFormValidationRule[],
+          values: {[key: string]: string}, errorMsgs: {[key: string]: string}): boolean => {
           const valid: boolean = validationRules[4].validator('aaa');
           if (!valid) errorMsgs.password = 'error';
           return valid;
@@ -343,7 +353,8 @@ describe('Register', () => {
       };
 
       wrapper.setProps({
-        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+        validator: (validationRules: TFormValidationRule[],
+          values: {[key: string]: string}, errorMsgs: {[key: string]: string}): boolean => {
           const valid: boolean = validationRules[3].validator('aaaaaa');
           if (valid) errorMsgs.password = 'success';
           return false;
@@ -361,7 +372,8 @@ describe('Register', () => {
       };
 
       wrapper.setProps({
-        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+        validator: (validationRules: TFormValidationRule[],
+          values: {[key: string]: string}, errorMsgs: {[key: string]: string}): boolean => {
           const valid: boolean = validationRules[4].validator('aaaaaa');
           if (valid) errorMsgs.password = 'success';
           return false;
@@ -388,7 +400,8 @@ describe('Register', () => {
         }
       });
       wrapper.setProps({
-        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+        validator: (validationRules: TFormValidationRule[],
+          values: {[key: string]: string}, errorMsgs: {[key: string]: string}): boolean => {
           const valid: boolean = validationRules[5].validator('aaaaaa');
           if (!valid) errorMsgs.confirmPassword = 'error';
           return valid;
@@ -415,7 +428,8 @@ describe('Register', () => {
         }
       });
       wrapper.setProps({
-        validator: (validationRules: any[], values: any, errorMsgs: any): boolean => {
+        validator: (validationRules: TFormValidationRule[],
+          values: {[key: string]: string}, errorMsgs: {[key: string]: string}): boolean => {
           const valid: boolean = validationRules[5].validator('123456');
           if (valid) errorMsgs.confirmPassword = 'success';
           return false;

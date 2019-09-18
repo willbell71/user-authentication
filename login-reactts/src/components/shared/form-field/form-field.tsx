@@ -12,7 +12,7 @@ import './styles.scss';
  * @property {event: React.ChangeEvent<HTMLInputElement>) => void} changeInput - input change event handler.
  * @property {string} error - error feedback.
  */
-type Props = {
+type TProps = {
   id: string;
   label: string;
   type: 'text' | 'password';
@@ -27,7 +27,7 @@ type Props = {
  * @param {Props} props - component properties.
  * @return {JSX.Element} render.
  */
-export function FormField(props: Props): JSX.Element {
+export function FormField(props: TProps): JSX.Element {
   return (
     <React.Fragment key={ props.id }>
       <label className="form__field">{ props.label }

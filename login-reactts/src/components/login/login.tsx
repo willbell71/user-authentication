@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { connect, ConnectedComponentClass } from 'react-redux';
-import { AnyAction, bindActionCreators, Dispatch } from 'redux';
 import { Link, Redirect } from 'react-router-dom';
+import { AnyAction, bindActionCreators, Dispatch } from 'redux';
 
-import { Action } from '../../store/actions/action';
-import { FormValidationRule } from '../../tform-validation-rule';
-import { LoginActionPayload } from '../../store/actions/login/tlogin-action-payload';
 import { FormField } from '../shared/form-field/form-field';
 import { Header } from '../shared/header/header';
 import { loginAction } from '../../store/actions/login/login-action';
-import { LoginState } from '../../store/reducers/login-reducer';
+import { TAction } from '../../store/actions/taction';
+import { TFormValidationRule } from '../../tform-validation-rule';
+import { TLoginActionPayload } from '../../store/actions/login/tlogin-action-payload';
+import { TLoginState } from '../../store/reducers/login-reducer';
 
 import './styles.scss';
 
@@ -18,7 +18,7 @@ import './styles.scss';
  * @property {string} email - email field error message.
  * @property {string} password - passwor field error message.
  */
-type LoginErrorMessages = {
+type TLoginErrorMessages = {
   email: string;
   password: string;
 };
@@ -32,7 +32,7 @@ type LoginErrorMessages = {
  * @property {string} value - input field value.
  * @property {string} error - error feedback.
  */
-type Field = {
+type TField = {
   label: string,
   id: string,
   type: 'text' | 'password',
@@ -42,17 +42,17 @@ type Field = {
 };
 
 /**
- * Props.
+ * Component properties.
  * @property {loginAction} actions.login - login action.
  * @property {LoginState} login - login state.
  * @property {(validationRules: FormValidationRule[], values: any, errorMsgs: any) => boolean} validator - form field validator.
  */
-export type Props = {
+export type TProps = {
   actions: {
     login: typeof loginAction
   },
-  login: LoginState,
-  validator: (validationRules: FormValidationRule[], values: any, errorMsgs: any) => boolean
+  login: TLoginState,
+  validator: (validationRules: TFormValidationRule[], values: {[key: string]: string}, errorMsgs: {[key: string]: string}) => boolean
 };
 
 /**
@@ -61,21 +61,21 @@ export type Props = {
  * @property {string} formValues.password - form password input value.
  * @property {LoginErrorMessages} errors - form input errors.
  */
-type State = {
+type TState = {
   formValues: {
     email: string,
     password: string
   },
-  errors: LoginErrorMessages
+  errors: TLoginErrorMessages
 };
 
 /**
  * Login component render.
  * @return {JSX.Element} render.
  */
-export class LoginComponent extends React.Component<Props, State> {
+export class LoginComponent extends React.Component<TProps, TState> {
   // @member {State} state - component state.
-  public state: State = {
+  public state: TState = {
     formValues: {
       email: '',
       password: ''
@@ -93,7 +93,7 @@ export class LoginComponent extends React.Component<Props, State> {
   private changeInput: (event: React.ChangeEvent<HTMLInputElement>) => void = (event: React.ChangeEvent<HTMLInputElement>): void => {
     let fieldName: string = event.target.name;
     let value: string = event.target.value;
-    this.setState((state: State) => ({
+    this.setState((state: TState) => ({
       formValues: {
         ...state.formValues,
         [fieldName]: value
@@ -105,13 +105,13 @@ export class LoginComponent extends React.Component<Props, State> {
    * Validate form values.
    * @return {LoginErrorMessages | undefined} returns error messages for form or nothing if form values passes validation.
    */
-  private validateForm(): LoginErrorMessages | undefined {
-    const errors: LoginErrorMessages = {
+  private validateForm(): TLoginErrorMessages | undefined {
+    const errors: TLoginErrorMessages = {
       email: '',
       password: ''
     };
 
-    const validationRules: FormValidationRule[] = [{
+    const validationRules: TFormValidationRule[] = [{
       prop: 'email',
       error: 'Please enter a valid email address',
       validator: (value: string) => !!value && value.length > 3 && -1 !== value.indexOf('@')
@@ -141,7 +141,7 @@ export class LoginComponent extends React.Component<Props, State> {
       });
 
       // validate form
-      const errors: LoginErrorMessages | undefined = this.validateForm();
+      const errors: TLoginErrorMessages | undefined = this.validateForm();
       if (!errors) {
         // login
         this.props.actions.login(this.state.formValues.email, this.state.formValues.password);
@@ -159,7 +159,7 @@ export class LoginComponent extends React.Component<Props, State> {
    */
   public render(): JSX.Element {
     // form fields
-    const fields: Field[] = [{
+    const fields: TField[] = [{
       label: 'Email',
       id: 'email',
       type: 'text',
@@ -183,7 +183,7 @@ export class LoginComponent extends React.Component<Props, State> {
           <section className="form__block">
             <form>
               {
-                fields.map((field: Field) => (
+                fields.map((field: TField) => (
                   <FormField
                     key={ field.id}
                     id={ field.id }
@@ -207,14 +207,14 @@ export class LoginComponent extends React.Component<Props, State> {
 }
 
 // map store state to props
-export const mapStateToProps: (state: {login: LoginState}) => {login: LoginState} = (state: {login: LoginState}) => ({
+export const mapStateToProps: (state: {login: TLoginState}) => {login: TLoginState} = (state: {login: TLoginState}) => ({
   login: state.login
 });
 
 // map store actions to props
 export const mapDispatchToProps: (dispatch: Dispatch<AnyAction>) => {
   actions: {
-    login: (email: string, password: string) => (dispatch: (action: Action<LoginActionPayload>) => void) => Promise<any>
+    login: (email: string, password: string) => (dispatch: (action: TAction<TLoginActionPayload>) => void) => Promise<void>
   }
 } = (dispatch: Dispatch<AnyAction>) => ({
   actions: bindActionCreators({
@@ -223,4 +223,6 @@ export const mapDispatchToProps: (dispatch: Dispatch<AnyAction>) => {
 });
 
 // connect component to store and export wrapper
-export const Login: ConnectedComponentClass<typeof LoginComponent, any> = connect(mapStateToProps, mapDispatchToProps)(LoginComponent);
+export const Login: ConnectedComponentClass<typeof LoginComponent, {
+  validator: (validationRules: TFormValidationRule[], values: {[key: string]: string}, errorMsgs: {[key: string]: string}) => boolean
+}> = connect(mapStateToProps, mapDispatchToProps)(LoginComponent);

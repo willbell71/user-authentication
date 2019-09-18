@@ -1,18 +1,18 @@
 import * as React from 'react';
+import { AnyAction, Dispatch } from 'redux';
 import * as enzyme from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
-import { AnyAction, Dispatch } from 'redux';
 
-import { Action } from '../../store/actions/action';
-import { DashboardComponent, mapDispatchToProps, mapStateToProps, Props } from './dashboard';
-import { LoginState } from '../../store/reducers/login-reducer';
-import { LoginActionPayload } from '../../store/actions/login/tlogin-action-payload';
-import { SomethingActionPayload } from '../../store/actions/something/tsomething-action-payload';
-import { SomethingState } from '../../store/reducers/something-reducer';
+import { DashboardComponent, mapDispatchToProps, mapStateToProps, TProps } from './dashboard';
+import { TAction } from '../../store/actions/taction';
+import { TLoginActionPayload } from '../../store/actions/login/tlogin-action-payload';
+import { TLoginState } from '../../store/reducers/login-reducer';
+import { TSomethingActionPayload } from '../../store/actions/something/tsomething-action-payload';
+import { TSomethingState } from '../../store/reducers/something-reducer';
 
 enzyme.configure({ adapter: new Adapter() });
 
-let props: Props;
+let props: TProps;
 let wrapper: enzyme.ShallowWrapper<{}, {}, DashboardComponent>;
 beforeEach(() => {
   props = {
@@ -40,7 +40,7 @@ describe('Dashboard', () => {
   });
 
   it('should map state to props', () => {
-    const state: {login: LoginState, something: SomethingState} = mapStateToProps({
+    const state: {login: TLoginState, something: TSomethingState} = mapStateToProps({
       login: {
         token: 'token',
         error: 'error'
@@ -60,8 +60,8 @@ describe('Dashboard', () => {
   it('should map dispatch to props', () => {
     const map: {
       actions: {
-        logout: () => (dispatch: (action: Action<LoginActionPayload>) => void) => Promise<any>,
-        getSomething: () => (dispatch: (action: Action<SomethingActionPayload>) => void) => Promise<any>
+        logout: () => (dispatch: (action: TAction<TLoginActionPayload>) => void) => Promise<void>,
+        getSomething: () => (dispatch: (action: TAction<TSomethingActionPayload>) => void) => Promise<void>
       }
     } = mapDispatchToProps('func' as unknown as Dispatch<AnyAction>);
 

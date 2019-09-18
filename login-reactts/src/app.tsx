@@ -1,13 +1,13 @@
 import * as React from 'react';
 import * as reactDOM from 'react-dom';
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 
 import { AppStore } from './store/app-store';
 import { Dashboard } from './components/dashboard/dashboard';
-import { FormValidationRule } from './tform-validation-rule';
 import { Login } from './components/login/login';
 import { Register } from './components/register/register';
+import { TFormValidationRule } from './tform-validation-rule';
 
 import './styles.scss';
 
@@ -22,11 +22,11 @@ class App extends React.Component {
    * @param {any} errorMsgs -
    * @return {boolean} if all rules pass validation.
    */
-  private validator: (validationRules: FormValidationRule[], values: any, errorMsgs: any) => boolean =
-    (validationRules: FormValidationRule[], values: any, errorMsgs: any) => {
+  private validator: (validationRules: TFormValidationRule[], values: {[key: string]: string}, errorMsgs: {[key: string]: string})
+    => boolean = (validationRules: TFormValidationRule[], values: {[key: string]: string}, errorMsgs: {[key: string]: string}) => {
       // assume validation passed
       let valid: boolean = true;
-      validationRules.forEach((rule: FormValidationRule) => {
+      validationRules.forEach((rule: TFormValidationRule) => {
         if (!rule.validator(values[rule.prop])) {
           // set error message
           errorMsgs[rule.prop] = rule.error;

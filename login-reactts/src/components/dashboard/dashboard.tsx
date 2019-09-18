@@ -1,40 +1,40 @@
 import * as React from 'react';
 import { connect, ConnectedComponentClass } from 'react-redux';
-import { AnyAction, bindActionCreators, Dispatch } from 'redux';
 import { Redirect } from 'react-router-dom';
+import { AnyAction, bindActionCreators, Dispatch } from 'redux';
 
-import { Action } from '../../store/actions/action';
-import { LoginActionPayload } from '../../store/actions/login/tlogin-action-payload';
-import { SomethingActionPayload } from '../../store/actions/something/tsomething-action-payload';
+import { getSomethingAction } from '../../store/actions/something/get-something-action';
 import { Header } from '../shared/header/header';
-import { Unavailable } from './unavailable/unavailable';
 import { logoutAction } from '../../store/actions/login/logout-action';
-import { LoginState } from '../../store/reducers/login-reducer';
-import { getSomethingAction } from '../../store/actions/something/get-action';
-import { SomethingState } from '../../store/reducers/something-reducer';
+import { TAction } from '../../store/actions/taction';
+import { TLoginActionPayload } from '../../store/actions/login/tlogin-action-payload';
+import { TLoginState } from '../../store/reducers/login-reducer';
+import { TSomethingActionPayload } from '../../store/actions/something/tsomething-action-payload';
+import { TSomethingState } from '../../store/reducers/something-reducer';
+import { Unavailable } from './unavailable/unavailable';
 
 import './styles.scss';
 
 /**
- * Props.
+ * Component properties.
  * @property {logoutAction} actions.logout - logout action.
  * @property {getSomethingAction} actions.getSomething - get something action.
  * @property {LoginState} login - login state.
  * @property {SomethingState} something - something state.
  */
-export type Props = {
+export type TProps = {
   actions: {
     logout: typeof logoutAction,
     getSomething: typeof getSomethingAction
   },
-  login: LoginState,
-  something: SomethingState
+  login: TLoginState,
+  something: TSomethingState
 };
 
 /**
  * Dashboard component.
  */
-export class DashboardComponent extends React.Component<Props, {}> {
+export class DashboardComponent extends React.Component<TProps, {}> {
   /**
    * Get something from API.
    */
@@ -80,8 +80,9 @@ export class DashboardComponent extends React.Component<Props, {}> {
 }
 
 // map store state to props
-export const mapStateToProps: (state: {login: LoginState, something: SomethingState}) => {login: LoginState, something: SomethingState} =
-  (state: {login: LoginState, something: SomethingState}) => ({
+export const mapStateToProps: (state: {login: TLoginState, something: TSomethingState}) =>
+  {login: TLoginState, something: TSomethingState} =
+  (state: {login: TLoginState, something: TSomethingState}) => ({
     login: state.login,
     something: state.something
   });
@@ -89,8 +90,8 @@ export const mapStateToProps: (state: {login: LoginState, something: SomethingSt
 // map store actions to props
 export const mapDispatchToProps: (dispatch: Dispatch<AnyAction>) => {
   actions: {
-    logout: () => (dispatch: (action: Action<LoginActionPayload>) => void) => Promise<any>,
-    getSomething: () => (dispatch: (action: Action<SomethingActionPayload>) => void) => Promise<any>
+    logout: () => (dispatch: (action: TAction<TLoginActionPayload>) => void) => Promise<void>,
+    getSomething: () => (dispatch: (action: TAction<TSomethingActionPayload>) => void) => Promise<void>
   }
 } = (dispatch: Dispatch<AnyAction>) => ({
   actions: bindActionCreators({
@@ -100,5 +101,5 @@ export const mapDispatchToProps: (dispatch: Dispatch<AnyAction>) => {
 });
 
 // connect component to store and export wrapper
-export const Dashboard: ConnectedComponentClass<typeof DashboardComponent, any> =
+export const Dashboard: ConnectedComponentClass<typeof DashboardComponent, {}> =
   connect(mapStateToProps, mapDispatchToProps)(DashboardComponent);

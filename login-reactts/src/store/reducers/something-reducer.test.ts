@@ -1,12 +1,12 @@
-import { somethingReducer } from './something-reducer';
+import { somethingReducer, TSomethingState } from './something-reducer';
 
-import { Action } from '../actions/action';
-import { SomethingActionPayload } from '../actions/something/tsomething-action-payload';
 import { ESomethingActions } from '../actions/something/esomething-action';
+import { TAction } from '../actions/taction';
+import { TSomethingActionPayload } from '../actions/something/tsomething-action-payload';
 
 describe('something reducer', () => {
   it('should return the initial state', () => {
-    const action: Action<SomethingActionPayload> = {
+    const action: TAction<TSomethingActionPayload> = {
       type: '',
       payload: {
         title: null,
@@ -14,14 +14,14 @@ describe('something reducer', () => {
       }
     };
 
-    expect(somethingReducer(undefined, action)).toEqual({
+    expect(somethingReducer(undefined as unknown as TSomethingState, action)).toEqual({
       title: null,
       body: null
     });
   });
 
   it('should handle GET', () => {
-    const action: Action<SomethingActionPayload> = {
+    const action: TAction<TSomethingActionPayload> = {
       type: ESomethingActions.GET,
       payload: {
         title: 'title',
@@ -29,7 +29,7 @@ describe('something reducer', () => {
       }
     };
 
-    expect(somethingReducer(undefined, action)).toEqual({
+    expect(somethingReducer(undefined as unknown as TSomethingState, action)).toEqual({
       title: 'title',
       body: 'body'
     });

@@ -1,5 +1,6 @@
 import * as redux from 'redux';
-import { AppStore } from "./app-store";
+
+import { AppStore } from './app-store';
 
 afterEach(() => jest.restoreAllMocks());
 
