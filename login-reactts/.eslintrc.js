@@ -83,6 +83,7 @@ module.exports = {
     '@typescript-eslint/no-inferrable-types': 'off',
     '@typescript-eslint/interface-name-prefix': ['error', 'always'],
     '@typescript-eslint/member-ordering': ['error', {classes: ['constructor', 'private-instance-method', 'public-instance-method']}],
-    '@typescript-eslint/explicit-member-accessibility': 'error'
+    '@typescript-eslint/explicit-member-accessibility': 'error',
+    '@typescript-eslint/no-explicit-any': 'warn'
   }
 };

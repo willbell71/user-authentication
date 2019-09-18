@@ -8,4 +8,4 @@ export enum ELoginActions {
   LOGIN = 'LOGIN',
   REGISTER = 'REGISTER',
   LOGOUT = 'LOGOUT'
-};
+}

@@ -1,12 +1,12 @@
-import { Action } from '../action';
 import { ELoginActions } from './elogin-actions';
-import { LoginActionPayload } from './tlogin-action-payload';
+import { TAction } from '../taction';
+import { TLoginActionPayload } from './tlogin-action-payload';
 
 /**
  * Login response.
  * @property {string} token - auth token.
  */
-type LoginResponse = {
+type TLoginResponse = {
   token: string;
 };
 
@@ -16,53 +16,54 @@ type LoginResponse = {
  * @param {string} password - password.
  * @return {(dispatch: (action: Action<LoginActionPayload>) => void)} login action.
  */
-export const loginAction = (email: string, password: string) => (dispatch: (action: Action<LoginActionPayload>) => void) => {
-  // login
-  return fetch('http://localhost:8080/api/v1/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify({
-      email,
-      password
+export const loginAction: (email: string, password: string) => (dispatch: (action: TAction<TLoginActionPayload>) => void) => Promise<void> =
+  (email: string, password: string) => (dispatch: (action: TAction<TLoginActionPayload>) => void): Promise<void> => {
+    // login
+    return fetch('http://localhost:8080/api/v1/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        email,
+        password
+      })
     })
-  })
-    .then((res: Response) => {
-      if (200 === res.status) {
-        res.json()
-          .then((data: LoginResponse) => {
-            dispatch({
+      .then((res: Response) => {
+        if (200 === res.status) {
+          res.json()
+            .then((data: TLoginResponse) => {
+              dispatch({
+                type: ELoginActions.LOGIN,
+                payload: {
+                  token: data.token,
+                  error: null
+                }
+              });
+            })
+            .catch(() => dispatch({
               type: ELoginActions.LOGIN,
               payload: {
-                token: data.token,
-                error: null
+                token: null,
+                error: 'Failed to parse login response'
               }
-            });
-          })
-          .catch(() => dispatch({
+            }));
+        } else {
+          dispatch({
             type: ELoginActions.LOGIN,
             payload: {
               token: null,
-              error: 'Failed to parse login response'
+              error: 'Failed to login'
             }
-          }));
-      } else {
-        dispatch({
-          type: ELoginActions.LOGIN,
-          payload: {
-            token: null,
-            error: 'Failed to login'
-          }
-        });
-      }
-    })
-    .catch(() => dispatch({
-      type: ELoginActions.LOGIN,
-      payload: {
-        token: null,
-        error: 'Failed to reach endpoint'
-      }
-    }));
-};
+          });
+        }
+      })
+      .catch(() => dispatch({
+        type: ELoginActions.LOGIN,
+        payload: {
+          token: null,
+          error: 'Failed to reach endpoint'
+        }
+      }));
+  };

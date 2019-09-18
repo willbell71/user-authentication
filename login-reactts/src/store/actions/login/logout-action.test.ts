@@ -1,7 +1,7 @@
 import * as fetchMock from 'fetch-mock';
-import configureMockStore, { MockStoreCreator } from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import { Middleware, AnyAction } from 'redux';
+import configureMockStore, { MockStore, MockStoreCreator } from 'redux-mock-store';
+import thunk from 'redux-thunk';
 
 import { logoutAction } from './logout-action';
 import { ELoginActions } from './elogin-actions';
@@ -10,7 +10,7 @@ let middlewares: [Middleware];
 let mockStore: MockStoreCreator;
 beforeEach(() => {
   middlewares = [thunk];
-  mockStore = configureMockStore(middlewares)  
+  mockStore = configureMockStore(middlewares);
 });
 afterEach(() => {
   jest.restoreAllMocks();
@@ -23,10 +23,10 @@ describe('logoutAction', () => {
       body: {}
     });
 
-    const expectedActions = [
+    const expectedActions: {type: ELoginActions, payload: {}}[] = [
       { type: ELoginActions.LOGOUT, payload: { token: null, error: null } }
     ];    
-    const store = mockStore({ login: {}, something: {} });
+    const store: MockStore = mockStore({ login: {}, something: {} });
 
     return store.dispatch(logoutAction() as unknown as AnyAction).then(() => {
       expect(store.getActions()).toEqual(expectedActions);
@@ -36,10 +36,10 @@ describe('logoutAction', () => {
   it('should handle response error status', () => {
     fetchMock.postOnce('http://localhost:8080/api/v1/logout', 400);
 
-    const expectedActions = [
+    const expectedActions: {type: ELoginActions, payload: {}}[] = [
       { type: ELoginActions.LOGOUT, payload: { token: null, error: 'Failed to log out' } }
     ];    
-    const store = mockStore({ login: {}, something: {} });
+    const store: MockStore = mockStore({ login: {}, something: {} });
 
     return store.dispatch(logoutAction() as unknown as AnyAction).then(() => {
       expect(store.getActions()).toEqual(expectedActions);
@@ -51,10 +51,10 @@ describe('logoutAction', () => {
       throws: new Error('Failed')
     });
 
-    const expectedActions = [
+    const expectedActions: {type: ELoginActions, payload: {}}[] = [
       { type: ELoginActions.LOGOUT, payload: { token: null, error: 'Failed to reach endpoint' } }
     ];    
-    const store = mockStore({ login: {}, something: {} });
+    const store: MockStore = mockStore({ login: {}, something: {} });
 
     return store.dispatch(logoutAction() as unknown as AnyAction).then(() => {
       expect(store.getActions()).toEqual(expectedActions);

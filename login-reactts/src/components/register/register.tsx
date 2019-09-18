@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { connect, ConnectedComponentClass } from 'react-redux';
-import { AnyAction, bindActionCreators, Dispatch } from 'redux';
 import { Link, Redirect } from 'react-router-dom';
+import { AnyAction, bindActionCreators, Dispatch } from 'redux';
 
-import { Action } from '../../store/actions/action';
-import { FormValidationRule } from '../../tform-validation-rule';
-import { LoginActionPayload } from '../../store/actions/login/tlogin-action-payload';
 import { FormField } from '../shared/form-field/form-field';
 import { Header } from '../shared/header/header';
 import { registerAction } from '../../store/actions/login/register-action';
-import { LoginState } from '../../store/reducers/login-reducer';
+import { TAction } from '../../store/actions/taction';
+import { TFormValidationRule } from '../../tform-validation-rule';
+import { TLoginActionPayload } from '../../store/actions/login/tlogin-action-payload';
+import { TLoginState } from '../../store/reducers/login-reducer';
 
 import './styles.scss';
 
@@ -21,7 +21,7 @@ import './styles.scss';
  * @property {string} password - password field error message.
  * @property {string} confirmPassword - confirm password field error message.
  */
-type RegisterErrorMessages = {
+type TRegisterErrorMessages = {
   firstName: string;
   lastName: string;
   email: string;
@@ -38,7 +38,7 @@ type RegisterErrorMessages = {
  * @property {string} value - input field value.
  * @property {string} error - error feedback.
  */
-type Field = {
+type TField = {
   label: string,
   id: string,
   type: 'text' | 'password',
@@ -48,16 +48,16 @@ type Field = {
 };
 
 /**
- * Props.
+ * Component properties.
  * @property {registerAction} actions.register - register action.
  * @property {LoginState} login - login state.
  */
-export type Props = {
+export type TProps = {
   actions: {
     register: typeof registerAction
   },
-  login: LoginState,
-  validator: (validationRules: FormValidationRule[], values: any, errorMsgs: any) => boolean
+  login: TLoginState,
+  validator: (validationRules: TFormValidationRule[], values: {[key: string]: string}, errorMsgs: {[key: string]: string}) => boolean
 };
 
 /**
@@ -67,9 +67,9 @@ export type Props = {
  * @property {string} formValues.email - form email input value.
  * @property {string} formValues.password - form password input value.
  * @property {string} formValues.confirmPassword - form confirm password input value.
- * @property {RegisterErrorMessages} errors - form input errors.
+ * @property {TRegisterErrorMessages} errors - form input errors.
  */
-type State = {
+type TState = {
   formValues: {
     firstName: string,
     lastName: string,
@@ -77,15 +77,15 @@ type State = {
     password: string,
     confirmPassword: string
   },
-  errors: RegisterErrorMessages
+  errors: TRegisterErrorMessages
 };
 
 /**
  * Register component.
  */
-export class RegisterComponent extends React.Component<Props, State> {
+export class RegisterComponent extends React.Component<TProps, TState> {
   // @member {State} state - component state.
-  public state: State = {
+  public state: TState = {
     formValues: {
       firstName: '',
       lastName: '',
@@ -109,7 +109,7 @@ export class RegisterComponent extends React.Component<Props, State> {
   private changeInput: (event: React.ChangeEvent<HTMLInputElement>) => void = (event: React.ChangeEvent<HTMLInputElement>): void => {
     let fieldName: string = event.target.name;
     let value: string = event.target.value;
-    this.setState((state: State) => ({
+    this.setState((state: TState) => ({
       formValues: {
         ...state.formValues,
         [fieldName]: value
@@ -121,8 +121,8 @@ export class RegisterComponent extends React.Component<Props, State> {
    * Validate form values.
    * @return {RegisterErrorMessages | undefined} returns error messages for form or nothing if form values passes validation.
    */
-  private validateForm(): RegisterErrorMessages | undefined {
-    const errors: RegisterErrorMessages = {
+  private validateForm(): TRegisterErrorMessages | undefined {
+    const errors: TRegisterErrorMessages = {
       firstName: '',
       lastName: '',
       email: '',
@@ -130,7 +130,7 @@ export class RegisterComponent extends React.Component<Props, State> {
       confirmPassword: ''
     };
 
-    const validationRules: FormValidationRule[] = [{
+    const validationRules: TFormValidationRule[] = [{
       prop: 'firstName',
       error: 'Please enter a valid first name',
       validator: (value: string) => !!value
@@ -179,7 +179,7 @@ export class RegisterComponent extends React.Component<Props, State> {
       });
 
       // validate form
-      const errors: RegisterErrorMessages | undefined = this.validateForm();
+      const errors: TRegisterErrorMessages | undefined = this.validateForm();
       if (!errors) {
         // register
         this.props.actions.register(this.state.formValues.firstName,
@@ -201,7 +201,7 @@ export class RegisterComponent extends React.Component<Props, State> {
    */
   public render(): JSX.Element {
     // form fields
-    const fields: Field[] = [{
+    const fields: TField[] = [{
       label: 'First Name',
       id: 'first-name',
       type: 'text',
@@ -246,7 +246,7 @@ export class RegisterComponent extends React.Component<Props, State> {
           <section className="form__block">
             <form>
               {
-                fields.map((field: Field) => (
+                fields.map((field: TField) => (
                   <FormField
                     key={ field.id}
                     id={ field.id }
@@ -270,7 +270,7 @@ export class RegisterComponent extends React.Component<Props, State> {
 }
 
 // map store state to props
-export const mapStateToProps: (state: {login: LoginState}) => {login: LoginState} = (state: {login: LoginState}) => ({
+export const mapStateToProps: (state: {login: TLoginState}) => {login: TLoginState} = (state: {login: TLoginState}) => ({
   login: state.login
 });
 
@@ -278,7 +278,7 @@ export const mapStateToProps: (state: {login: LoginState}) => {login: LoginState
 export const mapDispatchToProps: (dispatch: Dispatch<AnyAction>) => {
   actions: {
     register: (firstName: string, lastName: string, email: string, password: string) =>
-      (dispatch: (action: Action<LoginActionPayload>) => void) => Promise<any>
+      (dispatch: (action: TAction<TLoginActionPayload>) => void) => Promise<void>
   }
 } = (dispatch: Dispatch<AnyAction>) => ({
   actions: bindActionCreators({
@@ -287,5 +287,7 @@ export const mapDispatchToProps: (dispatch: Dispatch<AnyAction>) => {
 });
 
 // connect component to store and export wrapper
-export const Register: ConnectedComponentClass<typeof RegisterComponent, any> =
+export const Register: ConnectedComponentClass<typeof RegisterComponent, {
+  validator: (validationRules: TFormValidationRule[], values: {[key: string]: string}, errorMsgs: {[key: string]: string}) => boolean  
+}> =
   connect(mapStateToProps, mapDispatchToProps)(RegisterComponent);

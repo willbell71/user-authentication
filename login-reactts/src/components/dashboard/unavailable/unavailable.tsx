@@ -6,7 +6,7 @@ import './styles.scss';
  * Component props.
  * @property {string | null} value? - value to render, if available.
  */
-type Props = {
+type TProps = {
   value?: string | null;
 };
 
@@ -14,7 +14,7 @@ type Props = {
  * Unavailable component render.
  * @return {JSX.Element} render.
  */
-export function Unavailable(props: Props): JSX.Element {
+export function Unavailable(props: TProps): JSX.Element {
   return (
     <>{ props.value ? props.value : 'Unavailable' }</>
   );

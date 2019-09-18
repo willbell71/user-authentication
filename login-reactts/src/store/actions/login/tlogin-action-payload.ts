@@ -3,7 +3,7 @@
  * @property {string} token - auth token.
  * @property {string | null} error - error message.
  */
-export type LoginActionPayload = {
+export type TLoginActionPayload = {
   token: string | null;
   error: string | null;
 };
