@@ -27,6 +27,7 @@ export class ExpressRegisterAPI implements IServerRouteHandler<Router> {
    * Create a new user in the db.
    * @param {*} req - express request object.
    * @param {*} res - express response object.
+   * @return {void}
    */
   private register(req: Request, res: Response): void {
     try {

@@ -15,6 +15,7 @@ export class ExpressAuthenticationMiddleware {
    * @param {Response} res - express response object.
    * @param {NextFunction} next - next function in middleware chain.
    * @param {IAuthService} authService - authentication service.
+   * @return {void}
    */
   public static auth(logger: ILogger,
     req: Request & {user?: TDBServiceEntity},

@@ -26,6 +26,7 @@ export class ExpressGetSomethingAPI implements IServerRouteHandler<Router> {
    * Get something that requires the user to be logged in.
    * @param {*} req - express request object.
    * @param {*} res - express response object.
+   * @return {void}
    */
   private getSomething(req: Request, res: Response): void {
     try {

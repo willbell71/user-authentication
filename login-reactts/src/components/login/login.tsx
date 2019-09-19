@@ -89,6 +89,7 @@ export class LoginComponent extends React.Component<TProps, TState> {
   /**
    * Change input field value.
    * @param {React.ChangeEvent<HTMLInputElement>} event - event that fired change.
+   * @return {void}
    */
   private changeInput: (event: React.ChangeEvent<HTMLInputElement>) => void = (event: React.ChangeEvent<HTMLInputElement>): void => {
     let fieldName: string = event.target.name;
@@ -127,6 +128,8 @@ export class LoginComponent extends React.Component<TProps, TState> {
 
   /**
    * Login.
+   * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event - mouse event.
+   * @return {void}
    */
   public login: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void =
     (event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {

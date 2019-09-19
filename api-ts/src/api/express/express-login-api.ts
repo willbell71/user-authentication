@@ -24,6 +24,7 @@ export class ExpressLoginAPI implements IServerRouteHandler<Router> {
    * Log in an existing user.
    * @param {Request} req - express request object.
    * @param {Response} res - express response object.
+   * @return {void}
    */
   private login(req: Request, res: Response): void {
     try {

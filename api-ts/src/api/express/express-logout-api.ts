@@ -32,6 +32,7 @@ export class ExpressLogoutAPI implements IServerRouteHandler<Router> {
    * Log out a user.
    * @param {Request} req - express request object.
    * @param {Resposne} res - express response object.
+   * @return {void}
    */
   private logout(req: Request & {user?: TDBServiceEntity}, res: Response): void {
     try {
