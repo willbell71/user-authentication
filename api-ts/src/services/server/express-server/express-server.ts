@@ -24,6 +24,7 @@ export class ExpressServer implements IServerService<express.RequestHandler, exp
   /**
    * Register middleware.
    * @param {express.RequestHandler} middleware - middleware to register.
+   * @return {void}
    */
   public registerMiddleware(middleware: express.RequestHandler): void {
     this.app.use(middleware);
@@ -33,6 +34,7 @@ export class ExpressServer implements IServerService<express.RequestHandler, exp
    * Register route
    * @param {string} path - path to register handler for.
    * @param {IServerRouteHandler<express.Router>} handler - handler for path.
+   * @return {void}
    */
   public registerRoute(path: string, handler: IServerRouteHandler<express.Router>): void {
     this.app.use(path, handler.registerHandlers());
@@ -42,6 +44,7 @@ export class ExpressServer implements IServerService<express.RequestHandler, exp
    * Start server.
    * @param {ILogger} logger - logger service provider.
    * @param {number} port - port number for server to listen on.
+   * @return {void}
    */
   public start(logger: ILogger, port: number): void {
     // start server

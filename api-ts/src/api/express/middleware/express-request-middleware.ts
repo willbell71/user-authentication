@@ -13,6 +13,7 @@ export class ExpressRequestMiddleware {
    * @param {Response} res - express response object.
    * @param {NextFunction} next - next function in middleware chain.
    * @param {string[]} validFields - list of fields to whitelist.
+   * @return {void}
    */
   public static validateRequestBodyFields(logger: ILogger,
     req: Request,

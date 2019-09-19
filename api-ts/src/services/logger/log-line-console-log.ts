@@ -9,6 +9,7 @@ export class LogLineConsoleLog implements ILogLine {
    * @param {string} date - date string.
    * @param {string} pid - process id string.
    * @param {string} message - message string.
+   * @return {void}
    */
   public log(date: string, pid: string, message: string): void {
     // eslint-disable-next-line no-console

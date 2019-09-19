@@ -14,7 +14,7 @@ export class AuthService implements IAuthService {
 
   /**
    * Constructor.
-   * @param {Logger} loggerService - logger service.
+   * @param {ILogger} logger - logger service.
    * @param {TokenService} tokenService - token service.
    * @param {DBService} dbService - db service.
    */

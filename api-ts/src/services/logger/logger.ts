@@ -49,6 +49,7 @@ export class Logger extends Writable implements ILogger {
    * @param {number} loggerLevel - message logger level.
    * @param {number} level - message logger level.
    * @param {string} message - message to write.
+   * @return {void}
    */
   private writeLog(loggers: Loggers, loggerLevel: number, level: number, message: string): void {
     if (loggerLevel >= level) {
@@ -81,6 +82,7 @@ export class Logger extends Writable implements ILogger {
   /**
    * Set current log level.
    * @param {ELoggerLevel} level - new log level
+   * @return {void}
    */
   public setLevel(level: ELoggerLevel): void {
     this.loggerLevel = level;
@@ -90,6 +92,7 @@ export class Logger extends Writable implements ILogger {
    * Log a message.
    * @param {string} name - name of logger.
    * @param {string} message - message to log.
+   * @return {void}
    */
   public debug(name: string, message: string): void {
     this.writeLog(this.loggers, this.loggerLevel, ELoggerLevel.DEBUG, `${name}: ${message}`);
@@ -99,6 +102,7 @@ export class Logger extends Writable implements ILogger {
    * Log a message.
    * @param {string} name - name of logger.
    * @param {string} message - message to log.
+   * @return {void}
    */
   public verbose(name: string, message: string): void {
     this.writeLog(this.loggers, this.loggerLevel, ELoggerLevel.VERBOSE, `${name}: ${message}`);
@@ -108,6 +112,7 @@ export class Logger extends Writable implements ILogger {
    * Log a message.
    * @param {string} name - name of logger.
    * @param {string} message - message to log.
+   * @return {void}
    */
   public info(name: string, message: string): void {
     this.writeLog(this.loggers, this.loggerLevel, ELoggerLevel.INFO, `${name}: ${message}`);
@@ -117,6 +122,7 @@ export class Logger extends Writable implements ILogger {
    * Log a message.
    * @param {string} name - name of logger.
    * @param {string} message - message to log.
+   * @return {void}
    */
   public warn(name: string, message: string): void {
     this.writeLog(this.loggers, this.loggerLevel, ELoggerLevel.WARN, `${name}: ${message}`);
@@ -125,6 +131,7 @@ export class Logger extends Writable implements ILogger {
   /**
    * Log an error.
    * @param {string} message - error message.
+   * @return {void}
    */
   public error(message: string): void {
     this.writeLog(this.loggers, this.loggerLevel, ELoggerLevel.ERROR, `ERROR: ${message}`);
@@ -134,6 +141,7 @@ export class Logger extends Writable implements ILogger {
    * Log an assert, if condition isn't met
    * @param {boolean} condition - assert when false.
    * @param {string} message - assertion message.
+   * @return {void}
    */
   public assert(condition: boolean, message: string): void {
     if (!condition) {

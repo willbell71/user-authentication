@@ -37,6 +37,7 @@ export type TProps = {
 export class DashboardComponent extends React.Component<TProps, {}> {
   /**
    * Get something from API.
+   * @return {void}
    */
   public getSomething: () => void = (): void => {
     this.props.actions.getSomething();
@@ -44,6 +45,7 @@ export class DashboardComponent extends React.Component<TProps, {}> {
 
   /**
    * Log out user.
+   * @return {void}
    */
   public logout: () => void = (): void => {
     this.props.actions.logout();

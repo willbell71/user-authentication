@@ -12,6 +12,7 @@ type TProps = {
 
 /**
  * Unavailable component render.
+ * @param {TProps} props - component properties.
  * @return {JSX.Element} render.
  */
 export function Unavailable(props: TProps): JSX.Element {
