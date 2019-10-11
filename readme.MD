@@ -64,7 +64,7 @@ D 4. Add dashboard page<br/>
 D 5. Integrate NodeJS API<br/>
 D 6. Protect dashboard route<br/>
 - 7. Refactor forms to a shared component ?
-- 8. Angular animations
+- 8. Angular animations<br/>
 D 9. Interceptor - delete token, if request fails auth ( 401 )
 
 ### ReactTS
@@ -91,7 +91,7 @@ D 7. Add dummy protected route ( used to populate dashboard with dummy content )
 
 I 1. Set up container for NGINX, to serve clients ( angular and react clients on different hosts )<br/>
 I 2. Set up container for Angular client<br/>
-- 3. Set up container for ReactTS client
+- 3. Set up container for ReactTS client<br/>
 I 4. Set up container for NodeJS API<br/>
 I 5. Set up docker compose ( nginx, mongo, node api )<br/>
 - 6. Set up Kubernetes deployment script
