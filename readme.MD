@@ -2,13 +2,13 @@
 
 Simple user authentication example using JWT, along with clients in Angular and ReactJS.
 
-A NodeJS API to
+A NodeJS ( and TS implementation ) API to
 - Log in
 - Log out
 - Register
 - Access protected route<br/>
 
-TDD with mocha.
+TDD with mocha for the JS version, and jest for the TS version.
 
 Angular and ReactTS Clients
 - Log in page
