@@ -7,12 +7,14 @@ A NodeJS API to
 - Log out
 - Register
 - Access protected route<br/>
+
 TDD with mocha.
 
 Angular and ReactTS Clients
 - Log in page
 - Register page
 - Dashboard<br/>
+
 TDD with jasmine for Angular, jest for ReactTS.
 
 MongoDB / Mongoose
