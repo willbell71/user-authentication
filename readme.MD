@@ -6,21 +6,21 @@ A NodeJS API to
 - Log in
 - Log out
 - Register
-- Access protected route
+- Access protected route<br/>
 TDD with mocha.
 
-Angular and ReactJS Clients
+Angular and ReactTS Clients
 - Log in page
 - Register page
-- Dashboard
-TDD with jasmine for Angular, mocha for ReactJS.
+- Dashboard<br/>
+TDD with jasmine for Angular, jest for ReactTS.
 
 MongoDB / Mongoose
 - Store users
 
-Docker containers
-Docker compose
-Kubernetes deployment script
+Docker containers<br/>
+Docker compose<br/>
+Kubernetes deployment script<br/>
 Azure pipeline for GitHub ( CI )
 
 ## Development
@@ -57,43 +57,43 @@ To stop docker
 
 ### Angular
 
-D 1. Clear down Angular scaffold
-D 2. Add login page
-D 3. Add register page
-D 4. Add dashboard page
-D 5. Integrate NodeJS API
-D 6. Protect dashboard route
+D 1. Clear down Angular scaffold<br/>
+D 2. Add login page<br/>
+D 3. Add register page<br/>
+D 4. Add dashboard page<br/>
+D 5. Integrate NodeJS API<br/>
+D 6. Protect dashboard route<br/>
 - 7. Refactor forms to a shared component ?
 - 8. Angular animations
 D 9. Interceptor - delete token, if request fails auth ( 401 )
 
 ### ReactTS
 
-D 1. Set up a React build system using Typescript.
-D 2. Add login page
-D 3. Add register page
-D 4. Add dashboard page
-D 5. Integrate NodeJS API using Fetch
+D 1. Set up a React build system using Typescript.<br/>
+D 2. Add login page<br/>
+D 3. Add register page<br/>
+D 4. Add dashboard page<br/>
+D 5. Integrate NodeJS API using Fetch<br/>
 D 6. Protect dashboard route
 
 ### NodeJS API
 
-D 1. Set up basic express server boiler plate
-D 2. Set up mongoose / mongo connection
-D 3. Add model for user
-D 4. Add log in route
-D 5. Add log out route
-D 6. Add register route
-D 7. Add dummy protected route ( used to populate dashboard with dummy content )
+D 1. Set up basic express server boiler plate<br/>
+D 2. Set up mongoose / mongo connection<br/>
+D 3. Add model for user<br/>
+D 4. Add log in route<br/>
+D 5. Add log out route<br/>
+D 6. Add register route<br/>
+D 7. Add dummy protected route ( used to populate dashboard with dummy content )<br/>
 - 8. Integration tests
 
 ### Docker
 
-I 1. Set up container for NGINX, to serve clients ( angular and react clients on different hosts )
-I 2. Set up container for Angular client
-- 3. Set up container for ReactJS client
-I 4. Set up container for NodeJS API
-I 5. Set up docker compose ( nginx, mongo, node api )
+I 1. Set up container for NGINX, to serve clients ( angular and react clients on different hosts )<br/>
+I 2. Set up container for Angular client<br/>
+- 3. Set up container for ReactTS client
+I 4. Set up container for NodeJS API<br/>
+I 5. Set up docker compose ( nginx, mongo, node api )<br/>
 - 6. Set up Kubernetes deployment script
 - 7. NGINX HTTP2
 
