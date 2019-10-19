@@ -6,7 +6,9 @@ COPY package*.json ./
 
 RUN npm install --production
 
-COPY . .
+COPY ./src ./src
+COPY ./.env .
+COPY ./process.yml .
 
 EXPOSE 3000
 
