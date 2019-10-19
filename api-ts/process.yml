@@ -1,5 +1,5 @@
 apps:
-  - script: './out/app.js'
+  - script: './dist/app.js'
     name: 'LoginAPI'
     exec_mode: 'cluster'
     instances: '1'
