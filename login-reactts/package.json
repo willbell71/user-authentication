@@ -10,6 +10,11 @@
     },
     "preset": "ts-jest"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint && npm run test"
+    }
+  },
   "scripts": {
     "build": "webpack --mode=production",
     "watch": "webpack --watch",
@@ -40,6 +45,7 @@
     "eslint": "^6.3.0",
     "eslint-plugin-react": "^7.14.3",
     "fetch-mock": "^7.3.9",
+    "husky": "^3.0.9",
     "jest": "^24.9.0",
     "node-fetch": "^2.6.0",
     "node-sass": "^4.12.0",
