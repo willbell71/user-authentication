@@ -55,6 +55,29 @@ The app runs on port `8080`
 To stop docker
 >`docker-compose down`
 
+### Kubernetes
+
+Start Minikube<br/>
+>`minikube start`
+
+Start Minikube<br/>
+>`minikube stop`
+
+Enable Ingress Addon
+>`minikube addons enable ingress`
+
+Switch Docker to Minikube repo, ensuring minikube is started first<br/>
+>`eval $(minikube docker-env)`
+
+Deploy to minikube
+>`kubectl apply -f kubernetes.yaml`
+
+Delete deployment
+>`kubectl delete namespace login`
+
+List pods
+>`kubectl get pods --namespace=login`
+
 ## TODO
 
 ### Angular
@@ -99,6 +122,7 @@ I 4. Set up container for NodeJS API<br/>
 I 5. Set up docker compose ( nginx, mongo, node api )<br/>
 - 6. Set up Kubernetes deployment script
 - 7. NGINX HTTP2
+- 8. NGINX HTTPS
 
 ### Azure pipelines
 

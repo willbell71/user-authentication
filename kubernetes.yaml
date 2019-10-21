@@ -1,0 +1,181 @@
+apiVersion: v1
+kind: List
+items:
+# Namespace
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: login
+# Persistent Volume Claims
+# MongoDB Storage
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: mongodb
+    namespace: login
+  spec:
+    resources:
+      requests:
+        storage: 100Mi
+    accessModes:
+      - ReadWriteOnce
+# Deployments
+# API Service Deployment
+- apiVersion: apps/v1beta2
+  kind: Deployment
+  metadata:
+    name: apiservice
+    namespace: login
+  spec:
+    replicas: 3
+    selector:
+      matchExpressions:
+        - key: service
+          operator: In
+          values:
+            - api
+    template:
+      metadata:
+        labels:
+          service: api
+      spec:
+        containers:
+        - name: apiservice
+          image: api_ts
+          imagePullPolicy: Never
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 15
+          ports:
+          - containerPort: 3000
+# App deployment
+- apiVersion: apps/v1beta2
+  kind: Deployment
+  metadata:
+    name: logints
+    namespace: login
+  spec:
+    replicas: 3
+    selector:
+      matchExpressions:
+        - key: app
+          operator: In
+          values:
+            - logints
+    template:
+      metadata:
+        labels:
+          app: logints
+      spec:
+        containers:
+        - name: logints
+          image: login_ts
+          imagePullPolicy: Never
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 15
+          ports:
+          - containerPort: 3000
+# MongoDB deployment
+- apiVersion: apps/v1beta2
+  kind: Deployment
+  metadata:
+    name: mongodb
+    namespace: login
+  spec:
+    replicas: 1
+    selector:
+      matchExpressions:
+        - key: service
+          operator: In
+          values:
+            - mongodb
+    template:
+      metadata:
+        labels:
+          service: mongodb
+      spec:
+        containers:
+        - name: mongodb
+          image: mongo:latest
+          volumeMounts:
+          - name: mongodb
+            mountPath: /data/db
+          readinessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 15
+            timeoutSeconds: 1          
+          ports:
+          - containerPort: 27017
+        volumes:
+        - name: mongodb
+          persistentVolumeClaim:
+            claimName: mongodb
+# Services
+# API Service
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: apiservice
+    namespace: login
+  spec:
+    ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
+      name: http
+    selector:
+      service: api
+# App Service
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: login
+    namespace: login
+  spec:
+    ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
+      name: http
+    selector:
+      app: logints
+# MongoDB Service
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: mongodb
+    namespace: login
+  spec:
+    ports:
+    - port: 27017
+      targetPort: 27017
+      protocol: TCP
+      name: http
+    selector:
+      service: mongodb
+# Ingresses
+# Ingress
+- apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    name: login
+    namespace: login
+  spec:
+    rules:
+    - host: app.com
+      http:
+        paths:
+        - path: /
+          backend:
+            serviceName: login
+            servicePort: 3000
+        - path: /api/login
+          backend:
+            serviceName: apiservice
+            servicePort: 3000
