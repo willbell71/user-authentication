@@ -65,6 +65,9 @@ Start Minikube<br/>
 
 Enable Ingress Addon
 >`minikube addons enable ingress`
+Verify with
+>`kubectl get pods -n kube-system`
+Can be slow to start
 
 Switch Docker to Minikube repo, ensuring minikube is started first<br/>
 >`eval $(minikube docker-env)`
@@ -76,7 +79,23 @@ Delete deployment
 >`kubectl delete namespace login`
 
 List pods
->`kubectl get pods --namespace=login`
+>`kubectl get pods -n login`
+
+Get pod log
+>`kubectl logs ???? -n login`
+Where ???? is the name of the pod as displayed by `get pods`
+
+Shell into pod
+>`kubectl -n login exec -it ???? -- /bin/sh`
+Where ???? is the name of the pod as displayed by `get pods`
+
+Get minikube IP with
+>`minikube ip`
+Use this in hosts, associate the minikube ip with the domain name in the yaml
+
+Shell into mongo container and connect to db
+>`kubectl -n login exec -it mongodb-0 bash`
+>`mongo mongodb://bobdylan:tangledupinblue@mongodb-0/loginappdb?authSource=admin`
 
 ## TODO
 

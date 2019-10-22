@@ -68,8 +68,8 @@ export class MongoDBService implements IDBService {
 
           resolve();
         })
-        .catch(() => {
-          this.logger!.error('Failed to connect to mongo db');
+        .catch((err: Error) => {
+          this.logger!.error(`Failed to connect to mongo db - ${err.message}`);
 
           reject();
         });

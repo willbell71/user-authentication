@@ -45,7 +45,7 @@ items:
           imagePullPolicy: Never
           livenessProbe:
             httpGet:
-              path: /
+              path: /api/v1/probe
               port: 3000
             initialDelaySeconds: 15
           ports:
@@ -81,12 +81,13 @@ items:
           ports:
           - containerPort: 3000
 # MongoDB deployment
-- apiVersion: apps/v1beta2
-  kind: Deployment
+- apiVersion: apps/v1
+  kind: StatefulSet
   metadata:
     name: mongodb
     namespace: login
   spec:
+    serviceName: mongodb
     replicas: 1
     selector:
       matchExpressions:
@@ -112,6 +113,11 @@ items:
             timeoutSeconds: 1          
           ports:
           - containerPort: 27017
+          env:
+          - name: MONGO_INITDB_ROOT_USERNAME
+            value: "bobdylan" 
+          - name: MONGO_INITDB_ROOT_PASSWORD
+            value: "tangledupinblue"
         volumes:
         - name: mongodb
           persistentVolumeClaim:
@@ -171,11 +177,11 @@ items:
     - host: app.com
       http:
         paths:
+        - path: /api/v1
+          backend:
+            serviceName: apiservice
+            servicePort: 3000
         - path: /
           backend:
             serviceName: login
-            servicePort: 3000
-        - path: /api/login
-          backend:
-            serviceName: apiservice
             servicePort: 3000
