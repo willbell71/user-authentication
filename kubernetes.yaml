@@ -81,13 +81,12 @@ items:
           ports:
           - containerPort: 3000
 # MongoDB deployment
-- apiVersion: apps/v1
-  kind: StatefulSet
+- apiVersion: apps/v1beta2
+  kind: Deployment
   metadata:
     name: mongodb
     namespace: login
   spec:
-    serviceName: mongodb
     replicas: 1
     selector:
       matchExpressions:
