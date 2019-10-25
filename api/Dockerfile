@@ -1,4 +1,4 @@
-FROM node:dubnium
+FROM node:erbium
 
 WORKDIR /usr/src/app
 
