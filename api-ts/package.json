@@ -14,6 +14,7 @@
   "scripts": {
     "test": "jest src/**/* --verbose --coverage",
     "build": "tsc",
+    "build:watch": "tsc --watch",
     "lint": "eslint --ext .ts,.js src/",
     "watch": "pm2-runtime start process.yml --watch",
     "serve": "npm i && pm2 start process.yml",
@@ -21,7 +22,8 @@
     "serve:docker": "pm2-runtime start process.yml --env production",
     "restart": "pm2 restart process.yml",
     "stop": "pm2 stop process.yml",
-    "logs": "pm2 logs"
+    "logs": "pm2 logs",
+    "docker:build": "docker build -t api_ts ."
   },
   "keywords": [],
   "author": "",
@@ -38,7 +40,8 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.6.13",
     "morgan": "^1.9.1",
-    "pm2": "^3.5.1"
+    "pm2": "^3.5.1",
+    "saslprep": "^1.0.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",

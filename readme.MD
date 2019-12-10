@@ -97,6 +97,18 @@ Shell into mongo container and connect to db
 >`kubectl -n login exec -it mongodb-0 bash`
 >`mongo mongodb://bobdylan:tangledupinblue@mongodb-0/loginappdb?authSource=admin`
 
+K8 Secrets
+- kubectl create secret generic <out> --from-literal=<in>
+echo -n "bobdylan" | base64
+echo -n "tangledupinblue" | base64
+
+Rebuild api-ts docker image
+- cd api_ts
+- docker image rm api_ts
+- npm run build
+- docker build . -t api_ts
+- cd ..
+
 ## TODO
 
 ### Angular
@@ -139,9 +151,10 @@ I 2. Set up container for Angular client<br/>
 I 3. Set up container for ReactTS client<br/>
 I 4. Set up container for NodeJS API<br/>
 I 5. Set up docker compose ( nginx, mongo, node api )<br/>
-- 6. Set up Kubernetes deployment script
-- 7. NGINX HTTP2
-- 8. NGINX HTTPS
+I 6. Set up Kubernetes deployment script
+- 7. Kubernetes frontend pods need a local NodeJS server
+- 8. NGINX HTTP2
+- 9. NGINX HTTPS
 
 ### Azure pipelines
 

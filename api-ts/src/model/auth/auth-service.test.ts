@@ -60,11 +60,7 @@ beforeEach(() => {
   authService = new AuthService(logger, tokenService, dbService);
 });
 afterEach(() => {
-  jest.restoreAllMocks();
-
-  (dbService.setProp as jest.Mock).mockReset();
-  (dbService.fetch as jest.Mock).mockReset();
-  (tokenService.encrypt as jest.Mock).mockReset();
+  jest.clearAllMocks();
 
   user.token = 'token';
   user.lastLogin = new Date();  

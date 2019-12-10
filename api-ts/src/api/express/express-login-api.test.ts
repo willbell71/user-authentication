@@ -103,7 +103,7 @@ beforeEach(() => {
   expressLoginAPI = new ExpressLoginAPI(logger, userService);
 });
 afterEach(() => {
-  jest.restoreAllMocks();
+  jest.clearAllMocks();
 
   login = undefined as unknown as (req: {}, res: {}) => void;
   validateRequestBodyFields = undefined as unknown as (req: {}, res: {}, next: () => void) => void;

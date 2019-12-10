@@ -34,7 +34,7 @@ export class MongoDBService implements IDBService {
   private mappings?: Mappings;
 
   /**
-   * Connect to db and set up schema.
+   * Connect to db and set up schema, will continue to retry until success.
    * @param {ILogger} logger - logger services provider.
    * @param {string} connection - connection string.
    * @param {SchemaMapping[]} schema - entity names and schemas.
@@ -44,35 +44,51 @@ export class MongoDBService implements IDBService {
     this.logger = logger;
     this.schema = schema;    
 
+    const success: () => void = (): void => {
+      this.logger!.info('MongoDBService', 'Mongo database connected');
+
+      // generate mongoose schemas and mappings
+      this.mappings = {};
+      this.schema!.forEach((entity: SchemaMapping) => {
+        const {name, schemaDefinition}: {name: string; schemaDefinition: mongoose.SchemaDefinition} = entity;
+        const mSchema: mongoose.Schema = new mongoose.Schema(schemaDefinition);
+        this.mappings![name] = {
+          schema: mSchema,
+          model: mongoose.model(name, mSchema)
+        };
+      });
+    };
+
     return new Promise<void>((
-      resolve: ((value?: void | PromiseLike<void> | undefined) => void),
-      reject: ((reason?: Error) => void)
+      resolve: ((value?: void | PromiseLike<void> | undefined) => void)
     ): void => {
-      // connect to mongo
-      mongoose.connect(connection, {
-        useNewUrlParser: true
-      })
-        .then(() => {
-          this.logger!.info('MongoDBService', 'Mongo database connected');
-
-          // generate mongoose schemas and mappings
-          this.mappings = {};
-          this.schema!.forEach((entity: SchemaMapping) => {
-            const {name, schemaDefinition}: {name: string; schemaDefinition: mongoose.SchemaDefinition} = entity;
-            const mSchema: mongoose.Schema = new mongoose.Schema(schemaDefinition);
-            this.mappings![name] = {
-              schema: mSchema,
-              model: mongoose.model(name, mSchema)
-            };
-          });
-
-          resolve();
+      // need to retry incase the db isn't up yet
+      const attemptToConnect: () => void = () => {
+        this.logger!.debug('MongoDBService', 'Attempting to connect to MongoDB instance...');
+        // attempt to connect to mongo
+        mongoose.connect(connection, {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+          useCreateIndex: true
         })
-        .catch((err: Error) => {
-          this.logger!.error(`Failed to connect to mongo db - ${err.message}`);
+          .then(() => {
+            // success, finish up
+            success();
 
-          reject();
-        });
+            resolve();
+          })
+          .catch((err: Error) => {
+            this.logger!.error(`Failed to connect to mongo db - ${err.message}`);
+
+            // retry again in a bit
+            setTimeout(() => {
+              attemptToConnect();
+            }, 3000);
+          });
+      };
+
+      // make initial connection attempt immediately
+      attemptToConnect();
     });
   }
 

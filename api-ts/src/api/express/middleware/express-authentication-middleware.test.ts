@@ -47,7 +47,7 @@ beforeEach(() => {
   } as unknown as Response;
 });
 afterEach(() => {
-  jest.restoreAllMocks();
+  jest.clearAllMocks();
 
   authService = {
     getAuthenticatedUserForToken: jest.fn().mockImplementation(() =>

@@ -6,8 +6,9 @@ import { IServerRouteHandler } from '../../services/server/iserver-route-handler
 /**
  * Probe API endpoints.
  */
-export class ExpressProbeAPI implements IServerRouteHandler<Router> {
+export class ExpressReadinessProbeAPI implements IServerRouteHandler<Router> {
   private logger: ILogger;
+  private ready: boolean = false;
 
   /**
    * Constructor
@@ -24,7 +25,7 @@ export class ExpressProbeAPI implements IServerRouteHandler<Router> {
    * @return {void}
    */
   private probe(req: Request, res: Response): void {
-    res.sendStatus(200);
+    res.sendStatus(this.ready ? 200 : 400);
   }
 
   /**
@@ -35,8 +36,18 @@ export class ExpressProbeAPI implements IServerRouteHandler<Router> {
     const router: Router = Router();
 
     // register endpoints
-    router.get('/', this.probe);
+    router.get('/', (req: Request, res: Response) => this.probe(req, res));
 
     return router;
+  }
+
+  /**
+   * Flag pod as ready.
+   * @return {void}
+   */
+  public setReady(): void {
+    this.logger.info('ExpressReadinessProbe', 'Pod now flagged as ready');
+
+    this.ready = true;
   }
 }

@@ -18,7 +18,7 @@ let tokenService: ITokenService;
 beforeEach(() => {
   tokenService = new JWTTokenService();
 });
-afterEach(() => jest.restoreAllMocks());
+afterEach(() => jest.clearAllMocks());
 
 describe('JWTTokenService', () => {
   describe('encrypt', () => {

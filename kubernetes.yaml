@@ -19,9 +19,19 @@ items:
         storage: 100Mi
     accessModes:
       - ReadWriteOnce
+# Secrets
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: mongosecret
+    namespace: login
+  type: Opaque
+  data:
+    username: Ym9iZHlsYW4=
+    password: dGFuZ2xlZHVwaW5ibHVl
 # Deployments
 # API Service Deployment
-- apiVersion: apps/v1beta2
+- apiVersion: apps/v1
   kind: Deployment
   metadata:
     name: apiservice
@@ -45,13 +55,18 @@ items:
           imagePullPolicy: Never
           livenessProbe:
             httpGet:
-              path: /api/v1/probe
+              path: /api/v1/livenessprobe
+              port: 3000
+            initialDelaySeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /api/v1/readinessprobe
               port: 3000
             initialDelaySeconds: 15
           ports:
           - containerPort: 3000
 # App deployment
-- apiVersion: apps/v1beta2
+- apiVersion: apps/v1
   kind: Deployment
   metadata:
     name: logints
@@ -81,7 +96,7 @@ items:
           ports:
           - containerPort: 3000
 # MongoDB deployment
-- apiVersion: apps/v1beta2
+- apiVersion: apps/v1
   kind: Deployment
   metadata:
     name: mongodb
@@ -109,14 +124,20 @@ items:
             tcpSocket:
               port: 27017
             initialDelaySeconds: 15
-            timeoutSeconds: 1          
+            timeoutSeconds: 1
           ports:
           - containerPort: 27017
           env:
           - name: MONGO_INITDB_ROOT_USERNAME
-            value: "bobdylan" 
+            valueFrom:
+              secretKeyRef:
+                name: mongosecret
+                key: username
           - name: MONGO_INITDB_ROOT_PASSWORD
-            value: "tangledupinblue"
+            valueFrom:
+              secretKeyRef:
+                name: mongosecret
+                key: password
         volumes:
         - name: mongodb
           persistentVolumeClaim:
@@ -162,7 +183,6 @@ items:
       targetPort: 27017
       protocol: TCP
       name: http
-    clusterIP: None
     selector:
       service: mongodb
 # Ingresses

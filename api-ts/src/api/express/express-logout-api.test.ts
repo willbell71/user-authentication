@@ -87,7 +87,7 @@ beforeEach(() => {
   expressLogoutAPI = new ExpressLogoutAPI(logger, authService, userService);
 });
 afterEach(() => {
-  jest.restoreAllMocks();
+  jest.clearAllMocks();
 
   auth = undefined as unknown as (logger: ILogger, req: {}, res: {}, next: () => void, authService: IAuthService) => void;
   validateRequestBodyFields = undefined as unknown as (req: {}, res: {}, next: () => void) => void;

@@ -70,13 +70,7 @@ beforeEach(() => {
 
   mongoDBService = new MongoDBService();
 });
-afterEach(() => {
-  jest.restoreAllMocks();
-  (mongoose.connect as jest.Mock).mockClear();
-  (mongoose.model as jest.Mock).mockClear();
-  (mongoose.Schema as unknown as jest.Mock).mockClear();
-  (mongoose.Model as unknown as jest.Mock).mockClear();
-});
+afterEach(() => jest.clearAllMocks());
 
 describe('MongoDBService', () => {
   describe('connect', () => {
@@ -114,12 +108,12 @@ describe('MongoDBService', () => {
         schemaDefinition: {
           test: String
         }
-      }])
-        .then(() => done('Invoked done block'))
-        .catch(() => {
-          expect(errorLineSpy).toHaveBeenCalled();
-          done();
-        });
+      }]);
+
+      setTimeout(() => {
+        expect(errorLineSpy).toHaveBeenCalledTimes(2);
+        done();
+      }, 4000);
     });
 
     it('should call mongoose Schema for each entity', (done: jest.DoneCallback) => {
