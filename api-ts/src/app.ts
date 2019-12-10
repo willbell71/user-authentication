@@ -39,7 +39,8 @@ import { AuthService } from './model/auth/auth-service';
 
 import { ExpressLoginAPI } from './api/express/express-login-api';
 import { ExpressLogoutAPI } from './api/express/express-logout-api';
-import { ExpressProbeAPI } from './api/express/express-probe-api';
+import { ExpressLivenessProbeAPI } from './api/express/express-liveness-probe-api';
+import { ExpressReadinessProbeAPI } from './api/express/express-readiness-probe-api';
 import { ExpressRegisterAPI } from './api/express/express-register-api';
 import { ExpressGetSomethingAPI } from './api/express/express-get-something-api';
 
@@ -63,6 +64,9 @@ passwordServiceFactory.registerService('bcrypt', BCryptPasswordService);
 const dbServiceFactory: IFactory<IDBService> = new DBServiceFactory(logger);
 dbServiceFactory.registerService('mongo', MongoDBService);
 
+// create readiness probe
+const readinessProbe: ExpressReadinessProbeAPI = new ExpressReadinessProbeAPI(logger);
+
 // create db service
 const dbService: IDBService = dbServiceFactory.createService('mongo');
 dbService.connect(logger,
@@ -77,7 +81,7 @@ dbService.connect(logger,
       lastLogin: Date,
       token: String
     }
-  }]);
+  }]).then(() => readinessProbe.setReady());
 
 // create user service
 const userService: IUserService = new UserService(logger,
@@ -111,7 +115,8 @@ if (config.disableCORS) {
 // register routes
 server.registerRoute('/api/v1/login', new ExpressLoginAPI(logger, userService));
 server.registerRoute('/api/v1/logout', new ExpressLogoutAPI(logger, authService, userService));
-server.registerRoute('/api/v1/probe', new ExpressProbeAPI(logger));
+server.registerRoute('/api/v1/livenessprobe', new ExpressLivenessProbeAPI(logger));
+server.registerRoute('/api/v1/readinessprobe', readinessProbe);
 server.registerRoute('/api/v1/register', new ExpressRegisterAPI(logger, userService));
 server.registerRoute('/api/v1/getsomething', new ExpressGetSomethingAPI(logger, authService));
 // start server

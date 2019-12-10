@@ -60,12 +60,7 @@ beforeEach(() => {
 
   server = new ExpressServer();
 });
-afterEach(() => {
-  jest.restoreAllMocks();
-  (express().use as jest.Mock).mockClear();
-  (http.createServer().listen as jest.Mock).mockClear();
-  (http.createServer as jest.Mock).mockClear();
-});
+afterEach(() => jest.clearAllMocks());
 
 describe('ExpressServer', () => {
   describe('registerMiddleware', () => {

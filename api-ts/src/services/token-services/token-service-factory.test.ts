@@ -39,7 +39,7 @@ beforeEach(() => {
   factory = new TokenServiceFactory(logger);  
   factory.registerService('test', TokenTestService);
 });
-afterEach(() => jest.restoreAllMocks());
+afterEach(() => jest.clearAllMocks());
 
 describe('TokenServiceFactory', () => {
   it('should return a registered service', () => {

@@ -39,7 +39,7 @@ beforeEach(() => {
   } as unknown as Response;
 });
 afterEach(() => {
-  jest.restoreAllMocks();
+  jest.clearAllMocks();
 
   req = {
     body: {

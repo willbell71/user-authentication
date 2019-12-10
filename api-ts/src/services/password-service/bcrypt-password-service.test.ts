@@ -21,7 +21,7 @@ let passwordService: IPasswordService;
 beforeEach(() => {
   passwordService = new BCryptPasswordService();
 });
-afterEach(() => jest.restoreAllMocks());
+afterEach(() => jest.clearAllMocks());
 
 describe('BCryptPasswordService', () => {
   describe('encrypt', () => {

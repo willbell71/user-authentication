@@ -69,7 +69,7 @@ beforeEach(() => {
   expressGetSomethingAPI = new ExpressGetSomethingAPI(logger, authService);
 });
 afterEach(() => {
-  jest.restoreAllMocks();
+  jest.clearAllMocks();
 
   auth = undefined as unknown as (logger: ILogger, req: {}, res: {}, next: () => void, authService: IAuthService) => void;
   getSomething = undefined as unknown as (req: {}, res: {}) => void;

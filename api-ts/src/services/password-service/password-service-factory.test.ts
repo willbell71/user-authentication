@@ -39,7 +39,7 @@ beforeEach(() => {
   factory = new PasswordServiceFactory(logger);
   factory.registerService('test', PasswordTestService);
 });
-afterEach(() => jest.restoreAllMocks());
+afterEach(() => jest.clearAllMocks());
 
 describe('PasswordServiceFactory', () => {
   it('should return a registered service', () => {

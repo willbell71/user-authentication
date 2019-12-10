@@ -28,7 +28,7 @@ import * as express from 'express';
 
 import { ILogLine } from '../../services/logger/ilog-line';
 import { Logger } from '../../services/logger/logger';
-import { ExpressProbeAPI } from './express-probe-api';
+import { ExpressLivenessProbeAPI } from './express-liveness-probe-api';
 
 let logLineSpy: jest.Mock;
 let warnLineSpy: jest.Mock;
@@ -39,7 +39,7 @@ let warn: ILogLine;
 let error: ILogLine;
 let assert: ILogLine;
 let logger: ILogger;
-let expressProbeAPI: ExpressProbeAPI;
+let expressLivenessProbeAPI: ExpressLivenessProbeAPI;
 beforeEach(() => {
   logLineSpy = jest.fn().mockImplementation(() => {});
   warnLineSpy = jest.fn().mockImplementation(() => {});
@@ -52,28 +52,26 @@ beforeEach(() => {
   assert = {log: assertLineSpy};
   logger = new Logger(log, warn, error, assert);
 
-  expressProbeAPI = new ExpressProbeAPI(logger);
+  expressLivenessProbeAPI = new ExpressLivenessProbeAPI(logger);
 });
-afterEach(() => {
-  jest.restoreAllMocks();
-});
+afterEach(() => jest.clearAllMocks());
 
-describe('ExpressProbeAPI', () => {
+describe('ExpressLivenessProbeAPI', () => {
   describe('registerHandlers', () => {
     it('should create a router', () => {
-      expressProbeAPI.registerHandlers();
+      expressLivenessProbeAPI.registerHandlers();
 
       expect(express.Router).toHaveBeenCalled();
     });
 
     it('should register a get route', () => {
-      expressProbeAPI.registerHandlers();
+      expressLivenessProbeAPI.registerHandlers();
 
       expect(express.Router().get).toHaveBeenCalled();
     });
 
     it('should return router', () => {
-      const router: express.Router = expressProbeAPI.registerHandlers();
+      const router: express.Router = expressLivenessProbeAPI.registerHandlers();
 
       expect(router).toBeTruthy();
     });
@@ -81,7 +79,7 @@ describe('ExpressProbeAPI', () => {
 
   describe('probe', () => {
     it('should call res.sendStatus on success', (done: jest.DoneCallback) => {
-      expressProbeAPI.registerHandlers();
+      expressLivenessProbeAPI.registerHandlers();
 
       const sendStatus: jest.Mock = jest.fn();
       probe({}, {

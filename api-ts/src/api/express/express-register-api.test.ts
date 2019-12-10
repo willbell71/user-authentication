@@ -104,7 +104,7 @@ beforeEach(() => {
   expressRegisterAPI = new ExpressRegisterAPI(logger, userService);
 });
 afterEach(() => {
-  jest.restoreAllMocks();
+  jest.clearAllMocks();
 
   register = undefined as unknown as (req: {}, res: {}) => void;
   validateRequestBodyFields = undefined as unknown as (req: {}, res: {}, next: () => void) => void;

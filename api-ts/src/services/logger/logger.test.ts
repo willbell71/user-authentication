@@ -26,7 +26,7 @@ beforeEach(() => {
   assert = {log: assertLineSpy};
   logger = new Logger(log, warn, error, assert);
 });
-afterEach(() => jest.restoreAllMocks());
+afterEach(() => jest.clearAllMocks());
 
 describe('Logger', () => {
   it('should return an instance of Writable', () => {

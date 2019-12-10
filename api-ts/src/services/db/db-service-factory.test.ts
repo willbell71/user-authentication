@@ -51,7 +51,7 @@ beforeEach(() => {
   factory = new DBServiceFactory(logger);
   factory.registerService('test', DBTestService);
 });
-afterEach(() => jest.restoreAllMocks());
+afterEach(() => jest.clearAllMocks());
 
 describe('DBServiceFactory', () => {
   it('should return a registered service', () => {
