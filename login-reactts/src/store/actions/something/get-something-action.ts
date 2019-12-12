@@ -20,7 +20,7 @@ type TSomethingResponse = {
 export const getSomethingAction: () => (dispatch: (action: TAction<TSomethingActionPayload>) => void) => Promise<void> =
   () => (dispatch: (action: TAction<TSomethingActionPayload>) => void): Promise<void> => {
     // get
-    return fetch('http://localhost:8080/api/v1/getsomething', {
+    return fetch('http://app.com/api/v1/getsomething', {
       headers: {
         'Accept': 'application/json',
         'Authorization': `Bearer ${AppStore.getStore().getState().login.token}`

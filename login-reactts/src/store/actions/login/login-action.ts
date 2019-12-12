@@ -19,7 +19,7 @@ type TLoginResponse = {
 export const loginAction: (email: string, password: string) => (dispatch: (action: TAction<TLoginActionPayload>) => void) => Promise<void> =
   (email: string, password: string) => (dispatch: (action: TAction<TLoginActionPayload>) => void): Promise<void> => {
     // login
-    return fetch('http://localhost:8080/api/v1/login', {
+    return fetch('http://app.com/api/v1/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
