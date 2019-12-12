@@ -47,6 +47,6 @@ if (config.disableCORS) {
 server.registerRoute('/api/v1/livenessprobe', new ExpressLivenessProbeAPI(logger));
 // server public folder
 server.registerStaticPath(path.join(__dirname, '..', 'public'));
-server.registerRoute('*', new ExpressFileServerAPI(logger, '*', path.join(__dirname, '..', '..', '..', 'public', 'index.html')));
+server.registerRoute('*', new ExpressFileServerAPI(logger, '*', path.join(__dirname, '..', 'public', 'index.html')));
 // start server
 server.start(logger, config.port);

@@ -41,7 +41,7 @@ export class ExpressFileServerAPI implements IServerRouteHandler<Router> {
     const router: Router = Router();
 
     // register endpoints
-    router.get(this.route, this.serve);
+    router.get(this.route, (req: Request, res: Response) => this.serve(req, res));
 
     return router;
   }
