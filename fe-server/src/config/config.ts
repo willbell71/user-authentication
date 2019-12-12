@@ -32,5 +32,5 @@ export const config: Config = {
   port: parseInt(process.env.PORT || '3000', 10),
   logLevel: process.env.LOG_LEVEL || 'ALL',
   useCompression: 'true' === (process.env.USE_COMPRESSION || '').toLowerCase(),
-  disableCORS: 'true' === (process.env.DISABLE_CORS || '').toLowerCase(),
+  disableCORS: 'true' === (process.env.DISABLE_CORS || '').toLowerCase()
 };

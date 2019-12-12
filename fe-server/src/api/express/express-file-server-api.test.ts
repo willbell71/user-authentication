@@ -1,6 +1,6 @@
 import { ILogger } from '../../services/logger/ilogger';
 
-let serve: {filePath: string, serve: (req: object, res: object) => void} = {
+const serve: {filePath: string; serve: (req: object, res: object) => void} = {
   filePath: 'filepath',
   serve: function() {}
 };
