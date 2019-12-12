@@ -10,7 +10,7 @@ import { TAction } from '../taction';
 export const logoutAction: () => (dispatch: (action: TAction<TLoginActionPayload>) => void) => Promise<void> =
   () => (dispatch: (action: TAction<TLoginActionPayload>) => void): Promise<void> => {
     // log out
-    return fetch('http://localhost:8080/api/v1/logout', {
+    return fetch('http://app.com/api/v1/logout', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${AppStore.getStore().getState().login.token}`

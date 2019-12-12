@@ -23,7 +23,7 @@ export const registerAction: (firstName: string, lastName: string, email: string
   (firstName: string, lastName: string, email: string, password: string) =>
     (dispatch: (action: TAction<TLoginActionPayload>) => void): Promise<void> => {
       // login
-      return fetch('http://localhost:8080/api/v1/register', {
+      return fetch('http://app.com/api/v1/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

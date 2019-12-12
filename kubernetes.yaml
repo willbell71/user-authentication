@@ -86,7 +86,7 @@ items:
       spec:
         containers:
         - name: logints
-          image: login_ts
+          image: fe_server
           imagePullPolicy: Never
           livenessProbe:
             httpGet:
