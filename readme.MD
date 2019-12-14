@@ -1,10 +1,10 @@
 # Login
 
-Simple user authentication example using JWT.
-Clients in Angular and ReactJS.
+Simple user authentication example using JWT.<br/>
+Clients in Angular and ReactJS.<br/>
 NodeJS / Express is used for the API, with MongoDB to store users.
 
-Docker and docker-compose example scripts for development.
+Docker and docker-compose example scripts for development.<br/>
 And a Kubernetes deploy script example for production.
 
 The API offers
@@ -41,7 +41,7 @@ Run npm install first time
 >`npm i`
 
 This is a Typescript implementation of the NodeJS / Express API, and needs compiling to Javascript, there's an npm script set up, just run
->`npm run build`
+>`npm run build`<br/>
 The compiled Javascript is output in `dist/`
 
 A `.env` file is required in the root of api-ts
@@ -89,7 +89,7 @@ Run npm install first time
 >`npm i`
 
 This is a custom React Typescript project with a local webpack config.  There are npm scripts to generate builds, run
->`npm run build`
+>`npm run build`<br/>
 will generate a production build in the `dist/` folder.
 
 Currently the app is hardcoded to use the `app.com` domain, and as such is good for testing in the `Kubernetes` build.  Simply copy the build artefacts to the fe-server `public/` folder.
@@ -108,7 +108,7 @@ Build the Angular app, in the `login-angular` folder
 Start up docker
 >`docker-compose up`
 
-Use `--build` to force the containers to rebuild themselves
+Use `--build` to force the containers to rebuild themselves<br/>
 NOTE - this will reset the db
 >`docker-compose up --build`
 
@@ -133,37 +133,37 @@ Start Minikube<br/>
 >`minikube start`
 
 Enable Ingress Addon ( only needs to be done once )
->`minikube addons enable ingress`
-Verify with
->`kubectl get pods -n kube-system`
+>`minikube addons enable ingress`<br/>
+Verify with<br/>
+>`kubectl get pods -n kube-system`<br/>
 Can be slow to start
 
 Switch Docker to Minikube repo, ensuring minikube is started first<br/>
 >`eval $(minikube docker-env)`
 
 Get minikube IP with
->`minikube ip`
+>`minikube ip`<br/>
 Use this in hosts, associate the minikube ip with the domain name in the yaml ingress host ( app.com ), ie `- host: app.com`
 
 ### Build Docker images for pods
 
-Build docker containers and upload to Minikube docker registry
+Build docker containers and upload to Minikube docker registry<br/>
 Build API - From root of repo
->`cd api-ts`
->`npm run build`
->`docker image rm api_ts`
->`docker build . -t api_ts`
+>`cd api-ts`<br/>
+>`npm run build`<br/>
+>`docker image rm api_ts`<br/>
+>`docker build . -t api_ts`<br/>
 
 Build Front End ( Angular ) - From root of repo
->`cd login-angular`
->`ng build --prod`
->`cd ..`
-Build Front End Server ( to serve Angular build ) - From root of repo
->`rm fe-server/public/*`
->`cp login-angular/dist/login-angular/* fe-server/public/`
->`cd fe-server`
->`npm run build`
->`docker image rm fe_server`
+>`cd login-angular`<br/>
+>`ng build --prod`<br/>
+>`cd ..`<br/>
+Build Front End Server ( to serve Angular build ) - From root of repo<br/>
+>`rm fe-server/public/*`<br/>
+>`cp login-angular/dist/login-angular/* fe-server/public/`<br/>
+>`cd fe-server`<br/>
+>`npm run build`<br/>
+>`docker image rm fe_server`<br/>
 >`docker build . -t fe_server`
 
 ### Deploy / Test
@@ -175,7 +175,7 @@ List pods
 >`kubectl get pods -n login`
 
 Get pod log
->`kubectl logs ???? -n login`
+>`kubectl logs ???? -n login`<br/>
 Where ???? is the name of the pod as displayed by `get pods`
 
 ### Delete deployment
@@ -191,12 +191,12 @@ Stop Minikube<br/>
 ### Testing
 
 Shell into pod
->`kubectl -n login exec -it ???? bash`
+>`kubectl -n login exec -it ???? bash`<br/>
 Where ???? is the name of the pod as displayed by `get pods`
 
 Shell into mongo container and connect to db
->`kubectl -n login exec -it ???? bash`
-Where ???? is the name of the mongo pod as displayed by `get pods`
+>`kubectl -n login exec -it ???? bash`<br/>
+Where ???? is the name of the mongo pod as displayed by `get pods`<br/>
 >`mongo -u bobdylan -p tangledupinblue`
 
 ### Generating Secrets
