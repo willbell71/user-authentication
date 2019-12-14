@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect, ConnectedComponentClass } from 'react-redux';
+import { connect, ConnectedComponent } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 import { AnyAction, bindActionCreators, Dispatch } from 'redux';
 
@@ -290,7 +290,7 @@ export const mapDispatchToProps: (dispatch: Dispatch<AnyAction>) => {
 });
 
 // connect component to store and export wrapper
-export const Register: ConnectedComponentClass<typeof RegisterComponent, {
+export const Register: ConnectedComponent<typeof RegisterComponent, {
   validator: (validationRules: TFormValidationRule[], values: {[key: string]: string}, errorMsgs: {[key: string]: string}) => boolean  
 }> =
   connect(mapStateToProps, mapDispatchToProps)(RegisterComponent);

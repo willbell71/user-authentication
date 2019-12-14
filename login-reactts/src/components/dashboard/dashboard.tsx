@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect, ConnectedComponentClass } from 'react-redux';
+import { connect, ConnectedComponent } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { AnyAction, bindActionCreators, Dispatch } from 'redux';
 
@@ -103,5 +103,5 @@ export const mapDispatchToProps: (dispatch: Dispatch<AnyAction>) => {
 });
 
 // connect component to store and export wrapper
-export const Dashboard: ConnectedComponentClass<typeof DashboardComponent, {}> =
+export const Dashboard: ConnectedComponent<typeof DashboardComponent, {}> =
   connect(mapStateToProps, mapDispatchToProps)(DashboardComponent);
