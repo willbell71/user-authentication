@@ -19,7 +19,7 @@ afterEach(() => {
 
 describe('registerAction', () => {
   it('should call fetch', () => {
-    fetchMock.postOnce('http://localhost:8080/api/v1/register', {
+    fetchMock.postOnce('http://app.com/api/v1/register', {
       body: {
         token: 'token'
       }
@@ -36,7 +36,7 @@ describe('registerAction', () => {
   });
 
   it('should handle response error status', () => {
-    fetchMock.postOnce('http://localhost:8080/api/v1/register', 400);
+    fetchMock.postOnce('http://app.com/api/v1/register', 400);
 
     const expectedActions: {type: ELoginActions, payload: {}}[] = [
       { type: ELoginActions.REGISTER, payload: { token: null, error: 'Failed to register' } }
@@ -49,7 +49,7 @@ describe('registerAction', () => {
   });
 
   it('should handle failure', () => {
-    fetchMock.postOnce('http://localhost:8080/api/v1/register', {
+    fetchMock.postOnce('http://app.com/api/v1/register', {
       throws: new Error('Failed')
     });
 
@@ -64,7 +64,7 @@ describe('registerAction', () => {
   });
 
   it('should handle bad JSON', () => {
-    fetchMock.postOnce('http://localhost:8080/api/v1/register', {
+    fetchMock.postOnce('http://app.com/api/v1/register', {
       body: '"banana: true'
     });
 
