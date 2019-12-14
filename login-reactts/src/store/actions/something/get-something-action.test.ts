@@ -19,7 +19,7 @@ afterEach(() => {
 
 describe('getSomethingAction', () => {
   it('should call fetch', () => {
-    fetchMock.getOnce('http://localhost:8080/api/v1/getsomething', {
+    fetchMock.getOnce('http://app.com/api/v1/getsomething', {
       body: {
         title: 'title',
         body: 'body'
@@ -37,7 +37,7 @@ describe('getSomethingAction', () => {
   });
 
   it('should handle response error status', () => {
-    fetchMock.getOnce('http://localhost:8080/api/v1/getsomething', 400);
+    fetchMock.getOnce('http://app.com/api/v1/getsomething', 400);
 
     const expectedActions: {type: ESomethingActions, payload: {}}[] = [
       { type: ESomethingActions.GET, payload: { title: null, body: null } }
@@ -50,7 +50,7 @@ describe('getSomethingAction', () => {
   });
 
   it('should handle failure', () => {
-    fetchMock.getOnce('http://localhost:8080/api/v1/getsomething', {
+    fetchMock.getOnce('http://app.com/api/v1/getsomething', {
       throws: new Error('Failed')
     });
 
@@ -65,7 +65,7 @@ describe('getSomethingAction', () => {
   });
 
   it('should handle bad JSON', () => {
-    fetchMock.getOnce('http://localhost:8080/api/v1/getsomething', {
+    fetchMock.getOnce('http://app.com/api/v1/getsomething', {
       body: '"banana: true'
     });
 

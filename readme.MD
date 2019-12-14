@@ -1,35 +1,28 @@
 # Login
 
-Simple user authentication example using JWT, along with clients in Angular and ReactJS.
+Simple user authentication example using JWT.
+Clients in Angular and ReactJS.
+NodeJS / Express is used for the API, with MongoDB to store users.
 
-A NodeJS ( and TS implementation ) API to
+Docker and docker-compose example scripts for development.
+And a Kubernetes deploy script example for production.
+
+The API offers
 - Log in
 - Log out
 - Register
 - Access protected route<br/>
 
-TDD with mocha for the JS version, and jest for the TS version.
+## Building apps
 
-Angular and ReactTS Clients
-- Log in page
-- Register page
-- Dashboard<br/>
+### api
 
-TDD with jasmine for Angular, jest for ReactTS.
+Run npm install first time
+>`npm i`
 
-MongoDB / Mongoose
-- Store users
+This is just vanilla javascript implementation of a NodeJS / Express API, so doesn't need building as such.
 
-Docker containers<br/>
-Docker compose<br/>
-Kubernetes deployment script<br/>
-Azure pipeline for GitHub ( CI )
-
-## Development
-
-### Local Set up
-
-Add a `.env` file to root of api
+A `.env` file is required in the root of api
 ```
 MODE="development"
 PORT=3000
@@ -38,10 +31,79 @@ USE_COMPRESSION=true
 DISABLE_CORS=true
 DB_CONNECTION="mongodb://bobdylan:tangledupinblue@mongodb/loginappdb?authSource=admin"
 ```
-Note - Mongo credentials need to match those in the docker compose yml
+
+Docker container can be built with
+>`docker build . -t api`
+
+### api-ts
+
+Run npm install first time
+>`npm i`
+
+This is a Typescript implementation of the NodeJS / Express API, and needs compiling to Javascript, there's an npm script set up, just run
+>`npm run build`
+The compiled Javascript is output in `dist/`
+
+A `.env` file is required in the root of api-ts
+```
+MODE="development"
+PORT=3000
+LOG_LEVEL="ALL"
+USE_COMPRESSION=true
+DISABLE_CORS=true
+DB_CONNECTION="mongodb://bobdylan:tangledupinblue@mongodb/loginappdb?authSource=admin"
+```
+
+Docker container can be built with
+>`docker build . -t api_ts`
+
+### fe-server
+
+Run npm install first time
+>`npm i`
+
+This is a Typescript NodeJS / Express server for serving the compiled front end assets ( index.html / css / javascript etc. ), and is required to host the front end in a separate `Kubernetes` pod.  It is not required for `docker-compose` where NGINX is used to serve the front end assets.
+
+As it's Typescript, it'll need to be compiled to Javascript, just run
+>`npm run build`
+
+The frontend assets need to be copied into the public folder, it simply serves whatever is here as an Express static file.  Any assets that are not present, will result in index.html being served, this is to support SPA virtual routes ( ie hitting refresh on a virtual route will reserve index.html that should resolve the route ).
+
+Docker container can be built with
+>`docker build . -t fe_server`
+
+### login-angular
+
+Run npm install first time
+>`npm i`
+
+This is an Angular CLI project, and as such all the `ng` commands will work ( ie `ng build` etc. ).
+
+The debug build is designed to work with the `docker-compose` set up ( ie `ng build` ), the env file expects the API to be available on `localhost`, whilst the production build ( `ng build --prod` ) is intended to work with `Kubernetes` and looks for the API in a domain ( app.com ).
+
+Use the build CLI to generate artefacts in the `dist/` folder, copy these to the public folder of `fe-server` for a Kubernetes build, or edit the nginx config to server the `dist/` folder in place.
+
+### login-reactts
+
+Run npm install first time
+>`npm i`
+
+This is a custom React Typescript project with a local webpack config.  There are npm scripts to generate builds, run
+>`npm run build`
+will generate a production build in the `dist/` folder.
+
+Currently the app is hardcoded to use the `app.com` domain, and as such is good for testing in the `Kubernetes` build.  Simply copy the build artefacts to the fe-server `public/` folder.
+
+## Docker
+
+Note, some systems ( like Linux ) may need you to use `sudo` to run `docker` or `docker-compose`.
+
+### Build app locally ( debug version is set up for docker compose )
 
 Build the Angular app, in the `login-angular` folder
->`ng build --watch`
+>`ng build`
+
+### Start docker
 
 Start up docker
 >`docker-compose up`
@@ -50,20 +112,27 @@ Use `--build` to force the containers to rebuild themselves
 NOTE - this will reset the db
 >`docker-compose up --build`
 
-The app runs on port `8080`
+Docker runs in the foreground, so logs are visible during testing.
+CTRL+C will essentially stop the server
 
-To stop docker
+### Stop docker
+
+To stop docker, CTRL+C then run
 >`docker-compose down`
 
-### Kubernetes
+### Testing
+
+The app runs on port `8080`
+>`http://localhost:8080`
+
+## Kubernetes
+
+### Start / Set Up Minikube
 
 Start Minikube<br/>
 >`minikube start`
 
-Start Minikube<br/>
->`minikube stop`
-
-Enable Ingress Addon
+Enable Ingress Addon ( only needs to be done once )
 >`minikube addons enable ingress`
 Verify with
 >`kubectl get pods -n kube-system`
@@ -72,11 +141,35 @@ Can be slow to start
 Switch Docker to Minikube repo, ensuring minikube is started first<br/>
 >`eval $(minikube docker-env)`
 
+Get minikube IP with
+>`minikube ip`
+Use this in hosts, associate the minikube ip with the domain name in the yaml ingress host ( app.com ), ie `- host: app.com`
+
+### Build Docker images for pods
+
+Build docker containers and upload to Minikube docker registry
+Build API - From root of repo
+>`cd api-ts`
+>`npm run build`
+>`docker image rm api_ts`
+>`docker build . -t api_ts`
+
+Build Front End ( Angular ) - From root of repo
+>`cd login-angular`
+>`ng build --prod`
+>`cd ..`
+Build Front End Server ( to serve Angular build ) - From root of repo
+>`rm fe-server/public/*`
+>`cp login-angular/dist/login-angular/* fe-server/public/`
+>`cd fe-server`
+>`npm run build`
+>`docker image rm fe_server`
+>`docker build . -t fe_server`
+
+### Deploy / Test
+
 Deploy to minikube
 >`kubectl apply -f kubernetes.yaml`
-
-Delete deployment
->`kubectl delete namespace login`
 
 List pods
 >`kubectl get pods -n login`
@@ -85,77 +178,31 @@ Get pod log
 >`kubectl logs ???? -n login`
 Where ???? is the name of the pod as displayed by `get pods`
 
+### Delete deployment
+
+Delete deployment
+>`kubectl delete namespace login`
+
+### Stop / Shutdown Minikube
+
+Stop Minikube<br/>
+>`minikube stop`
+
+### Testing
+
 Shell into pod
->`kubectl -n login exec -it ???? -- /bin/sh`
+>`kubectl -n login exec -it ???? bash`
 Where ???? is the name of the pod as displayed by `get pods`
 
-Get minikube IP with
->`minikube ip`
-Use this in hosts, associate the minikube ip with the domain name in the yaml
-
 Shell into mongo container and connect to db
->`kubectl -n login exec -it mongodb-0 bash`
->`mongo mongodb://bobdylan:tangledupinblue@mongodb-0/loginappdb?authSource=admin`
+>`kubectl -n login exec -it ???? bash`
+Where ???? is the name of the mongo pod as displayed by `get pods`
+>`mongo -u bobdylan -p tangledupinblue`
 
-K8 Secrets
-- kubectl create secret generic <out> --from-literal=<in>
-echo -n "bobdylan" | base64
-echo -n "tangledupinblue" | base64
+### Generating Secrets
 
-Rebuild api-ts docker image
-- cd api_ts
-- docker image rm api_ts
-- npm run build
-- docker build . -t api_ts
-- cd ..
+Generate username secret
+>`echo -n "bobdylan" | base64`
 
-## TODO
-
-### Angular
-
-D 1. Clear down Angular scaffold<br/>
-D 2. Add login page<br/>
-D 3. Add register page<br/>
-D 4. Add dashboard page<br/>
-D 5. Integrate NodeJS API<br/>
-D 6. Protect dashboard route<br/>
-- 7. Refactor forms to a shared component ?
-- 8. Angular animations
-
-D 9. Interceptor - delete token, if request fails auth ( 401 )
-
-### ReactTS
-
-D 1. Set up a React build system using Typescript.<br/>
-D 2. Add login page<br/>
-D 3. Add register page<br/>
-D 4. Add dashboard page<br/>
-D 5. Integrate NodeJS API using Fetch<br/>
-D 6. Protect dashboard route
-
-### NodeJS API
-
-D 1. Set up basic express server boiler plate<br/>
-D 2. Set up mongoose / mongo connection<br/>
-D 3. Add model for user<br/>
-D 4. Add log in route<br/>
-D 5. Add log out route<br/>
-D 6. Add register route<br/>
-D 7. Add dummy protected route ( used to populate dashboard with dummy content )<br/>
-- 8. Integration tests
-
-### Docker
-
-I 1. Set up container for NGINX, to serve clients ( angular and react clients on different hosts )<br/>
-I 2. Set up container for Angular client<br/>
-I 3. Set up container for ReactTS client<br/>
-I 4. Set up container for NodeJS API<br/>
-I 5. Set up docker compose ( nginx, mongo, node api )<br/>
-I 6. Set up Kubernetes deployment script
-- 7. Kubernetes frontend pods need a local NodeJS server
-- 8. NGINX HTTP2
-- 9. NGINX HTTPS
-
-### Azure pipelines
-
-- 1. Push built containers to docker hub
+Generate password secret
+>`echo -n "tangledupinblue" | base64`

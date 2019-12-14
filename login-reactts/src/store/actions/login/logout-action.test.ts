@@ -19,7 +19,7 @@ afterEach(() => {
 
 describe('logoutAction', () => {
   it('should call fetch', () => {
-    fetchMock.postOnce('http://localhost:8080/api/v1/logout', {
+    fetchMock.postOnce('http://app.com/api/v1/logout', {
       body: {}
     });
 
@@ -34,7 +34,7 @@ describe('logoutAction', () => {
   });
 
   it('should handle response error status', () => {
-    fetchMock.postOnce('http://localhost:8080/api/v1/logout', 400);
+    fetchMock.postOnce('http://app.com/api/v1/logout', 400);
 
     const expectedActions: {type: ELoginActions, payload: {}}[] = [
       { type: ELoginActions.LOGOUT, payload: { token: null, error: 'Failed to log out' } }
@@ -47,7 +47,7 @@ describe('logoutAction', () => {
   });
 
   it('should handle failure', () => {
-    fetchMock.postOnce('http://localhost:8080/api/v1/logout', {
+    fetchMock.postOnce('http://app.com/api/v1/logout', {
       throws: new Error('Failed')
     });
 

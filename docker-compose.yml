@@ -9,7 +9,7 @@ services:
     volumes:
       # Map local folder to container path ( as defined in the Dockerfile )
       - "./nginx:/etc/nginx/conf.d"
-      - "./login-reactts/dist:/usr/share/nginx/html"
+      - "./login-angular/dist/login-angular:/usr/share/nginx/html"
     ports:
       # Expose the port
       - "8080:80"
