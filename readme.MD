@@ -148,7 +148,7 @@ Switch Docker to Minikube repo, ensuring minikube is started first<br/>
 Get minikube IP with
 >`minikube ip`<br/>
 
-Use this in your hosts file ( /etc/hosts ), associate the minikube ip with the domain name from the yaml ingress host ( app.com in our case - `- host: app.com` ), ie `192.168.99.100 app.com` ( where 192.168.99.100 is the ip returned by `minikube up` )
+Use this in your hosts file ( /etc/hosts ), associate the minikube ip with the domain name from the yaml ingress host ( app.com in our case - `- host: app.com` ), ie `192.168.99.100 app.com` ( where 192.168.99.100 is the ip returned by `minikube ip` )
 
 ### Build Docker images for pods
 
