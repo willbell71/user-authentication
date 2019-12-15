@@ -1,9 +1,10 @@
 import { ILogger } from '../logger/ilogger';
 import { ILogLine } from '../logger/ilog-line';
 import { Logger } from '../logger/logger';
-import { IShutdownHandler } from "./ishutdown-handler";
-import { ShutdownHandler } from "./shutdown-handler";
+import { IShutdownHandler } from './ishutdown-handler';
+import { ShutdownHandler } from './shutdown-handler';
 
+/* eslint-disable-next-line @typescript-eslint/ban-ts-ignore */
 // @ts-ignore
 jest.spyOn(process, 'exit').mockImplementation(() => {});
 
