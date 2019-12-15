@@ -2,7 +2,7 @@ apps:
   - script: './dist/app.js'
     name: 'LoginAPI'
     exec_mode: 'cluster'
-    instances: '1'
+    instances: 'max'
     env:
       NODE_ENV: 'development'
     env_production:
