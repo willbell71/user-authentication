@@ -93,6 +93,30 @@ export class MongoDBService implements IDBService {
   }
 
   /**
+   * Disconnect.
+   * @return {Promise<void>} promise that resolves on disconnect, success or failure.
+   */
+  public disconnect(): Promise<void> {
+    return new Promise((resolve: () => void): void => {
+      // disconnect
+      mongoose
+        .disconnect()
+        .then(() => {
+          if (this.logger) {
+            this.logger.debug('MongoDBService', 'MongoDB disconnected successfully');
+          }
+          resolve();
+        })
+        .catch((err: Error) => {
+          if (this.logger) {
+            this.logger.error(`MongoDBService failed to disconnect - ${err.message}`);
+          }
+          resolve();
+        });
+    });
+  }
+
+  /**
    * Create a new instance of an entity type.
    * @param {string} entityType - entity type to create.
    * @return {Promise<TDBServiceEntity>} new entity instance.
