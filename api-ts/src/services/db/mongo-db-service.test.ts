@@ -1,3 +1,4 @@
+let connected: boolean = false;
 jest.mock('mongoose', () => {
   const connect: jest.Mock = jest.fn().mockImplementation((connection: string) => {
     return new Promise((
@@ -5,12 +6,17 @@ jest.mock('mongoose', () => {
       reject: ((reason?: string) => void)
     ): void => {
       if (connection) {
+        connected = true;
         resolve('');
       } else {
+        connected = false;
         reject('');
       }
     });
   });
+
+  const disconnect: jest.Mock = jest.fn().mockImplementation((): Promise<void> => 
+    connected ? Promise.resolve() : Promise.reject({message: ''}));
   
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   function TestModel(): void {}
@@ -34,6 +40,7 @@ jest.mock('mongoose', () => {
   
   return {
     connect,
+    disconnect,
     model,
     Schema,
     Model
@@ -142,6 +149,73 @@ describe('MongoDBService', () => {
           done();
         })
         .catch(() => done('Invoked catch block'));
+    });
+  });
+
+  describe('disconnect', () => {
+    it('should call mongoose disconnect', (done: jest.DoneCallback) => {
+      mongoDBService
+        .connect(logger, 'connect', [])
+        .then(() => {
+          mongoDBService.disconnect()
+            .then(() => {
+              expect(mongoose.disconnect).toHaveBeenCalled();
+              done();
+            })
+            .catch(() => done('Invoked disconnect catch block'));
+        })
+        .catch(() => done('Invoked connect catch block'));
+    });
+
+    it('should call log on successful disconnect', (done: jest.DoneCallback) => {
+      mongoDBService
+        .connect(logger, 'connect', [])
+        .then(() => {
+          mongoDBService.disconnect()
+            .then(() => {
+              expect(logLineSpy).toHaveBeenCalled();
+              done();
+            })
+            .catch(() => done('Invoked disconnect catch block'));
+        })
+        .catch(() => done('Invoked connect catch block'));
+    });
+
+    it('should call error on unsuccessful disconnect', (done: jest.DoneCallback) => {
+      mongoDBService
+        .connect(logger, 'connect', [])
+        .then(() => {
+          connected = false;
+          mongoDBService.disconnect()
+            .then(() => {
+              expect(errorLineSpy).toHaveBeenCalled();
+              done();
+            })
+            .catch(() => done('Invoked disconnect catch block'));
+        })
+        .catch(() => done('Invoked connect catch block'));
+    });
+
+    it('should pass successful disconnect with no logger', (done: jest.DoneCallback) => {
+      connected = true;
+      mongoDBService.disconnect()
+        .then(() => {
+          done();
+        })
+        .catch(() => {
+          done('Invoked disconnect catch block');
+        });
+    });
+
+    it('should pass unsuccessful disconnect with no logger', (done: jest.DoneCallback) => {
+      connected = false;
+      mongoDBService.disconnect()
+        .then(() => {
+          done();
+        })
+        .catch(() => {
+          done('Invoked disconnect catch block');
+        });
     });
   });
 

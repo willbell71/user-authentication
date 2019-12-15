@@ -127,6 +127,16 @@ To stop docker, CTRL+C then run
 The app runs on port `8080`
 >`http://localhost:8080`
 
+#### Listing containers
+
+>`docker container ls --all`
+
+#### Shell into a running container
+
+>`sudo docker exec -it ???? /bin/bash`
+
+Where ??? is the name of a container, such as `apiservice`.
+
 ## Kubernetes
 
 ### Start / Set Up Minikube

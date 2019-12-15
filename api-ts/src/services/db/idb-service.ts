@@ -2,6 +2,7 @@ import { ILogger } from '../logger/ilogger';
 import { TDBServiceEntity } from './tdb-service-entity';
 import { TDBServiceSchema } from './tdb-service-schema';
 import { TDBServiceValue } from './tdb-service-value';
+import { IShutdownHandler } from '../shutdown/ishutdown-handler';
 
 /**
  * DB service interface.
@@ -15,6 +16,13 @@ export interface IDBService {
    * @return {Promise<void>} promise on connection completion.
    */
   connect: (logger: ILogger, connection: string, schema: TDBServiceSchema[]) => Promise<void>;
+
+  /**
+   * Disconnect from db on shutdown.
+   * @param {IShutdownHandler} shutdownHandler - shutdown services provider.
+   * @return {Promise<void>} promise that resolves on disconnection completion, regardless of success / fail.
+   */
+  disconnect: (shutdownHandler: IShutdownHandler) => Promise<void>;
 
   /**
    * Create a new instance of an entity type.

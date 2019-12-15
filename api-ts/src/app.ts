@@ -14,6 +14,9 @@ import { LogLineConsoleLog } from './services/logger/log-line-console-log';
 import { LogLineConsoleWarn } from './services/logger/log-line-console-warn';
 import { LogLineConsoleError } from './services/logger/log-line-console-error';
 
+import { ShutdownHandler } from './services/shutdown/shutdown-handler';
+import { IShutdownHandler } from './services/shutdown/ishutdown-handler';
+
 import { IFactory } from './services/ifactory';
 
 import { ITokenService } from './services/token-services/itoken-service';
@@ -52,6 +55,9 @@ const logger: ILogger = new Logger(new LogLineConsoleLog(),
 logger.setLevel(ELoggerLevel[config.logLevel as keyof typeof ELoggerLevel]);
 logger.info('App', `running in mode: ${config.mode}`);
 
+// create shutdown handler
+const shutdownHandler: IShutdownHandler = new ShutdownHandler(logger);
+
 // create token service factory
 const tokenServiceFactory: IFactory<ITokenService> = new TokenServiceFactory(logger);
 tokenServiceFactory.registerService('jwt', JWTTokenService);
@@ -82,6 +88,8 @@ dbService.connect(logger,
       token: String
     }
   }]).then(() => readinessProbe.setReady());
+// register db service to disconnect on shutdown
+shutdownHandler.addCallback((handler: IShutdownHandler) => dbService.disconnect(handler));
 
 // create user service
 const userService: IUserService = new UserService(logger,
