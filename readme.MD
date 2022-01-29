@@ -148,7 +148,7 @@ Enable Ingress Addon ( only needs to be done once )
 >`minikube addons enable ingress`<br/>
 
 Verify with<br/>
->`kubectl get pods -n kube-system`<br/>
+>`kubectl get pods -n ingress-nginx`<br/>
 
 Can be slow to start
 
@@ -181,6 +181,10 @@ Build Front End Server ( to serve Angular build ) - From root of repo<br/>
 >`npm run build`<br/>
 >`docker image rm fe_server`<br/>
 >`docker build . -t fe_server`
+
+### TLS
+
+Generate TLS cert and key, replace the secret placeholder values `?ABC123` for `tls.crt` and `tls.key` with these
 
 ### Deploy / Test
 

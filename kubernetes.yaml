@@ -29,6 +29,15 @@ items:
   data:
     username: Ym9iZHlsYW4=
     password: dGFuZ2xlZHVwaW5ibHVl
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: tlssecret
+    namespace: login
+  type: kubernetes.io/tls
+  data:
+    tls.crt: ?ABC123
+    tls.key: ?ABC123
 # Deployments
 # API Service Deployment
 - apiVersion: apps/v1
@@ -186,22 +195,44 @@ items:
     selector:
       service: mongodb
 # Ingresses
+- apiVersion: networking.k8s.io/v1
+  kind: IngressClass
+  metadata:
+    labels:
+      app.kubernetes.io/component: controller
+    name: nginx-example
+    annotations:
+      ingressclass.kubernetes.io/is-default-class: "true"
+    namespace: login
+  spec:
+    controller: k8s.io/ingress-nginx
 # Ingress
-- apiVersion: extensions/v1beta1
+- apiVersion: networking.k8s.io/v1
   kind: Ingress
   metadata:
     name: login
     namespace: login
   spec:
+    ingressClassName: nginx-example
+    tls:
+    - hosts:
+        - app.com
+      secretName: tlssecret
     rules:
     - host: app.com
       http:
         paths:
         - path: /api/v1
+          pathType: Prefix
           backend:
-            serviceName: apiservice
-            servicePort: 3000
+            service:
+              name: apiservice
+              port: 
+                number: 3000
         - path: /
+          pathType: Prefix
           backend:
-            serviceName: login
-            servicePort: 3000
+            service:
+              name: login
+              port:
+                number: 3000
