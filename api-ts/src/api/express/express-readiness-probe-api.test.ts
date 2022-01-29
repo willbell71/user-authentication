@@ -1,6 +1,6 @@
 import { ILogger } from '../../services/logger/ilogger';
 
-let probe: (req: {}, res: {}) => void;
+let probe: (req: object, res: object) => void;
 jest.mock('express', () => {
   const use: jest.Mock = jest.fn().mockImplementation(() => {});
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,7 +24,7 @@ jest.mock('express', () => {
 
   return express;
 });
-import * as express from 'express';
+import express from 'express';
 
 import { ILogLine } from '../../services/logger/ilog-line';
 import { Logger } from '../../services/logger/logger';

@@ -1,4 +1,4 @@
-import * as process from 'process';
+import process from 'process';
 import { Writable } from 'stream';
 
 import { ILogger } from './ilogger';

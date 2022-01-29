@@ -39,15 +39,15 @@ beforeEach(() => {
   };
 
   dbService = {
-    connect: jest.fn().mockImplementation(() => new Promise((resolve: () => void): void => resolve())),
-    disconnect: jest.fn().mockImplementation(() => new Promise((resolve: () => void): void => resolve())),
+    connect: jest.fn().mockImplementation(() => new Promise((resolve: (value: null) => void) => resolve(null))),
+    disconnect: jest.fn().mockImplementation(() => new Promise((resolve: (value: null) => void) => resolve(null))),
     create: jest.fn().mockImplementation(() => new Promise((resolve: (value: TDBServiceEntity) => void): void => resolve(user))),
     setProp: jest.fn().mockImplementation((entity: TDBServiceEntity, prop: string, value: string | Date) => entity[prop] = value),
     getProp: jest.fn().mockImplementation((entity: TDBServiceEntity, prop: string) => entity[prop] || 'value'),
     save: jest.fn().mockImplementation(() => new Promise((resolve: (success: boolean) => void): void => resolve(true))),
     fetch: jest.fn().mockImplementation((type: string, prop: string, value: string) => 
       new Promise((
-        resolve: (value: TDBServiceEntity | undefined) => void
+        resolve: (val: TDBServiceEntity | undefined) => void
       ): void => { 
         if (value) {
           resolve(user);

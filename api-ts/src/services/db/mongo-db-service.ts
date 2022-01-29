@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
 import { IDBService } from './idb-service';
 import { ILogger } from '../logger/ilogger';
@@ -67,9 +67,9 @@ export class MongoDBService implements IDBService {
         this.logger!.debug('MongoDBService', 'Attempting to connect to MongoDB instance...');
         // attempt to connect to mongo
         mongoose.connect(connection, {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-          useCreateIndex: true
+          // useNewUrlParser: true,
+          // useUnifiedTopology: true,
+          // useCreateIndex: true
         })
           .then(() => {
             // success, finish up

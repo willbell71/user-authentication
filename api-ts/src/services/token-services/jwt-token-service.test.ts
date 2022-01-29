@@ -9,7 +9,7 @@ jest.mock('jsonwebtoken', () => {
     verify
   };
 });
-import * as jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 import { JWTTokenService } from './jwt-token-service';
 import { ITokenService } from './itoken-service';

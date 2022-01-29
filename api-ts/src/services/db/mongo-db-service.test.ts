@@ -21,16 +21,12 @@ jest.mock('mongoose', () => {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   function TestModel(): void {}
   TestModel.findById = function(): Promise<string> {
-    return new Promise((
-      resolve: ((value?: string | PromiseLike<string> | undefined) => void)
-    ): void => {
+    return new Promise((resolve: (value: string) => void) => {
       resolve('findById');
     });
   };
   TestModel.findOne = function(): Promise<string> {
-    return new Promise((
-      resolve: ((value?: string | PromiseLike<string> | undefined) => void)
-    ): void => {
+    return new Promise((resolve: (value: string) => void) => {
       resolve('findOne');
     });
   };
@@ -46,7 +42,7 @@ jest.mock('mongoose', () => {
     Model
   };
 });
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
 import { ILogger } from '../logger/ilogger';
 import { ILogLine } from '../logger/ilog-line';

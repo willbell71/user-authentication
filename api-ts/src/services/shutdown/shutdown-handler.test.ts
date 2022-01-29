@@ -4,7 +4,7 @@ import { Logger } from '../logger/logger';
 import { IShutdownHandler } from './ishutdown-handler';
 import { ShutdownHandler } from './shutdown-handler';
 
-/* eslint-disable-next-line @typescript-eslint/ban-ts-ignore */
+/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
 // @ts-ignore
 jest.spyOn(process, 'exit').mockImplementation(() => {});
 

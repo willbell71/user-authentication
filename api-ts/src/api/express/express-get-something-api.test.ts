@@ -1,5 +1,5 @@
-let auth: (logger: ILogger, req: {}, res: {}, next: () => void, authService: IAuthService) => void;
-let getSomething: (req: {}, res: {}) => void;
+let auth: (logger: ILogger, req: object, res: object, next: () => void, authService: IAuthService) => void;
+let getSomething: (req: object, res: object) => void;
 jest.mock('express', () => {
   const use: jest.Mock = jest.fn().mockImplementation(() => {});
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,7 +24,7 @@ jest.mock('express', () => {
 
   return express;
 });
-import * as express from 'express';
+import express from 'express';
 
 import { ExpressAuthenticationMiddleware } from './middleware/express-authentication-middleware';
 jest.mock('./middleware/express-authentication-middleware');
@@ -71,8 +71,8 @@ beforeEach(() => {
 afterEach(() => {
   jest.clearAllMocks();
 
-  auth = undefined as unknown as (logger: ILogger, req: {}, res: {}, next: () => void, authService: IAuthService) => void;
-  getSomething = undefined as unknown as (req: {}, res: {}) => void;
+  auth = undefined as unknown as (logge: ILogger, req: object, res: object, next: () => void, authServ: IAuthService) => void;
+  getSomething = undefined as unknown as (req: object, res: object) => void;
 });
 
 describe('ExpressGetSomethingAPI', () => {

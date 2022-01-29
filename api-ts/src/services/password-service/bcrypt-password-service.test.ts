@@ -12,7 +12,7 @@ jest.mock('bcrypt', () => {
     compare
   };
 });
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 
 import { BCryptPasswordService } from './bcrypt-password-service';
 import { IPasswordService } from './ipassword-service';
@@ -47,7 +47,9 @@ describe('BCryptPasswordService', () => {
       const bCryptPasswordService: BCryptPasswordService = new BCryptPasswordService();
       bCryptPasswordService.saltRounds = 0;
       bCryptPasswordService.encrypt('password')
-        .then(() => done('Invoked then block'))
+        .then(() => {
+          done('Invoked then block');
+        })
         .catch((err: Error) => {
           expect(err.message).toEqual('Failed to generate salt for password hashing');
           done();

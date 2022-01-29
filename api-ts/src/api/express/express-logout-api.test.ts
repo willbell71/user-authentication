@@ -1,9 +1,9 @@
 import { ILogger } from '../../services/logger/ilogger';
 import { IAuthService } from '../../model/auth/iauth-service';
 
-let auth: (logger: ILogger, req: {}, res: {}, next: () => void, authService: IAuthService) => void;
-let validateRequestBodyFields: (req: {}, res: {}, next: () => void) => void;
-let logout: (req: {}, res: {}) => void;
+let auth: (logger: ILogger, req: object, res: object, next: () => void, authService: IAuthService) => void;
+let validateRequestBodyFields: (req: object, res: object, next: () => void) => void;
+let logout: (req: object, res: object) => void;
 jest.mock('express', () => {
   const use: jest.Mock = jest.fn().mockImplementation(() => {});
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -29,7 +29,7 @@ jest.mock('express', () => {
 
   return express;
 });
-import * as express from 'express';
+import express from 'express';
 
 import { ExpressRequestMiddleware } from './middleware/express-request-middleware';
 jest.mock('./middleware/express-request-middleware');
@@ -89,9 +89,9 @@ beforeEach(() => {
 afterEach(() => {
   jest.clearAllMocks();
 
-  auth = undefined as unknown as (logger: ILogger, req: {}, res: {}, next: () => void, authService: IAuthService) => void;
-  validateRequestBodyFields = undefined as unknown as (req: {}, res: {}, next: () => void) => void;
-  logout = undefined as unknown as (req: {}, res: {}) => void;
+  auth = undefined as unknown as (logge: ILogger, req: object, res: object, next: () => void, authServic: IAuthService) => void;
+  validateRequestBodyFields = undefined as unknown as (req: object, res: object, next: () => void) => void;
+  logout = undefined as unknown as (req: object, res: object) => void;
 });
 
 describe('ExpressLoginAPI', () => {

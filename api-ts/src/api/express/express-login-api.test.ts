@@ -1,5 +1,5 @@
-let login: (req: {}, res: {}) => void;
-let validateRequestBodyFields: (req: {}, res: {}, next: () => void) => void;
+let login: (req: object, res: object) => void;
+let validateRequestBodyFields: (req: object, res: object, next: () => void) => void;
 jest.mock('express', () => {
   const use: jest.Mock = jest.fn().mockImplementation(() => {});
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,7 +24,7 @@ jest.mock('express', () => {
 
   return express;
 });
-import * as express from 'express';
+import express from 'express';
 
 jest.mock('express-validator', () => {
   return {
@@ -56,7 +56,7 @@ jest.mock('express-validator', () => {
     ValidationError: {}
   };
 });
-import * as validator from 'express-validator';
+import validator from 'express-validator';
 
 import { ExpressRequestMiddleware } from './middleware/express-request-middleware';
 jest.mock('./middleware/express-request-middleware');
@@ -105,8 +105,8 @@ beforeEach(() => {
 afterEach(() => {
   jest.clearAllMocks();
 
-  login = undefined as unknown as (req: {}, res: {}) => void;
-  validateRequestBodyFields = undefined as unknown as (req: {}, res: {}, next: () => void) => void;
+  login = undefined as unknown as (req: object, res: object) => void;
+  validateRequestBodyFields = undefined as unknown as (req: object, res: object, next: () => void) => void;
 });
 
 describe('ExpressLoginAPI', () => {
