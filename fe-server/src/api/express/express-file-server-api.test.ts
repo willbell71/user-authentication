@@ -82,7 +82,7 @@ describe('ExpressFileServerAPI', () => {
   });
 
   describe('serve', () => {
-    it('should call res.sendFile on success', (done: jest.DoneCallback) => {
+    it('should call res.sendFile on success', () => {
       expressFileServerAPI.registerHandlers();
 
       const sendFile: jest.Mock = jest.fn();
@@ -90,11 +90,8 @@ describe('ExpressFileServerAPI', () => {
         sendFile
       });
 
-      setTimeout(() => {
-        expect(sendFile).toHaveBeenCalledTimes(1);
-        expect(sendFile).toHaveBeenCalledWith('filepath');
-        done();
-      }, 100);
+      expect(sendFile).toHaveBeenCalledTimes(1);
+      expect(sendFile).toHaveBeenCalledWith('filepath');
     });
   });
 });

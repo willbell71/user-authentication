@@ -78,7 +78,7 @@ describe('ExpressLivenessProbeAPI', () => {
   });
 
   describe('probe', () => {
-    it('should call res.sendStatus on success', (done: jest.DoneCallback) => {
+    it('should call res.sendStatus on success', () => {
       expressLivenessProbeAPI.registerHandlers();
 
       const sendStatus: jest.Mock = jest.fn();
@@ -86,11 +86,8 @@ describe('ExpressLivenessProbeAPI', () => {
         sendStatus
       });
 
-      setTimeout(() => {
-        expect(sendStatus).toHaveBeenCalledTimes(1);
-        expect(sendStatus).toHaveBeenCalledWith(200);
-        done();
-      }, 100);
+      expect(sendStatus).toHaveBeenCalledTimes(1);
+      expect(sendStatus).toHaveBeenCalledWith(200);
     });
   });
 });
