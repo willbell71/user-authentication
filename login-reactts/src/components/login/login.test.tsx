@@ -12,7 +12,7 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('react-redux', () => ({
   useDispatch: () => jest.fn(),
-  useSelector: (cb: (store: any) => any) => {
+  useSelector: (cb: (store: object) => object) => {
     return cb({
       login: {
         token: 'token',

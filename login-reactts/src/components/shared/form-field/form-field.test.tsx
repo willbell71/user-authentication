@@ -37,7 +37,7 @@ describe('FormField', () => {
   it('should render a label with caption', () => {
     const label: ReactTestInstance = instance.findByProps({ 'data-testid': 'label' });
     expect(label.props.children[0]).toEqual(props.label);
-});
+  });
 
   it('should render an input with id', () => {
     const input: ReactTestInstance = instance.findByProps({ 'data-testid': props.testid });

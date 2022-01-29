@@ -10,7 +10,7 @@ jest.mock('react-router-dom', () => ({
 const dispatch: jest.Mock = jest.fn();
 jest.mock('react-redux', () => ({
   useDispatch: () => dispatch,
-  useSelector: (cb: (store: any) => any) => {
+  useSelector: (cb: (store: object) => object) => {
     return cb({
       login: {
         // token: 'token'
@@ -71,7 +71,7 @@ describe('Dashboard', () => {
       const button: ReactTestInstance = instance.findByProps({ 'data-testid': 'getsomething' });
 
       await act(async () => button.props.onClick());
-  
+
       expect(dispatch).toHaveBeenCalledTimes(1);
     });
   });

@@ -14,7 +14,7 @@ const token: string = 'token';
 let error: string = '';
 jest.mock('react-redux', () => ({
   useDispatch: () => jest.fn(),
-  useSelector: (cb: (store: any) => any) => {
+  useSelector: (cb: (store: object) => object) => {
     return cb({
       login: {
         token,
