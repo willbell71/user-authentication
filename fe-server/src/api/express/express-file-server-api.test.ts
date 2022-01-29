@@ -28,7 +28,7 @@ jest.mock('express', () => {
 
   return express;
 });
-import * as express from 'express';
+import express from 'express';
 
 import { ILogLine } from '../../services/logger/ilog-line';
 import { Logger } from '../../services/logger/logger';
