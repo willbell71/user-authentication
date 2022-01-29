@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { FC } from 'react';
 
 import './styles.scss';
 
@@ -6,7 +6,7 @@ import './styles.scss';
  * Component props.
  * @property {string} title - header title text.
  */
-type TProps = {
+export type TProps = {
   title: string;
 };
 
@@ -15,10 +15,8 @@ type TProps = {
  * @param {Props} props - component properties.
  * @return {JSX.Element} render.
  */
-export function Header(props: TProps): JSX.Element {
-  return (
-    <header>
-      <h1 className="header">{ props.title }</h1>
-    </header>
-  );
-}
+export const Header: FC<TProps> = ({ title }: TProps): JSX.Element => (
+  <header>
+    <h1 className="header" data-testid="title">{ title }</h1>
+  </header>
+);

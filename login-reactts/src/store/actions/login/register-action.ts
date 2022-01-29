@@ -21,53 +21,58 @@ type TRegisterResponse = {
 export const registerAction: (firstName: string, lastName: string, email: string, password: string) =>
   (dispatch: (action: TAction<TLoginActionPayload>) => void) => Promise<void> =
   (firstName: string, lastName: string, email: string, password: string) =>
-    (dispatch: (action: TAction<TLoginActionPayload>) => void): Promise<void> => {
-      // login
-      return fetch('http://app.com/api/v1/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          firstName,
-          lastName,
-          email,
-          password
-        })
-      })
-        .then((res: Response) => {
-          if (200 === res.status) {
-            res.json()
-              .then((data: TRegisterResponse) => dispatch({
-                type: ELoginActions.REGISTER,
-                payload: {
-                  token: data.token,
-                  error: null
-                }
-              }))
-              .catch(() => dispatch({
-                type: ELoginActions.REGISTER,
-                payload: {
-                  token: null,
-                  error: 'Failed to parse register response'
-                }
-              }));
-          } else {
+    async (dispatch: (action: TAction<TLoginActionPayload>) => void): Promise<void> => {
+      // register
+      try {
+        const res: Response = await fetch('http://app.com/api/v1/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            firstName,
+            lastName,
+            email,
+            password
+          })
+        });
+
+        if (200 === res.status) {
+          try {
+            const data: TRegisterResponse = await res.json();
+            dispatch({
+              type: ELoginActions.REGISTER,
+              payload: {
+                token: data.token,
+                error: null
+              }
+            });
+          } catch {
             dispatch({
               type: ELoginActions.REGISTER,
               payload: {
                 token: null,
-                error: 'Failed to register'
+                error: 'Failed to parse register response'
               }
             });
           }
-        })
-        .catch(() => dispatch({
+        } else {
+          dispatch({
+            type: ELoginActions.REGISTER,
+            payload: {
+              token: null,
+              error: 'Failed to register'
+            }
+          });
+        }
+      } catch {
+        dispatch({
           type: ELoginActions.REGISTER,
           payload: {
             token: null,
             error: 'Failed to reach endpoint'
           }
-        }));
+        });
+      }
     };

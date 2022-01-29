@@ -1,4 +1,3 @@
-import * as fetchMock from 'fetch-mock';
 import { Middleware, AnyAction } from 'redux';
 import configureMockStore, { MockStore, MockStoreCreator } from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -13,16 +12,28 @@ beforeEach(() => {
   mockStore = configureMockStore(middlewares);
 });
 afterEach(() => {
-  jest.restoreAllMocks();
-  fetchMock.restore();
+  jest.clearAllMocks();
 });
 
 describe('registerAction', () => {
-  it('should call fetch', () => {
-    fetchMock.postOnce('http://app.com/api/v1/register', {
-      body: {
-        token: 'token'
-      }
+  let globalFetch: (input: RequestInfo) => Promise<Response>;
+
+  beforeEach(() => {
+    globalFetch = global.fetch;
+  });
+
+  afterEach(() => {
+    global.fetch = globalFetch;
+  });
+
+  it('should call fetch', async () => {
+    global.fetch = jest.fn().mockImplementation(() => {
+      return Promise.resolve<any>({
+        json: () => Promise.resolve({
+          token: 'token'
+        }),
+        status: 200
+      });
     });
 
     const expectedActions: {type: ELoginActions, payload: {}}[] = [
@@ -30,27 +41,29 @@ describe('registerAction', () => {
     ];    
     const store: MockStore = mockStore({ login: {}, something: {} });
 
-    return store.dispatch(registerAction('firstName', 'lastName', 'email', 'password') as unknown as AnyAction).then(() => {
-      expect(store.getActions()).toEqual(expectedActions);
-    });
+    await store.dispatch(registerAction('firstName', 'lastName', 'email', 'password') as unknown as AnyAction);
+    expect(store.getActions()).toEqual(expectedActions);
   });
 
-  it('should handle response error status', () => {
-    fetchMock.postOnce('http://app.com/api/v1/register', 400);
+  it('should handle response error status', async () => {
+    global.fetch = jest.fn().mockImplementation(() => {
+      return Promise.resolve<any>({
+        status: 400
+      });
+    });
 
     const expectedActions: {type: ELoginActions, payload: {}}[] = [
       { type: ELoginActions.REGISTER, payload: { token: null, error: 'Failed to register' } }
     ];    
     const store: MockStore = mockStore({ login: {}, something: {} });
 
-    return store.dispatch(registerAction('firstName', 'lastName', 'email', 'password') as unknown as AnyAction).then(() => {
-      expect(store.getActions()).toEqual(expectedActions);
-    });
+    await store.dispatch(registerAction('firstName', 'lastName', 'email', 'password') as unknown as AnyAction);
+    expect(store.getActions()).toEqual(expectedActions);
   });
 
-  it('should handle failure', () => {
-    fetchMock.postOnce('http://app.com/api/v1/register', {
-      throws: new Error('Failed')
+  it('should handle failure', async () => {
+    global.fetch = jest.fn().mockImplementation(() => {
+      throw new Error('Failed');
     });
 
     const expectedActions: {type: ELoginActions, payload: {}}[] = [
@@ -58,21 +71,46 @@ describe('registerAction', () => {
     ];    
     const store: MockStore = mockStore({ login: {}, something: {} });
 
-    return store.dispatch(registerAction('firstName', 'lastName', 'email', 'password') as unknown as AnyAction).then(() => {
-      expect(store.getActions()).toEqual(expectedActions);
-    });
+    await store.dispatch(registerAction('firstName', 'lastName', 'email', 'password') as unknown as AnyAction);
+
+    expect(store.getActions()).toEqual(expectedActions);
   });
 
-  it('should handle bad JSON', () => {
-    fetchMock.postOnce('http://app.com/api/v1/register', {
-      body: '"banana: true'
+  it('should handle bad JSON', async () => {
+    global.fetch = jest.fn().mockImplementation(() => {
+      return Promise.resolve<any>({
+        json: () => Promise.resolve({
+          banana: true
+        }),
+        status: 200
+      });
     });
 
-    const expectedActions: {}[] = [];
+    const expectedActions: {type: ELoginActions, payload: {}}[] = [
+      { type: ELoginActions.REGISTER, payload: { token: undefined, error: null } }
+    ];    
     const store: MockStore = mockStore({ login: {}, something: {} });
 
-    return store.dispatch(registerAction('firstName', 'lastName', 'email', 'password') as unknown as AnyAction).then(() => {
-      expect(store.getActions()).toEqual(expectedActions);
+    await store.dispatch(registerAction('firstName', 'lastName', 'email', 'password') as unknown as AnyAction);
+    expect(store.getActions()).toEqual(expectedActions);
+  });
+
+  it('should handle failing to parse JSON', async () => {
+    global.fetch = jest.fn().mockImplementation(() => {
+      return Promise.resolve<any>({
+        json: () => {
+          throw new Error('Failed');
+        },
+        status: 200
+      });
     });
+
+    const expectedActions: {type: ELoginActions, payload: {}}[] = [
+      { type: ELoginActions.REGISTER, payload: { token: null, error: 'Failed to parse register response' } }
+    ];    
+    const store: MockStore = mockStore({ login: {}, something: {} });
+
+    await store.dispatch(registerAction('firstName', 'lastName', 'email', 'password') as unknown as AnyAction);
+    expect(store.getActions()).toEqual(expectedActions);
   });
 });

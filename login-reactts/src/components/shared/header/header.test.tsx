@@ -1,21 +1,36 @@
-import * as React from 'react';
-import * as enzyme from 'enzyme';
-import * as Adapter from 'enzyme-adapter-react-16';
+import React from 'react';
+import { act, create, ReactTestInstance, ReactTestRenderer } from 'react-test-renderer';
 
-import {Header} from './header';
+import { Header, TProps } from './header';
 
-enzyme.configure({ adapter: new Adapter() });
+let props: TProps;
+let renderer: ReactTestRenderer;
+let instance: ReactTestInstance;
+beforeEach(async () => {
+  props = {
+    title: 'title'
+  };
 
-let wrapper: enzyme.ShallowWrapper<{}>;
-beforeEach(() => wrapper = enzyme.shallow(<Header title='title'/>));
-afterEach(() => jest.restoreAllMocks());
+  await act(async () => {
+    renderer = create(
+      <Header {...props} />
+    );
+  });
+
+  instance = renderer.root;
+});
+
+afterEach(() => jest.clearAllMocks());
 
 describe('Header', () => {
   it('should render', () => {
-    expect(wrapper.find('h1').length).toEqual(1);
+    expect(instance).toBeTruthy();
   });
 
   it('should set the title text', () => {
-    expect(wrapper.find('h1').text()).toEqual('title');
+    const title: ReactTestInstance = instance.findByProps({ 'data-testid': 'title' });
+
+    expect(title).toBeTruthy();
+    expect(title.props.children).toEqual(props.title);
   });
 });

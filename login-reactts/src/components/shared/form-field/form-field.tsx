@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { FC } from 'react';
 
 import './styles.scss';
 
@@ -11,8 +11,9 @@ import './styles.scss';
  * @property {string} value - input value.
  * @property {event: React.ChangeEvent<HTMLInputElement>) => void} changeInput - input change event handler.
  * @property {string} error - error feedback.
+ * @property {string} testid - test id to query dom in tests.
  */
-type TProps = {
+export type TProps = {
   id: string;
   label: string;
   type: 'text' | 'password';
@@ -20,6 +21,7 @@ type TProps = {
   value: string;
   changeInput: (event: React.ChangeEvent<HTMLInputElement>) => void;
   error: string;
+  testid: string;
 };
 
 /**
@@ -27,19 +29,19 @@ type TProps = {
  * @param {Props} props - component properties.
  * @return {JSX.Element} render.
  */
-export function FormField(props: TProps): JSX.Element {
-  return (
-    <React.Fragment key={ props.id }>
-      <label className="form__field">{ props.label }
-        <input 
-          className="form__input"
-          id={ props.id }
-          type={ props.type }
-          name={ props.name }
-          value={ props.value }
-          onChange={ props.changeInput }/>
-        <p className="form__field-error">{ props.error }</p>
-      </label>
-    </React.Fragment>
-  );
-}
+export const FormField: FC<TProps> = ({ id, label, type, name, value, changeInput, error, testid }: TProps): JSX.Element => (
+  <React.Fragment key={ id }>
+    <label className="form__field" data-testid="label">{ label }
+      <input
+        className="form__input"
+        id={ id }
+        type={ type }
+        name={ name }
+        value={ value }
+        onChange={ changeInput }
+        data-testid={ testid }
+      />
+      <p className="form__field-error" data-testid="error">{ error }</p>
+    </label>
+  </React.Fragment>
+);
