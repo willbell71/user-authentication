@@ -1,4 +1,4 @@
-FROM node:erbium
+FROM node:gallium
 
 WORKDIR /usr/src/app
 

@@ -2,7 +2,6 @@ const chai = require('chai');
 const sinon = require('sinon');
 
 const express = require('express');
-const validator = require('express-validator');
 
 const ExpressAPI = require('../../../../src/api/express/express-api');
 const ExpressRegisterAPI = require('../../../../src/api/express/express-register-api');
@@ -42,20 +41,12 @@ describe('ExpressRegisterAPI class', () => {
   // register
   describe('register', () => {
     describe('success', () => {
-      let isEmptyStub;
-      let validationResultStub;
       let registerStub;
       let logSpy;
       let expressRegisterAPI;
       let req;
 
       beforeEach(() => {
-        isEmptyStub = sinon.stub().returns(true);
-        validationResultStub = sinon.stub().returns({
-          isEmpty: isEmptyStub
-        });
-        sinon.replace(validator, 'validationResult', validationResultStub);
-
         registerStub = sinon.stub().resolves('token');
         logSpy = sinon.spy();
         expressRegisterAPI = new ExpressRegisterAPI({
@@ -72,20 +63,6 @@ describe('ExpressRegisterAPI class', () => {
             confirmPassword: 'confirmpassword'
           }
         };
-      });
-
-      it('should check validation', done => {
-        const sendStub = sinon.stub().callsFake(() => {
-          expect(validationResultStub.callCount).to.eq(1);
-          expect(isEmptyStub.callCount).to.eq(1);
-          done();
-        });
-        const res = {
-          send: sendStub
-        };
-
-        expressRegisterAPI
-          .register(req, res);
       });
 
       it('should call registration if validation passed', done => {
@@ -121,20 +98,12 @@ describe('ExpressRegisterAPI class', () => {
     });
 
     describe('failed to validate', () => {
-      let isEmptyStub;
-      let validationResultStub;
       let registerStub;
       let logSpy;
       let expressRegisterAPI;
       let req;
 
       beforeEach(() => {
-        isEmptyStub = sinon.stub().returns(false);
-        validationResultStub = sinon.stub().returns({
-          isEmpty: isEmptyStub
-        });
-        sinon.replace(validator, 'validationResult', validationResultStub);
-
         registerStub = sinon.stub().resolves('token');
         logSpy = sinon.spy();
         expressRegisterAPI = new ExpressRegisterAPI({
@@ -182,20 +151,12 @@ describe('ExpressRegisterAPI class', () => {
     });
 
     describe('failed to register', () => {
-      let isEmptyStub;
-      let validationResultStub;
       let registerStub;
       let logSpy;
       let expressRegisterAPI;
       let req;
 
       beforeEach(() => {
-        isEmptyStub = sinon.stub().returns(true);
-        validationResultStub = sinon.stub().returns({
-          isEmpty: isEmptyStub
-        });
-        sinon.replace(validator, 'validationResult', validationResultStub);
-
         registerStub = sinon.stub().rejects('');
         logSpy = sinon.spy();
         expressRegisterAPI = new ExpressRegisterAPI({
@@ -243,17 +204,12 @@ describe('ExpressRegisterAPI class', () => {
     });
 
     describe('exception', () => {
-      let validationResultStub;
-      let registerStub;
       let logSpy;
       let expressRegisterAPI;
       let sendStatusSpy;
       let res;
 
       beforeEach(() => {
-        validationResultStub = sinon.stub().returns({});
-        sinon.replace(validator, 'validationResult', validationResultStub);
-
         registerStub = sinon.stub().resolves('');
         logSpy = sinon.spy();
         expressRegisterAPI = new ExpressRegisterAPI({

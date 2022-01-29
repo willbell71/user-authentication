@@ -1,63 +1,86 @@
-import * as React from 'react';
-import * as enzyme from 'enzyme';
-import * as Adapter from 'enzyme-adapter-react-16';
+import React from 'react';
+import { act, create, ReactTestInstance, ReactTestRenderer } from 'react-test-renderer';
 
-import {FormField} from './form-field';
+import { FormField, TProps } from './form-field';
 
-enzyme.configure({ adapter: new Adapter() });
+let props: TProps;
+let renderer: ReactTestRenderer;
+let instance: ReactTestInstance;
+beforeEach(async () => {
+  props = {
+    id: 'id',
+    label: 'label',
+    type: 'text',
+    name: 'name',
+    value: 'value',
+    changeInput: jest.fn(),
+    error: 'error',
+    testid: 'input'
+  };
 
-let changeInput: jest.Mock;
-let wrapper: enzyme.ShallowWrapper<{}>;
-beforeEach(() => {
-  changeInput = jest.fn();
-  wrapper = enzyme.shallow(<FormField
-    id="id"
-    label="label"
-    type="text"
-    name="name"
-    value="value"
-    changeInput={ changeInput }
-    error="error"/>
-  );
+  await act(async () => {
+    renderer = create(
+      <FormField {...props} />
+    );
+  });
+
+  instance = renderer.root;
 });
-afterEach(() => jest.restoreAllMocks());
+
+afterEach(() => jest.clearAllMocks());
 
 describe('FormField', () => {
   it('should render', () => {
-    expect(wrapper.find('label').length).toEqual(1);
+    expect(instance).toBeTruthy();
   });
 
   it('should render a label with caption', () => {
-    expect(wrapper.find('label').text()).toMatch(/label/);
+    const label: ReactTestInstance = instance.findByProps({ 'data-testid': 'label' });
+    expect(label.props.children[0]).toEqual(props.label);
   });
 
   it('should render an input with id', () => {
-    expect(wrapper.find('input').prop('id')).toEqual('id');
+    const input: ReactTestInstance = instance.findByProps({ 'data-testid': props.testid });
+    expect(input.props.id).toEqual(props.id);
   });
 
   it('should render an input with type', () => {
-    expect(wrapper.find('input').prop('type')).toEqual('text');
+    const input: ReactTestInstance = instance.findByProps({ 'data-testid': props.testid });
+    expect(input.props.type).toEqual(props.type);
   });
 
   it('should render an input with name', () => {
-    expect(wrapper.find('input').prop('name')).toEqual('name');
+    const input: ReactTestInstance = instance.findByProps({ 'data-testid': props.testid });
+    expect(input.props.name).toEqual(props.name);
   });
 
   it('should render an input with value', () => {
-    expect(wrapper.find('input').prop('value')).toEqual('value');
+    const input: ReactTestInstance = instance.findByProps({ 'data-testid': props.testid });
+    expect(input.props.value).toEqual(props.value);
   });
 
   it('should render an input with onChange', () => {
-    expect(wrapper.find('input').prop('onChange')).toEqual(changeInput);
+    const input: ReactTestInstance = instance.findByProps({ 'data-testid': props.testid });
+    expect(input.props.onChange).toEqual(props.changeInput);
   });
 
-  it('should call onChange', () => {
-    wrapper.find('input').simulate('change', {target: {value: 'email'}});
+  it('should call onChange', async () => {
+    const event: unknown = {
+      target: {
+        value: 'email'
+      }
+    };
 
-    expect(changeInput).toHaveBeenCalledTimes(1);
+    const input: ReactTestInstance = instance.findByProps({ 'data-testid': props.testid });
+    await act(async () => input.props.onChange(event));
+
+    expect(props.changeInput).toHaveBeenCalledTimes(1);
+    expect(props.changeInput).toHaveBeenCalledWith(event);
   });
 
   it('should render a p with error', () => {
-    expect(wrapper.find('p').text()).toEqual('error');
+    const error: ReactTestInstance = instance.findByProps({ 'data-testid': 'error' });
+
+    expect(error.props.children).toEqual('error');
   });
 });

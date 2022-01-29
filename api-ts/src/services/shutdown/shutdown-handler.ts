@@ -1,4 +1,4 @@
-import * as process from 'process';
+import process from 'process';
 
 import { ILogger } from '../logger/ilogger';
 import { IShutdownHandler } from './ishutdown-handler';

@@ -2,7 +2,6 @@ const chai = require('chai');
 const sinon = require('sinon');
 
 const express = require('express');
-const validator = require('express-validator');
 
 const ExpressAPI = require('../../../../src/api/express/express-api');
 const ExpressLoginAPI = require('../../../../src/api/express/express-login-api');
@@ -41,20 +40,12 @@ describe('ExpressLoginAPI class', () => {
 
   describe('login', () => {
     describe('success', () => {
-      let isEmptyStub;
-      let validationResultStub;
       let loginStub;
       let logSpy;
       let expressLoginAPI;
       let req;
 
       beforeEach(() => {
-        isEmptyStub = sinon.stub().returns(true);
-        validationResultStub = sinon.stub().returns({
-          isEmpty: isEmptyStub
-        });
-        sinon.replace(validator, 'validationResult', validationResultStub);
-
         loginStub = sinon.stub().resolves('token');
         logSpy = sinon.spy();
         expressLoginAPI = new ExpressLoginAPI({
@@ -68,20 +59,6 @@ describe('ExpressLoginAPI class', () => {
             password: 'password'
           }
         };
-      });
-
-      it('should check validation', done => {
-        const sendStub = sinon.stub().callsFake(() => {
-          expect(validationResultStub.callCount).to.eq(1);
-          expect(isEmptyStub.callCount).to.eq(1);
-          done();
-        });
-        const res = {
-          send: sendStub
-        };
-
-        expressLoginAPI
-          .login(req, res);
       });
 
       it('should call login if validation passed', done => {
@@ -115,20 +92,12 @@ describe('ExpressLoginAPI class', () => {
     });
 
     describe('failed to validate', () => {
-      let isEmptyStub;
-      let validationResultStub;
       let loginStub;
       let logSpy;
       let expressLoginAPI;
       let req;
 
       beforeEach(() => {
-        isEmptyStub = sinon.stub().returns(false);
-        validationResultStub = sinon.stub().returns({
-          isEmpty: isEmptyStub
-        });
-        sinon.replace(validator, 'validationResult', validationResultStub);
-
         loginStub = sinon.stub().resolves('token');
         logSpy = sinon.spy();
         expressLoginAPI = new ExpressLoginAPI({
@@ -156,37 +125,15 @@ describe('ExpressLoginAPI class', () => {
         expressLoginAPI
           .login(req, res);
       });
-
-      it('should return 400 if validation failed', done => {
-        const sendStatusStub = sinon.stub().callsFake(() => {
-          expect(sendStatusStub.callCount).to.eq(1);
-          expect(sendStatusStub.args[0][0]).to.eq(400);
-          done();
-        });
-        const res = {
-          sendStatus: sendStatusStub
-        };
-
-        expressLoginAPI
-          .login(req, res);
-      });
     });
 
     describe('failed to login', () => {
-      let isEmptyStub;
-      let validationResultStub;
       let loginStub;
       let logSpy;
       let expressLoginAPI;
       let req;
 
       beforeEach(() => {
-        isEmptyStub = sinon.stub().returns(true);
-        validationResultStub = sinon.stub().returns({
-          isEmpty: isEmptyStub
-        });
-        sinon.replace(validator, 'validationResult', validationResultStub);
-
         loginStub = sinon.stub().rejects('');
         logSpy = sinon.spy();
         expressLoginAPI = new ExpressLoginAPI({
@@ -231,7 +178,6 @@ describe('ExpressLoginAPI class', () => {
     });
 
     describe('exception', () => {
-      let validationResultStub;
       let loginStub;
       let logSpy;
       let expressLoginAPI;
@@ -239,9 +185,6 @@ describe('ExpressLoginAPI class', () => {
       let res;
 
       beforeEach(() => {
-        validationResultStub = sinon.stub().returns({});
-        sinon.replace(validator, 'validationResult', validationResultStub);
-
         loginStub = sinon.stub().resolves('');
         logSpy = sinon.spy();
         expressLoginAPI = new ExpressLoginAPI({

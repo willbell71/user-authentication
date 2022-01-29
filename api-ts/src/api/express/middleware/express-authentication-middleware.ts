@@ -15,13 +15,13 @@ export class ExpressAuthenticationMiddleware {
    * @param {Response} res - express response object.
    * @param {NextFunction} next - next function in middleware chain.
    * @param {IAuthService} authService - authentication service.
-   * @return {void}
+   * @return {Promise<void>} completion promise.
    */
-  public static auth(logger: ILogger,
+  public static async auth(logger: ILogger,
     req: Request & {user?: TDBServiceEntity},
     res: Response,
     next: NextFunction,
-    authService: IAuthService): void {
+    authService: IAuthService): Promise<void> {
     try {
       if (!req.headers.authorization) {
         // no token, unauthorised
@@ -32,18 +32,13 @@ export class ExpressAuthenticationMiddleware {
 
       // decode token
       const token: string = req.headers.authorization.substring('Bearer '.length);
-      authService.getAuthenticatedUserForToken(token)
-        .then((user: TDBServiceEntity) => {
-          req.user = user;
-          logger.debug('ExpressAuthenticationMiddleware', 'User appears to be authorised, continuing with request');
-          next();
-        })
-        .catch((err: Error) => {
-          logger.error(err.message);
-          res.sendStatus(401);
-        });
-    } catch (_) {
-      res.sendStatus(400);
+      const user: TDBServiceEntity = await authService.getAuthenticatedUserForToken(token);
+      req.user = user;
+      logger.debug('ExpressAuthenticationMiddleware', 'User appears to be authorised, continuing with request');
+      next();
+    } catch (err: unknown) {
+      logger.error((err as Error).message);
+      res.sendStatus(401);
     }
   }
 }

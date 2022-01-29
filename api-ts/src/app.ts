@@ -1,9 +1,9 @@
-import { RequestHandler, Router } from 'express';
-import * as helmet from 'helmet';
-import * as compression from 'compression';
-import * as morgan from 'morgan';
-import * as bodyParser from 'body-parser';
-import * as cors from 'cors';
+import { Request, Response, RequestHandler, Router } from 'express';
+import helmet from 'helmet';
+import compression from 'compression';
+import morgan from 'morgan';
+import bodyParser from 'body-parser';
+import cors from 'cors';
 
 import { config } from './config/config';
 
@@ -112,7 +112,7 @@ if (config.useCompression) {
   logger.info('App', 'Compression middleware enabled');
   server.registerMiddleware(compression());
 }
-server.registerMiddleware(morgan('dev', {stream: logger} as unknown as morgan.Options));
+server.registerMiddleware(morgan('dev', { stream: logger } as unknown as morgan.Options<Request, Response>));
 server.registerMiddleware(bodyParser.urlencoded({extended: true}));
 server.registerMiddleware(bodyParser.text());
 server.registerMiddleware(bodyParser.json({type: 'application/json'}));

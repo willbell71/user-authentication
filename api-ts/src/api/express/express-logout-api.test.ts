@@ -1,9 +1,18 @@
+import express from 'express';
+
 import { ILogger } from '../../services/logger/ilogger';
 import { IAuthService } from '../../model/auth/iauth-service';
+import { ExpressRequestMiddleware } from './middleware/express-request-middleware';
+import { ExpressAuthenticationMiddleware } from './middleware/express-authentication-middleware';
+import { ILogLine } from '../../services/logger/ilog-line';
+import { Logger } from '../../services/logger/logger';
+import { IUserService } from '../../model/user/iuser-service';
+import { ExpressLogoutAPI } from './express-logout-api';
+import { TDBServiceEntity } from '../../services/db/tdb-service-entity';
 
-let auth: (logger: ILogger, req: {}, res: {}, next: () => void, authService: IAuthService) => void;
-let validateRequestBodyFields: (req: {}, res: {}, next: () => void) => void;
-let logout: (req: {}, res: {}) => void;
+let auth: (logger: ILogger, req: object, res: object, next: () => void, authService: IAuthService) => void;
+let validateRequestBodyFields: (req: object, res: object, next: () => void) => void;
+let logout: (req: object, res: object) => void;
 jest.mock('express', () => {
   const use: jest.Mock = jest.fn().mockImplementation(() => {});
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,30 +29,21 @@ jest.mock('express', () => {
     Router: jest.Mock;
   };
 
-  const express: unknown = jest.fn().mockImplementation(() => ({
+  const exp: unknown = jest.fn().mockImplementation(() => ({
     use,
     Router
   }));
 
-  (express as FakeExpress).Router = Router;
+  (exp as FakeExpress).Router = Router;
 
-  return express;
+  return exp;
 });
-import * as express from 'express';
 
-import { ExpressRequestMiddleware } from './middleware/express-request-middleware';
 jest.mock('./middleware/express-request-middleware');
 ExpressRequestMiddleware.validateRequestBodyFields = jest.fn().mockImplementation(() => {});
 
-import { ExpressAuthenticationMiddleware } from './middleware/express-authentication-middleware';
 jest.mock('./middleware/express-authentication-middleware');
 ExpressAuthenticationMiddleware.auth = jest.fn().mockImplementation(() => {});
-
-import { ILogLine } from '../../services/logger/ilog-line';
-import { Logger } from '../../services/logger/logger';
-import { IUserService } from '../../model/user/iuser-service';
-import { ExpressLogoutAPI } from './express-logout-api';
-import { TDBServiceEntity } from '../../services/db/tdb-service-entity';
 
 let logLineSpy: jest.Mock;
 let warnLineSpy: jest.Mock;
@@ -80,7 +80,7 @@ beforeEach(() => {
       new Promise((resolve: (value: string) => void): void => resolve('token'))),
     login: jest.fn().mockImplementation((): Promise<string> =>
       new Promise((resolve: (value: string) => void): void => resolve('token'))),
-    logout: jest.fn().mockImplementation((): Promise<void> => 
+    logout: jest.fn().mockImplementation((): Promise<void> =>
       new Promise((resolve: () => void): void => resolve()))
   };
 
@@ -89,9 +89,9 @@ beforeEach(() => {
 afterEach(() => {
   jest.clearAllMocks();
 
-  auth = undefined as unknown as (logger: ILogger, req: {}, res: {}, next: () => void, authService: IAuthService) => void;
-  validateRequestBodyFields = undefined as unknown as (req: {}, res: {}, next: () => void) => void;
-  logout = undefined as unknown as (req: {}, res: {}) => void;
+  auth = undefined as unknown as (logge: ILogger, req: object, res: object, next: () => void, authServic: IAuthService) => void;
+  validateRequestBodyFields = undefined as unknown as (req: object, res: object, next: () => void) => void;
+  logout = undefined as unknown as (req: object, res: object) => void;
 });
 
 describe('ExpressLoginAPI', () => {
@@ -130,46 +130,40 @@ describe('ExpressLoginAPI', () => {
   });
 
   describe('logout', () => {
-    it('should call logout', (done: jest.DoneCallback) => {
+    it('should call logout', async () => {
       expressLogoutAPI.registerHandlers();
 
-      logout({
+      await logout({
         user
       }, {
         send: jest.fn().mockImplementation(() => {})
       });
 
-      setTimeout(() => {
-        expect(userService.logout).toHaveBeenCalledTimes(1);
-        expect(userService.logout).toHaveBeenCalledWith(user);
-        done();
-      }, 100);
+      expect(userService.logout).toHaveBeenCalledTimes(1);
+      expect(userService.logout).toHaveBeenCalledWith(user);
     });
 
-    it('should call res.send on success', (done: jest.DoneCallback) => {
+    it('should call res.send on success', async () => {
       expressLogoutAPI.registerHandlers();
 
       const send: jest.Mock = jest.fn();
-      logout({
+      await logout({
         user
       }, {
         send
       });
 
-      setTimeout(() => {
-        expect(send).toHaveBeenCalledTimes(1);
-        expect(send).toHaveBeenCalledWith({});
-        done();
-      }, 100);
+      expect(send).toHaveBeenCalledTimes(1);
+      expect(send).toHaveBeenCalledWith({});
     });
 
     it('should call logger error on failure', (done: jest.DoneCallback) => {
-      userService.logout = jest.fn().mockImplementation((): Promise<void> => 
+      userService.logout = jest.fn().mockImplementation((): Promise<void> =>
         new Promise((
           resolve: () => void,
           reject: (err: Error) => void
         ): void => reject(new Error(''))));
-    
+
       expressLogoutAPI.registerHandlers();
 
       logout({
@@ -185,12 +179,12 @@ describe('ExpressLoginAPI', () => {
     });
 
     it('should call sendStatus 400 on error', (done: jest.DoneCallback) => {
-      userService.logout = jest.fn().mockImplementation((): Promise<void> => 
+      userService.logout = jest.fn().mockImplementation((): Promise<void> =>
         new Promise((
           resolve: () => void,
           reject: (err: Error) => void
         ): void => reject(new Error(''))));
-    
+
       expressLogoutAPI.registerHandlers();
 
       const sendStatus: jest.Mock = jest.fn().mockImplementation(() => {});

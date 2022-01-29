@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 
 import { IPasswordService } from './ipassword-service';
 
@@ -18,13 +18,10 @@ export class BCryptPasswordService implements IPasswordService {
    * @return {Promise<string>} return encrypted password.
    */
   public encrypt(password: string): Promise<string> {
-    return new Promise<string>((
-      resolve: ((value?: string | PromiseLike<string> | undefined) => void),
-      reject: ((reason?: Error) => void)
-    ): void => {
-      bcrypt.genSalt(this._saltRounds, (saltErr: Error, salt: string) => {
+    return new Promise((resolve: (value: string) => void, reject: (err: Error) => void) => {
+      bcrypt.genSalt(this._saltRounds, (saltErr: Error | undefined, salt: string) => {
         if (!saltErr) {
-          bcrypt.hash(password, salt, (hashErr: Error, hash: string) => {
+          bcrypt.hash(password, salt, (hashErr: Error | undefined, hash: string) => {
             if (!hashErr) {
               resolve(hash);
             } else {
@@ -45,15 +42,12 @@ export class BCryptPasswordService implements IPasswordService {
    * @return {Promise<boolean>} return if passwords match.
    */
   public compare(password: string, encrypted: string): Promise<boolean> {
-    return new Promise<boolean>((
-      resolve: ((value?: boolean | PromiseLike<boolean> | undefined) => void),
-      reject: ((reason?: Error) => void)
-    ): void => {
-      bcrypt.compare(password, encrypted, (err: Error, success: boolean) => {
+    return new Promise((resolve: (value: boolean) => void, reject: (error: Error) => void) => {
+      bcrypt.compare(password, encrypted, (err: Error | undefined, success: boolean) => {
         if (!err) {
           resolve(success);
         } else {
-          reject(new Error('Failed to compare password'));
+          reject(new Error('Failed to compare passwords'));
         }
       });
     });

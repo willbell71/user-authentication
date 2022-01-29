@@ -9,7 +9,7 @@ jest.mock('http', () => {
     createServer
   };
 });
-import * as http from 'http';
+import http from 'http';
 
 jest.mock('express', () => {
   const use: jest.Mock = jest.fn();
@@ -32,7 +32,7 @@ jest.mock('express', () => {
 
   return express;
 });
-import * as express from 'express';
+import express from 'express';
 
 import { ExpressServer } from './express-server';
 

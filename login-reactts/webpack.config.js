@@ -13,7 +13,6 @@ module.exports = {
     filename: 'app.bundle.js'
   },
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
     compress: true,
     port: 9000,
     historyApiFallback: true,
@@ -40,7 +39,11 @@ module.exports = {
         {
           loader: 'postcss-loader',
           options: {
-            plugins: () => require('autoprefixer')()
+            postcssOptions: {
+              plugins: [
+                () => require('autoprefixer')()
+              ]
+            }
           }
         },
         'sass-loader'
@@ -48,8 +51,10 @@ module.exports = {
     }]
   },
   plugins: [
-    new CopyPlugin([{
-      from: 'assets'
-    }])
+    new CopyPlugin({
+      patterns: [{
+        from: 'assets'
+      }]
+    })
   ]
 };

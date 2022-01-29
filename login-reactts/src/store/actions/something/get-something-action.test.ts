@@ -1,4 +1,3 @@
-import * as fetchMock from 'fetch-mock';
 import { Middleware, AnyAction } from 'redux';
 import configureMockStore, { MockStore, MockStoreCreator } from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -13,17 +12,41 @@ beforeEach(() => {
   mockStore = configureMockStore(middlewares);
 });
 afterEach(() => {
-  jest.restoreAllMocks();
-  fetchMock.restore();
+  jest.clearAllMocks();
 });
 
+jest.mock('../../app-store', () => ({
+  AppStore: {
+    getStore: () => ({
+      getState: () => ({
+        login: {
+          token: 'token'
+        }
+      })
+    })
+  }
+}));
+
 describe('getSomethingAction', () => {
-  it('should call fetch', () => {
-    fetchMock.getOnce('http://app.com/api/v1/getsomething', {
-      body: {
-        title: 'title',
-        body: 'body'
-      }
+  let globalFetch: (input: RequestInfo) => Promise<Response>;
+
+  beforeEach(() => {
+    globalFetch = global.fetch;
+  });
+
+  afterEach(() => {
+    global.fetch = globalFetch;
+  });
+
+  it('should call fetch', async () => {
+    global.fetch = jest.fn().mockImplementation(() => {
+      return Promise.resolve<any>({
+        json: () => Promise.resolve({
+          title: 'title',
+          body: 'body'
+        }),
+        status: 200
+      });
     });
 
     const expectedActions: {type: ESomethingActions, payload: {}}[] = [
@@ -31,27 +54,15 @@ describe('getSomethingAction', () => {
     ];    
     const store: MockStore = mockStore({ login: {}, something: {} });
 
-    return store.dispatch(getSomethingAction() as unknown as AnyAction).then(() => {
-      expect(store.getActions()).toEqual(expectedActions);
-    });
+    await store.dispatch(getSomethingAction() as unknown as AnyAction);
+    expect(store.getActions()).toEqual(expectedActions);
   });
 
-  it('should handle response error status', () => {
-    fetchMock.getOnce('http://app.com/api/v1/getsomething', 400);
-
-    const expectedActions: {type: ESomethingActions, payload: {}}[] = [
-      { type: ESomethingActions.GET, payload: { title: null, body: null } }
-    ];    
-    const store: MockStore = mockStore({ login: {}, something: {} });
-
-    return store.dispatch(getSomethingAction() as unknown as AnyAction).then(() => {
-      expect(store.getActions()).toEqual(expectedActions);
-    });
-  });
-
-  it('should handle failure', () => {
-    fetchMock.getOnce('http://app.com/api/v1/getsomething', {
-      throws: new Error('Failed')
+  it('should handle response error status', async () => {
+    global.fetch = jest.fn().mockImplementation(() => {
+      return Promise.resolve<any>({
+        status: 400
+      });
     });
 
     const expectedActions: {type: ESomethingActions, payload: {}}[] = [
@@ -59,21 +70,59 @@ describe('getSomethingAction', () => {
     ];    
     const store: MockStore = mockStore({ login: {}, something: {} });
 
-    return store.dispatch(getSomethingAction() as unknown as AnyAction).then(() => {
-      expect(store.getActions()).toEqual(expectedActions);
-    });
+    await store.dispatch(getSomethingAction() as unknown as AnyAction);
+    expect(store.getActions()).toEqual(expectedActions);
   });
 
-  it('should handle bad JSON', () => {
-    fetchMock.getOnce('http://app.com/api/v1/getsomething', {
-      body: '"banana: true'
+  it('should handle failure', async () => {
+    global.fetch = jest.fn().mockImplementation(() => {
+      throw new Error('Failed');
     });
 
-    const expectedActions: [] = [];    
+    const expectedActions: {type: ESomethingActions, payload: {}}[] = [
+      { type: ESomethingActions.GET, payload: { title: null, body: null } }
+    ];    
     const store: MockStore = mockStore({ login: {}, something: {} });
 
-    return store.dispatch(getSomethingAction() as unknown as AnyAction).then(() => {
-      expect(store.getActions()).toEqual(expectedActions);
+    await store.dispatch(getSomethingAction() as unknown as AnyAction);
+    expect(store.getActions()).toEqual(expectedActions);
+  });
+
+  it('should handle bad JSON', async () => {
+    global.fetch = jest.fn().mockImplementation(() => {
+      return Promise.resolve<any>({
+        json: () => Promise.resolve({
+          body: '"banana: true'
+        }),
+        status: 200
+      });
     });
+
+    const expectedActions: {type: ESomethingActions, payload: {}}[] = [
+      { type: ESomethingActions.GET, payload: { title: undefined, body: '"banana: true' } }
+    ];    
+    const store: MockStore = mockStore({ login: {}, something: {} });
+
+    await store.dispatch(getSomethingAction() as unknown as AnyAction);
+    expect(store.getActions()).toEqual(expectedActions);
+  });
+
+  it('should handle failing to parse JSON', async () => {
+    global.fetch = jest.fn().mockImplementation(() => {
+      return Promise.resolve<any>({
+        json: () => {
+          throw new Error('Failed');
+        },
+        status: 200
+      });
+    });
+
+    const expectedActions: {type: ESomethingActions, payload: {}}[] = [
+      { type: ESomethingActions.GET, payload: { title: null, body: null } }
+    ];    
+    const store: MockStore = mockStore({ login: {}, something: {} });
+
+    await store.dispatch(getSomethingAction() as unknown as AnyAction);
+    expect(store.getActions()).toEqual(expectedActions);
   });
 });

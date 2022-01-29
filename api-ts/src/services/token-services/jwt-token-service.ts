@@ -1,4 +1,4 @@
-import * as jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 import {ITokenService} from './itoken-service';
 
@@ -18,13 +18,10 @@ export class JWTTokenService implements ITokenService {
    * @return {Promise<string>} return encrypted token.
    */
   public encrypt(payload: string | object | Buffer): Promise<string> {
-    return new Promise<string>((
-      resolve: ((value?: string | PromiseLike<string> | undefined) => void),
-      reject: ((reason?: Error) => void)
-    ): void => {
-      jwt.sign(payload, this._secret, (err: Error, token: string) => {
+    return new Promise((resolve: (value: string) => void, reject: (error: Error) => void) => {
+      jwt.sign(payload, this._secret, (err: Error|null, token: string|undefined) => {
         if (!err) {
-          resolve(token);
+          resolve(token || '');
         } else {
           reject(new Error('Failed to encrypt payload as JWT'));
         }
@@ -38,13 +35,10 @@ export class JWTTokenService implements ITokenService {
    * @return {Promise<string | object | Buffer>} return decrypted payload.
    */
   public decrypt(token: string): Promise<string | object | Buffer> {
-    return new Promise<string | object | Buffer>((
-      resolve: ((value?: string | object | Buffer | PromiseLike<string | object | Buffer> | undefined) => void),
-      reject: ((reason?: Error) => void)
-    ): void => {
-      jwt.verify(token, this._secret, (err: Error, decoded: string | object | Buffer) => {
+    return new Promise<string|object|Buffer>((resolve: (value: string|object|Buffer) => void, reject: (error: Error) => void) => {
+      jwt.verify(token, this._secret, (err: jwt.VerifyErrors|null, decoded: string|object|Buffer|undefined) => {
         if (!err) {
-          resolve(decoded);
+          resolve(decoded || '');
         } else {
           reject(new Error('Failed to decode JWT'));
         }

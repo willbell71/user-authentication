@@ -32,17 +32,14 @@ export class ExpressLogoutAPI implements IServerRouteHandler<Router> {
    * Log out a user.
    * @param {Request} req - express request object.
    * @param {Resposne} res - express response object.
-   * @return {void}
+   * @return {Promise<void>} completion promise.
    */
-  private logout(req: Request & {user?: TDBServiceEntity}, res: Response): void {
+  private async logout(req: Request & {user?: TDBServiceEntity}, res: Response): Promise<void> {
     try {
-      this.userService.logout(req.user)
-        .then(() => res.send({}))
-        .catch((err: Error) => {
-          this.logger.error(err.message);
-          res.sendStatus(400);
-        });
-    } catch (_) {
+      await this.userService.logout(req.user);
+      res.send({});
+    } catch (err: unknown) {
+      this.logger.error((err as Error).message);
       res.sendStatus(400);
     }
   }

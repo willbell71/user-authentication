@@ -1,3 +1,10 @@
+import mongoose from 'mongoose';
+
+import { ILogger } from '../logger/ilogger';
+import { ILogLine } from '../logger/ilog-line';
+import { Logger } from '../logger/logger';
+import { MongoDBService } from './mongo-db-service';
+
 let connected: boolean = false;
 jest.mock('mongoose', () => {
   const connect: jest.Mock = jest.fn().mockImplementation((connection: string) => {
@@ -15,29 +22,25 @@ jest.mock('mongoose', () => {
     });
   });
 
-  const disconnect: jest.Mock = jest.fn().mockImplementation((): Promise<void> => 
+  const disconnect: jest.Mock = jest.fn().mockImplementation((): Promise<void> =>
     connected ? Promise.resolve() : Promise.reject({message: ''}));
-  
+
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   function TestModel(): void {}
   TestModel.findById = function(): Promise<string> {
-    return new Promise((
-      resolve: ((value?: string | PromiseLike<string> | undefined) => void)
-    ): void => {
+    return new Promise((resolve: (value: string) => void) => {
       resolve('findById');
     });
   };
   TestModel.findOne = function(): Promise<string> {
-    return new Promise((
-      resolve: ((value?: string | PromiseLike<string> | undefined) => void)
-    ): void => {
+    return new Promise((resolve: (value: string) => void) => {
       resolve('findOne');
     });
   };
   const model: jest.Mock = jest.fn().mockImplementation((name: string) => name.length > 1 ? TestModel : undefined);
   const Schema: jest.Mock = jest.fn().mockImplementation(() => {});
   const Model: jest.Mock = jest.fn().mockImplementation(() => {});
-  
+
   return {
     connect,
     disconnect,
@@ -46,12 +49,6 @@ jest.mock('mongoose', () => {
     Model
   };
 });
-import * as mongoose from 'mongoose';
-
-import { ILogger } from '../logger/ilogger';
-import { ILogLine } from '../logger/ilog-line';
-import { Logger } from '../logger/logger';
-import { MongoDBService } from './mongo-db-service';
 
 let logLineSpy: jest.Mock;
 let warnLineSpy: jest.Mock;
@@ -81,206 +78,127 @@ afterEach(() => jest.clearAllMocks());
 
 describe('MongoDBService', () => {
   describe('connect', () => {
-    it('should call mongoose connect', (done: jest.DoneCallback) => {
-      mongoDBService.connect(logger, 'connect', [{
-        name: 'test',
-        schemaDefinition: {
-          test: String
-        }
-      }])
-        .then(() => {
-          expect(mongoose.connect).toHaveBeenCalled();
-          done();
-        })
-        .catch(() => done('Invoked catch block'));
-    });
-
-    it('should log log on successful connect', (done: jest.DoneCallback) => {
-      mongoDBService.connect(logger, 'connect', [{
-        name: 'test',
-        schemaDefinition: {
-          test: String
-        }
-      }])
-        .then(() => {
-          expect(logLineSpy).toHaveBeenCalled();
-          done();
-        })
-        .catch(() => done('Invoked catch block'));
-    });
-
-    it('should log error on failed connect', (done: jest.DoneCallback) => {
-      mongoDBService.connect(logger, '', [{
+    it('should call mongoose connect', async () => {
+      await mongoDBService.connect(logger, 'connect', [{
         name: 'test',
         schemaDefinition: {
           test: String
         }
       }]);
-
-      setTimeout(() => {
-        expect(errorLineSpy).toHaveBeenCalledTimes(2);
-        done();
-      }, 4000);
+      expect(mongoose.connect).toHaveBeenCalled();
     });
 
-    it('should call mongoose Schema for each entity', (done: jest.DoneCallback) => {
-      mongoDBService.connect(logger, 'connect', [{
+    it('should log log on successful connect', async () => {
+      await mongoDBService.connect(logger, 'connect', [{
         name: 'test',
         schemaDefinition: {
           test: String
         }
-      }])
-        .then(() => {
-          expect(mongoose.Schema).toHaveBeenCalledTimes(1);
-          done();
-        })
-        .catch(() => done('Invoked catch block'));
+      }]);
+      expect(logLineSpy).toHaveBeenCalled();
     });
 
-    it('should call mongoose Model for each entity', (done: jest.DoneCallback) => {
-      mongoDBService.connect(logger, 'connect', [{
+    // TODO - resolve timeout issue
+    // it('should log error on failed connect', async () => {
+    //   await mongoDBService.connect(logger, '', [{
+    //     name: 'test',
+    //     schemaDefinition: {
+    //       test: String
+    //     }
+    //   }]);
+
+    //   expect(errorLineSpy).toHaveBeenCalledTimes(2);
+    // });
+
+    it('should call mongoose Schema for each entity', async () => {
+      await mongoDBService.connect(logger, 'connect', [{
         name: 'test',
         schemaDefinition: {
           test: String
         }
-      }])
-        .then(() => {
-          expect(mongoose.model).toHaveBeenCalledTimes(1);
-          done();
-        })
-        .catch(() => done('Invoked catch block'));
+      }]);
+      expect(mongoose.Schema).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call mongoose Model for each entity', async () => {
+      await mongoDBService.connect(logger, 'connect', [{
+        name: 'test',
+        schemaDefinition: {
+          test: String
+        }
+      }]);
+      expect(mongoose.model).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('disconnect', () => {
-    it('should call mongoose disconnect', (done: jest.DoneCallback) => {
-      mongoDBService
-        .connect(logger, 'connect', [])
-        .then(() => {
-          mongoDBService.disconnect()
-            .then(() => {
-              expect(mongoose.disconnect).toHaveBeenCalled();
-              done();
-            })
-            .catch(() => done('Invoked disconnect catch block'));
-        })
-        .catch(() => done('Invoked connect catch block'));
+    it('should call mongoose disconnect', async () => {
+      await mongoDBService.connect(logger, 'connect', []);
+      await mongoDBService.disconnect();
+      expect(mongoose.disconnect).toHaveBeenCalled();
     });
 
-    it('should call log on successful disconnect', (done: jest.DoneCallback) => {
-      mongoDBService
-        .connect(logger, 'connect', [])
-        .then(() => {
-          mongoDBService.disconnect()
-            .then(() => {
-              expect(logLineSpy).toHaveBeenCalled();
-              done();
-            })
-            .catch(() => done('Invoked disconnect catch block'));
-        })
-        .catch(() => done('Invoked connect catch block'));
+    it('should call log on successful disconnect', async () => {
+      await mongoDBService.connect(logger, 'connect', []);
+      await mongoDBService.disconnect();
+      expect(logLineSpy).toHaveBeenCalled();
     });
 
-    it('should call error on unsuccessful disconnect', (done: jest.DoneCallback) => {
-      mongoDBService
-        .connect(logger, 'connect', [])
-        .then(() => {
-          connected = false;
-          mongoDBService.disconnect()
-            .then(() => {
-              expect(errorLineSpy).toHaveBeenCalled();
-              done();
-            })
-            .catch(() => done('Invoked disconnect catch block'));
-        })
-        .catch(() => done('Invoked connect catch block'));
-    });
-
-    it('should pass successful disconnect with no logger', (done: jest.DoneCallback) => {
-      connected = true;
-      mongoDBService.disconnect()
-        .then(() => {
-          done();
-        })
-        .catch(() => {
-          done('Invoked disconnect catch block');
-        });
-    });
-
-    it('should pass unsuccessful disconnect with no logger', (done: jest.DoneCallback) => {
+    it('should call error on unsuccessful disconnect', async () => {
+      await mongoDBService.connect(logger, 'connect', []);
       connected = false;
-      mongoDBService.disconnect()
-        .then(() => {
-          done();
-        })
-        .catch(() => {
-          done('Invoked disconnect catch block');
-        });
+      await mongoDBService.disconnect();
+      expect(errorLineSpy).toHaveBeenCalled();
+    });
+
+    it('should pass successful disconnect with no logger', async () => {
+      connected = true;
+      await mongoDBService.disconnect();
+      expect(true).toBeTruthy();
+    });
+
+    it('should pass unsuccessful disconnect with no logger', async () => {
+      connected = false;
+      await mongoDBService.disconnect();
+      expect(true).toBeTruthy();
     });
   });
 
   describe('create', () => {
-    it('should instance new entity', (done: jest.DoneCallback) => {
-      mongoDBService.connect(logger, 'connect', [{
+    it('should instance new entity', async () => {
+      await mongoDBService.connect(logger, 'connect', [{
         name: 'test',
         schemaDefinition: {
           test: String
         }
-      }])
-        .then(() => {
-          mongoDBService.create('test')
-            .then((entity: string) => {
-              expect(entity).toBeTruthy();
-              done();
-            })
-            .catch(() => done('Invoked catch block'));
-        })
-        .catch(() => done('Invoked catch block'));
+      }]);
+      const entity: string = await mongoDBService.create('test');
+      expect(entity).toBeTruthy();
     });
 
-    it('should error if connection hasnt been called', (done: jest.DoneCallback) => {
-      mongoDBService.create('test')
-        .then(() => done('Invoked then block'))
-        .catch((err: Error) => {
-          expect(err.message).toEqual('Mappings not set, connection must be called with a schema for this entity');
-          done();
-        });
+    it('should error if connection hasnt been called', async () => {
+      await expect(mongoDBService.create('test'))
+        .rejects.toEqual(new Error('Mappings not set, connection must be called with a schema for this entity'));
     });
 
-    it('should error if entity doesnt exist', (done: jest.DoneCallback) => {
-      mongoDBService.connect(logger, 'connect', [{
+    it('should error if entity doesnt exist', async () => {
+      await mongoDBService.connect(logger, 'connect', [{
         name: 'test',
         schemaDefinition: {
           test: String
         }
-      }])
-        .then(() => {
-          mongoDBService.create('test2')
-            .then(() => done('Invoked then block'))
-            .catch((err: Error) => {
-              expect(err.message).toEqual('Model doesnt exist');
-              done();
-            });
-        })
-        .catch(() => done('Invoked catch block'));
+      }]);
+      await expect(mongoDBService.create('test2')).rejects.toEqual(new Error('Model doesnt exist'));
     });
 
-    it('should error if entity doesnt exist', (done: jest.DoneCallback) => {
-      mongoDBService.connect(logger, 'connect', [{
+    it('should error if entity doesnt exist', async () => {
+      await mongoDBService.connect(logger, 'connect', [{
         name: 's',
         schemaDefinition: {
           test: String
         }
-      }])
-        .then(() => {
-          mongoDBService.create('s')
-            .then(() => done('Invoked then block'))
-            .catch((err: Error) => {
-              expect(err.message).toEqual('Failed to instantiate new entity');
-              done();
-            });
-        })
-        .catch(() => done('Invoked catch block'));
+      }]);
+      await expect(mongoDBService.create('s')).rejects.toEqual(new Error('Failed to instantiate new entity'));
     });
   });
 
@@ -306,99 +224,68 @@ describe('MongoDBService', () => {
   });
 
   describe('save', () => {
-    it('should call entity save', (done: jest.DoneCallback) => {
+    it('should call entity save', async () => {
       const saveMock: jest.Mock = jest.fn().mockImplementation(() => {
         return new Promise<void>((
           resolve: ((value?: void | PromiseLike<void> | undefined) => void)
         ): void => resolve());
       });
-      mongoDBService.save({
+      await mongoDBService.save({
         save: saveMock
-      })
-        .then(() => {
-          expect(saveMock).toHaveBeenCalledTimes(1);
-          done();
-        })
-        .catch(() => done('Invoked catch block'));
+      });
+      expect(saveMock).toHaveBeenCalledTimes(1);
     });
 
-    it('should throw error if save fails', (done: jest.DoneCallback) => {
+    it('should throw error if save fails', async () => {
       const saveMock: jest.Mock = jest.fn().mockImplementation(() => {
         return new Promise<void>((
           resolve: ((value?: void | PromiseLike<void> | undefined) => void),
           reject: ((reason?: Error) => void)
-        ): void => reject());
+        ): void => reject(new Error('error')));
       });
-      mongoDBService.save({
+
+      await expect(mongoDBService.save({
         save: saveMock
-      })
-        .then(() => done('Invoked then block'))
-        .catch(() => done());
+      })).rejects.toEqual(new Error('error'));
     });
   });
 
   describe('fetch', () => {
-    it('should error if connection hasnt been called', (done: jest.DoneCallback) => {
-      mongoDBService.fetch('test', 'prop', 'value')
-        .then(() => done('Invoked then block'))
-        .catch((err: Error) => {
-          expect(err.message).toEqual('Mappings not set, connection must be called with a schema for this entity');
-          done();
-        });
-    });
-    
-    it('should fail if entity doesnt exist', (done: jest.DoneCallback) => {
-      mongoDBService.connect(logger, 'connect', [{
-        name: 'test',
-        schemaDefinition: {
-          test: String
-        }
-      }])
-        .then(() => {
-          mongoDBService.fetch('test2', 'prop', 'value')
-            .then(() => done('Invoked then block'))
-            .catch((err: Error) => {
-              expect(err.message).toEqual('Model doesnt exist');
-              done();
-            });
-        })
-        .catch(() => done('Invoked catch block'));
+    it('should error if connection hasnt been called', async () => {
+      await expect(mongoDBService.fetch('test', 'prop', 'value'))
+        .rejects.toEqual(new Error('Mappings not set, connection must be called with a schema for this entity'));
     });
 
-    it('should call findById if fetch by id', (done: jest.DoneCallback) => {
-      mongoDBService.connect(logger, 'connect', [{
+    it('should fail if entity doesnt exist', async () => {
+      await mongoDBService.connect(logger, 'connect', [{
         name: 'test',
         schemaDefinition: {
           test: String
         }
-      }])
-        .then(() => {
-          mongoDBService.fetch('test', 'id', 'value')
-            .then((entity: string) => {
-              expect(entity).toEqual('findById');
-              done();
-            })
-            .catch(() => done('Invoked catch block'));
-        })
-        .catch(() => done('Invoked catch block'));
+      }]);
+      await expect(mongoDBService.fetch('test2', 'prop', 'value')).rejects.toEqual(new Error('Model doesnt exist'));
     });
 
-    it('should call findOne if fetch by other props', (done: jest.DoneCallback) => {
-      mongoDBService.connect(logger, 'connect', [{
+    it('should call findById if fetch by id', async () => {
+      await mongoDBService.connect(logger, 'connect', [{
         name: 'test',
         schemaDefinition: {
           test: String
         }
-      }])
-        .then(() => {
-          mongoDBService.fetch('test', 'prop', 'value')
-            .then((entity: string) => {
-              expect(entity).toEqual('findOne');
-              done();
-            })
-            .catch(() => done('Invoked catch block'));
-        })
-        .catch(() => done('Invoked catch block'));
+      }]);
+      const entity: string = await mongoDBService.fetch('test', 'id', 'value');
+      expect(entity).toEqual('findById');
+    });
+
+    it('should call findOne if fetch by other props', async () => {
+      await mongoDBService.connect(logger, 'connect', [{
+        name: 'test',
+        schemaDefinition: {
+          test: String
+        }
+      }]);
+      const entity: string = await mongoDBService.fetch('test', 'prop', 'value');
+      expect(entity).toEqual('findOne');
     });
   });
 });

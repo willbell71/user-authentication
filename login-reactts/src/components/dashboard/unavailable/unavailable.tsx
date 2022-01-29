@@ -1,13 +1,13 @@
-import * as React from 'react';
+import React, { FC } from 'react';
 
 import './styles.scss';
 
 /**
  * Component props.
- * @property {string | null} value? - value to render, if available.
+ * @property {string | null} value - value to render, if available.
  */
 type TProps = {
-  value?: string | null;
+  value: string | null;
 };
 
 /**
@@ -15,8 +15,8 @@ type TProps = {
  * @param {TProps} props - component properties.
  * @return {JSX.Element} render.
  */
-export function Unavailable(props: TProps): JSX.Element {
+export const Unavailable: FC<TProps> = ({ value }: TProps): JSX.Element => {
   return (
-    <>{ props.value ? props.value : 'Unavailable' }</>
+    <>{ value ? value : 'Unavailable' }</>
   );
-}
+};

@@ -1,10 +1,10 @@
-import * as path from 'path';
+import path from 'path';
 
-import { RequestHandler, Router } from 'express';
-import * as helmet from 'helmet';
-import * as compression from 'compression';
-import * as morgan from 'morgan';
-import * as cors from 'cors';
+import { Request, Response, RequestHandler, Router } from 'express';
+import helmet from 'helmet';
+import compression from 'compression';
+import morgan from 'morgan';
+import cors from 'cors';
 
 import { config } from './config/config';
 
@@ -38,7 +38,7 @@ if (config.useCompression) {
   logger.info('App', 'Compression middleware enabled');
   server.registerMiddleware(compression());
 }
-server.registerMiddleware(morgan('dev', {stream: logger} as unknown as morgan.Options));
+server.registerMiddleware(morgan('dev', { stream: logger } as unknown as morgan.Options<Request, Response>));
 if (config.disableCORS) {
   logger.info('App', 'CORS disabled');
   server.registerMiddleware(cors());

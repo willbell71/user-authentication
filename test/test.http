@@ -1,0 +1,58 @@
+# API requests tests using VSCode 'Rest Client' extension
+# https://marketplace.visualstudio.com/items?itemName=humao.rest-client
+
+###
+
+# Login
+
+POST http://localhost:3000/api/v1/login
+Content-Type: application/json
+
+{
+  "email": "a@a.com",
+  "password": "123456"
+}
+
+###
+
+# Register
+
+POST http://localhost:3000/api/v1/register
+Content-Type: application/json
+
+{
+  "firstName": "bob",
+  "lastName": "dylan",
+  "email": "a@a.com",
+  "password": "123456"
+}
+
+###
+
+# Get something ( needs auth token in header )
+
+GET http://localhost:3000/api/v1/getsomething
+Authorization: 'Bearer XXX
+
+###
+
+# Logout ( needs auth token in header )
+
+POST http://localhost:3000/api/v1/logout
+Authorization: 'Bearer XXX
+
+{}
+
+###
+
+# Liveness probe ( health check )
+
+GET http://localhost:3000//api/v1/livenessprobe
+
+###
+
+# Readiness probe ( api ready to start handling requests )
+
+GET http://localhost:3000/api/v1/readinessprobe
+
+###

@@ -1,6 +1,5 @@
-import * as process from 'process';
-
-require('dotenv').config();
+import process from 'process';
+import 'dotenv/config';
 
 /**
  * Env config.

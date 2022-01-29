@@ -1,5 +1,5 @@
-import * as http from 'http';
-import * as express from 'express';
+import http from 'http';
+import express from 'express';
 
 import { ILogger } from '../../logger/ilogger';
 import { IServerService } from '../iserver-service';

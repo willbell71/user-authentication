@@ -4,7 +4,7 @@ import { Logger } from '../logger/logger';
 import { IShutdownHandler } from './ishutdown-handler';
 import { ShutdownHandler } from './shutdown-handler';
 
-/* eslint-disable-next-line @typescript-eslint/ban-ts-ignore */
+/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
 // @ts-ignore
 jest.spyOn(process, 'exit').mockImplementation(() => {});
 
@@ -37,7 +37,7 @@ afterEach(() => jest.clearAllMocks());
 describe('ShutdownHandler', () => {
   it('should exit with success ( 0 )', (done: jest.DoneCallback) => {
     process.emit('SIGINT', 'SIGINT');
-      
+
     setTimeout(() => {
       expect(process.exit).toHaveBeenCalledTimes(1);
       expect(process.exit).toHaveBeenNthCalledWith(1, 0);
@@ -58,7 +58,7 @@ describe('ShutdownHandler', () => {
       handler.setErrorExitCode(10);
 
       process.emit('SIGINT', 'SIGINT');
-      
+
       setTimeout(() => {
         expect(process.exit).toHaveBeenCalledTimes(3);
         expect(process.exit).toHaveBeenNthCalledWith(2, 10);
@@ -82,7 +82,7 @@ describe('ShutdownHandler', () => {
     handler.addCallback(async (): Promise<void> => await callback());
 
     process.emit('SIGINT', 'SIGINT');
-    
+
     setTimeout(() => {
       expect(callback).toHaveBeenCalledTimes(1);
 

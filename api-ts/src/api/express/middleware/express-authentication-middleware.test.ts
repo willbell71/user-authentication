@@ -66,66 +66,50 @@ afterEach(() => {
 
 describe('ExpressAuthenticationMiddleware', () => {
   describe('auth', () => {
-    it('should call logger debug if no auth token in request', () => {
+    it('should call logger debug if no auth token in request', async () => {
       req.headers = {};
 
-      ExpressAuthenticationMiddleware.auth(logger, req, res, jest.fn(), authService);
+      await ExpressAuthenticationMiddleware.auth(logger, req, res, jest.fn(), authService);
 
       expect(logLineSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('should call res sendStatus 401 if no auth token in request', () => {
+    it('should call res sendStatus 401 if no auth token in request', async () => {
       req.headers = {};
 
-      ExpressAuthenticationMiddleware.auth(logger, req, res, jest.fn(), authService);
+      await ExpressAuthenticationMiddleware.auth(logger, req, res, jest.fn(), authService);
 
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
       expect(res.sendStatus).toHaveBeenCalledWith(401);
     });
 
-    it('should call authService getAuthenticatedUserForToken', (done: jest.DoneCallback) => {
-      ExpressAuthenticationMiddleware.auth(logger, req, res, jest.fn(), authService);
+    it('should call authService getAuthenticatedUserForToken', async () => {
+      await ExpressAuthenticationMiddleware.auth(logger, req, res, jest.fn(), authService);
 
-      setTimeout(() => {
-        expect(authService.getAuthenticatedUserForToken).toHaveBeenCalledTimes(1);
-        expect(authService.getAuthenticatedUserForToken).toHaveBeenCalledWith('token');
-
-        done();
-      }, 100);
+      expect(authService.getAuthenticatedUserForToken).toHaveBeenCalledTimes(1);
+      expect(authService.getAuthenticatedUserForToken).toHaveBeenCalledWith('token');
     });
 
-    it('should add user to request if auth passes', (done: jest.DoneCallback) => {
-      ExpressAuthenticationMiddleware.auth(logger, req, res, jest.fn(), authService);
+    it('should add user to request if auth passes', async () => {
+      await ExpressAuthenticationMiddleware.auth(logger, req, res, jest.fn(), authService);
 
-      setTimeout(() => {
-        expect(req.user).toEqual(user);
-
-        done();
-      }, 100);
+      expect(req.user).toEqual(user);
     });
 
-    it('should call logger debug if auth passes', (done: jest.DoneCallback) => {
-      ExpressAuthenticationMiddleware.auth(logger, req, res, jest.fn(), authService);
+    it('should call logger debug if auth passes', async () => {
+      await ExpressAuthenticationMiddleware.auth(logger, req, res, jest.fn(), authService);
 
-      setTimeout(() => {
-        expect(logLineSpy).toHaveBeenCalledTimes(1);
-
-        done();
-      }, 100);
+      expect(logLineSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('should call next if auth passes', (done: jest.DoneCallback) => {
+    it('should call next if auth passes', async () => {
       const next: jest.Mock = jest.fn();
-      ExpressAuthenticationMiddleware.auth(logger, req, res, next, authService);
+      await ExpressAuthenticationMiddleware.auth(logger, req, res, next, authService);
 
-      setTimeout(() => {
-        expect(next).toHaveBeenCalledTimes(1);
-
-        done();
-      }, 100);
+      expect(next).toHaveBeenCalledTimes(1);
     });
 
-    it('should call logger error if no user for token', (done: jest.DoneCallback) => {
+    it('should call logger error if no user for token', async () => {
       authService = {
         getAuthenticatedUserForToken: jest.fn().mockImplementation(() =>
           new Promise((
@@ -133,16 +117,12 @@ describe('ExpressAuthenticationMiddleware', () => {
             reject: (err: Error) => void): void => reject(new Error(''))))
       };
 
-      ExpressAuthenticationMiddleware.auth(logger, req, res, jest.fn(), authService);
+      await ExpressAuthenticationMiddleware.auth(logger, req, res, jest.fn(), authService);
 
-      setTimeout(() => {
-        expect(errorLineSpy).toHaveBeenCalledTimes(1);
-
-        done();
-      }, 100);
+      expect(errorLineSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('should call res sendstatus 401 if no user for token', (done: jest.DoneCallback) => {
+    it('should call res sendstatus 401 if no user for token', async () => {
       authService = {
         getAuthenticatedUserForToken: jest.fn().mockImplementation(() =>
           new Promise((
@@ -150,23 +130,19 @@ describe('ExpressAuthenticationMiddleware', () => {
             reject: (err: Error) => void): void => reject(new Error(''))))
       };
 
-      ExpressAuthenticationMiddleware.auth(logger, req, res, jest.fn(), authService);
-
-      setTimeout(() => {
-        expect(res.sendStatus).toHaveBeenCalledTimes(1);
-        expect(res.sendStatus).toHaveBeenCalledWith(401);
-
-        done();
-      }, 100);
-    });
-
-    it('should call res sendstatus 401 if exception is thrown', () => {
-      req = {} as unknown as Request;
-
-      ExpressAuthenticationMiddleware.auth(logger, req, res, jest.fn(), authService);
+      await ExpressAuthenticationMiddleware.auth(logger, req, res, jest.fn(), authService);
 
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
-      expect(res.sendStatus).toHaveBeenCalledWith(400);
+      expect(res.sendStatus).toHaveBeenCalledWith(401);
+    });
+
+    it('should call res sendstatus 401 if exception is thrown', async () => {
+      req = {} as unknown as Request;
+
+      await ExpressAuthenticationMiddleware.auth(logger, req, res, jest.fn(), authService);
+
+      expect(res.sendStatus).toHaveBeenCalledTimes(1);
+      expect(res.sendStatus).toHaveBeenCalledWith(401);
     });
   });
 });

@@ -18,34 +18,27 @@ type TSomethingResponse = {
  * @return {(dispatch: (action: Action<SomethingActionPayload>) => void)} get something action.
  */
 export const getSomethingAction: () => (dispatch: (action: TAction<TSomethingActionPayload>) => void) => Promise<void> =
-  () => (dispatch: (action: TAction<TSomethingActionPayload>) => void): Promise<void> => {
-    // get
-    return fetch('http://app.com/api/v1/getsomething', {
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${AppStore.getStore().getState().login.token}`
-      }
-    })
-      .then((res: Response) => {
-        if (200 === res.status) {
-          res.json()
-            .then((data: TSomethingResponse) => {
-              dispatch({
-                type: ESomethingActions.GET,
-                payload: {
-                  title: data.title,
-                  body: data.body
-                }
-              });
-            })
-            .catch(() => dispatch({
-              type: ESomethingActions.GET,
-              payload: {
-                title: null,
-                body: null
-              }
-            }));
-        } else {
+  () => async (dispatch: (action: TAction<TSomethingActionPayload>) => void): Promise<void> => {
+    try {
+      // get
+      const res: Response = await fetch('http://app.com/api/v1/getsomething', {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${AppStore.getStore().getState().login.token}`
+        }
+      });
+
+      if (200 === res.status) {
+        try {
+          const data: TSomethingResponse = await res.json();
+          dispatch({
+            type: ESomethingActions.GET,
+            payload: {
+              title: data.title,
+              body: data.body
+            }
+          });
+        } catch {
           dispatch({
             type: ESomethingActions.GET,
             payload: {
@@ -54,12 +47,22 @@ export const getSomethingAction: () => (dispatch: (action: TAction<TSomethingAct
             }
           });
         }
-      })
-      .catch(() => dispatch({
+      } else {
+        dispatch({
+          type: ESomethingActions.GET,
+          payload: {
+            title: null,
+            body: null
+          }
+        });
+      }
+    } catch {
+      dispatch({
         type: ESomethingActions.GET,
         payload: {
           title: null,
           body: null
         }
-      }));
+      });
+    }
   };
