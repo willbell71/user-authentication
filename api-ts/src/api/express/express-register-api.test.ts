@@ -1,3 +1,16 @@
+import express from 'express';
+import validator from 'express-validator';
+
+import { ExpressRequestMiddleware } from './middleware/express-request-middleware';
+import { ILogLine } from '../../services/logger/ilog-line';
+import { ILogger } from '../../services/logger/ilogger';
+import { Logger } from '../../services/logger/logger';
+import { IUserService } from '../../model/user/iuser-service';
+import { ExpressRegisterAPI } from './express-register-api';
+
+jest.mock('./middleware/express-request-middleware');
+ExpressRequestMiddleware.validateRequestBodyFields = jest.fn().mockImplementation(() => {});
+
 let register: (req: object, res: object) => void;
 let validateRequestBodyFields: (req: object, res: object, next: () => void) => void;
 jest.mock('express', () => {
@@ -15,16 +28,15 @@ jest.mock('express', () => {
     Router: jest.Mock;
   };
 
-  const express: unknown = jest.fn().mockImplementation(() => ({
+  const exp: unknown = jest.fn().mockImplementation(() => ({
     use,
     Router
   }));
 
-  (express as FakeExpress).Router = Router;
+  (exp as FakeExpress).Router = Router;
 
-  return express;
+  return exp;
 });
-import express from 'express';
 
 jest.mock('express-validator', () => {
   return {
@@ -43,7 +55,7 @@ jest.mock('express-validator', () => {
     }),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     sanitizeBody: (): any => ({
-      escape: (): void => {}      
+      escape: (): void => {}
     }),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     validationResult: jest.fn().mockImplementation((req: express.Request): any => ({
@@ -57,17 +69,6 @@ jest.mock('express-validator', () => {
     ValidationError: {}
   };
 });
-import validator from 'express-validator';
-
-import { ExpressRequestMiddleware } from './middleware/express-request-middleware';
-jest.mock('./middleware/express-request-middleware');
-ExpressRequestMiddleware.validateRequestBodyFields = jest.fn().mockImplementation(() => {});
-
-import { ILogLine } from '../../services/logger/ilog-line';
-import { ILogger } from '../../services/logger/ilogger';
-import { Logger } from '../../services/logger/logger';
-import { IUserService } from '../../model/user/iuser-service';
-import { ExpressRegisterAPI } from './express-register-api';
 
 let logLineSpy: jest.Mock;
 let warnLineSpy: jest.Mock;
@@ -97,7 +98,7 @@ beforeEach(() => {
       new Promise((resolve: (value: string) => void): void => resolve('token'))),
     login: jest.fn().mockImplementation((): Promise<string> =>
       new Promise((resolve: (value: string) => void): void => resolve('token'))),
-    logout: jest.fn().mockImplementation((): Promise<void> => 
+    logout: jest.fn().mockImplementation((): Promise<void> =>
       new Promise((resolve: () => void): void => resolve()))
   };
 
@@ -158,10 +159,10 @@ describe('ExpressRegisterAPI', () => {
         }, 100);
       });
 
-      it('should call logger error if validation fails', (done: jest.DoneCallback) => {
+      it('should call logger error if validation fails', async () => {
         expressRegisterAPI.registerHandlers();
 
-        register({
+        await register({
           body: {
             firstName: 'first',
             lastName: 'last',
@@ -172,17 +173,14 @@ describe('ExpressRegisterAPI', () => {
           sendStatus: jest.fn()
         });
 
-        setTimeout(() => {
-          expect(errorLineSpy).toHaveBeenCalledTimes(1);
-          done();
-        }, 100);
+        expect(errorLineSpy).toHaveBeenCalledTimes(1);
       });
 
-      it('should call sendStatus 400 if validation fails', (done: jest.DoneCallback) => {
+      it('should call sendStatus 400 if validation fails', async () => {
         expressRegisterAPI.registerHandlers();
 
         const sendStatus: jest.Mock = jest.fn();
-        register({
+        await register({
           body: {
             firstName: 'first',
             lastName: 'last',
@@ -193,11 +191,8 @@ describe('ExpressRegisterAPI', () => {
           sendStatus
         });
 
-        setTimeout(() => {
-          expect(sendStatus).toHaveBeenCalledTimes(1);
-          expect(sendStatus).toHaveBeenCalledWith(400);
-          done();
-        }, 100);
+        expect(sendStatus).toHaveBeenCalledTimes(1);
+        expect(sendStatus).toHaveBeenCalledWith(400);
       });
 
       it('should call this.userService.register', (done: jest.DoneCallback) => {
@@ -222,7 +217,6 @@ describe('ExpressRegisterAPI', () => {
         }, 100);
       });
 
-
       it('should call res.send if register succeeds', (done: jest.DoneCallback) => {
         expressRegisterAPI.registerHandlers();
 
@@ -245,11 +239,11 @@ describe('ExpressRegisterAPI', () => {
         }, 100);
       });
 
-      it('should logger error if register fails', (done: jest.DoneCallback) => {
+      it('should logger error if register fails', async () => {
         expressRegisterAPI.registerHandlers();
 
         const sendStatus: jest.Mock = jest.fn();
-        register({
+        await register({
           body: {
             firstName: 'first',
             lastName: 'last',
@@ -260,10 +254,7 @@ describe('ExpressRegisterAPI', () => {
           sendStatus
         });
 
-        setTimeout(() => {
-          expect(errorLineSpy).toHaveBeenCalledTimes(1);
-          done();
-        }, 100);
+        expect(errorLineSpy).toHaveBeenCalledTimes(1);
       });
 
       it('should call res sendStatus 400 if register fails', (done: jest.DoneCallback) => {

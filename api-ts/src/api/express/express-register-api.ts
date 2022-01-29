@@ -27,23 +27,21 @@ export class ExpressRegisterAPI implements IServerRouteHandler<Router> {
    * Create a new user in the db.
    * @param {*} req - express request object.
    * @param {*} res - express response object.
-   * @return {void}
+   * @return {Promise<void>} completion promise.
    */
-  private register(req: Request, res: Response): void {
+  private async register(req: Request, res: Response): Promise<void> {
     try {
       const validation: Result<ValidationError> = validationResult(req);
       if (validation.isEmpty()) {
-        this.userService.register(req.body.firstName, req.body.lastName, req.body.email, req.body.password)
-          .then((token: string) => res.send({token}))
-          .catch((err: Error) => {
-            this.logger.error(err.message);
-            res.sendStatus(400);
-          });
+        const token: string = await this.userService
+          .register(req.body.firstName, req.body.lastName, req.body.email, req.body.password);
+        res.send({ token });
       } else {
         this.logger.error(`Validation failed: ${JSON.stringify(validation.mapped())}`);
         res.sendStatus(400);
       }
-    } catch (_) {
+    } catch (err: unknown) {
+      this.logger.error((err as Error).message);
       res.sendStatus(400);
     }
   }

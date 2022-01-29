@@ -1,18 +1,19 @@
+import jwt from 'jsonwebtoken';
+
+import { JWTTokenService } from './jwt-token-service';
+import { ITokenService } from './itoken-service';
+
 jest.mock('jsonwebtoken', () => {
   const sign: jest.Mock = jest.fn().mockImplementation((payload: string, secret: string, cb: (a: string | null, b: string) => void) =>
     cb((payload && secret) ? null : 'Error', 'token'));
   const verify: jest.Mock = jest.fn().mockImplementation((token: string, secret: string, cb: (a: string | null, b: string) => void) =>
     cb((token && secret) ? null : 'Error', 'payload'));
-  
+
   return {
     sign,
     verify
   };
 });
-import jwt from 'jsonwebtoken';
-
-import { JWTTokenService } from './jwt-token-service';
-import { ITokenService } from './itoken-service';
 
 let tokenService: ITokenService;
 beforeEach(() => {
@@ -22,62 +23,40 @@ afterEach(() => jest.clearAllMocks());
 
 describe('JWTTokenService', () => {
   describe('encrypt', () => {
-    it('should call sign', (done: jest.DoneCallback) => {
-      tokenService.encrypt({})
-        .then(() => {
-          expect(jwt.sign).toHaveBeenCalledTimes(1);
-          done();
-        })
-        .catch((err: Error) => done(err));
+    it('should call sign', async () => {
+      await tokenService.encrypt({});
+      expect(jwt.sign).toHaveBeenCalledTimes(1);
     });
 
-    it('should reject on error', (done: jest.DoneCallback) => {
-      tokenService.encrypt('')
-        .then(() => done('invoked then block'))
-        .catch(() => done());
+    it('should reject on error', async () => {
+      await expect(tokenService.encrypt('')).rejects.toEqual(new Error('Failed to encrypt payload as JWT'));
     });
 
-    it('should change secret', (done: jest.DoneCallback) => {
+    it('should change secret', async () => {
       const jwtTokenService: JWTTokenService = new JWTTokenService();
       jwtTokenService.secret = '';
-      jwtTokenService.encrypt('test')
-        .then(() => done('invoked then block'))
-        .catch(() => done());
+      await expect(jwtTokenService.encrypt('test')).rejects.toEqual(new Error('Failed to encrypt payload as JWT'));
     });
 
-    it('should return token on success', (done: jest.DoneCallback) => {
-      tokenService.encrypt({})
-        .then((token: string) => {
-          expect(token).toEqual('token');
-          done();
-        })
-        .catch((err: Error) => done(err));
+    it('should return token on success', async () => {
+      const token: string = await tokenService.encrypt({});
+      expect(token).toEqual('token');
     });
   });
 
   describe('decrypt', () => {
-    it('should call verify', (done: jest.DoneCallback) => {
-      tokenService.decrypt('test')
-        .then(() => {
-          expect(jwt.verify).toHaveBeenCalled();
-          done();
-        })
-        .catch(() => done('invoked catch block'));
+    it('should call verify', async () => {
+      await tokenService.decrypt('test');
+      expect(jwt.verify).toHaveBeenCalled();
     });
 
-    it('should reject on error', (done: jest.DoneCallback) => {
-      tokenService.decrypt('')
-        .then(() => done('invoked catch then block'))
-        .catch(() => done());
+    it('should reject on error', async () => {
+      await expect(tokenService.decrypt('')).rejects.toEqual(new Error('Failed to decode JWT'));
     });
 
-    it('should return decoded payload on success', (done: jest.DoneCallback) => {
-      tokenService.decrypt('test')
-        .then((payload: string | object | Buffer) => {
-          expect(payload).toEqual('payload');
-          done();
-        })
-        .catch(() => done('invoked catch block'));
+    it('should return decoded payload on success', async () => {
+      const payload: string | object | Buffer = await tokenService.decrypt('test');
+      expect(payload).toEqual('payload');
     });
   });
 });

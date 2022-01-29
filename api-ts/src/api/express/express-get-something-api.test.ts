@@ -1,3 +1,16 @@
+import express from 'express';
+
+import { ExpressAuthenticationMiddleware } from './middleware/express-authentication-middleware';
+import { ILogLine } from '../../services/logger/ilog-line';
+import { ILogger } from '../../services/logger/ilogger';
+import { Logger } from '../../services/logger/logger';
+import { ExpressGetSomethingAPI } from './express-get-something-api';
+import { IAuthService } from '../../model/auth/iauth-service';
+import { TDBServiceEntity } from '../../services/db/tdb-service-entity';
+
+jest.mock('./middleware/express-authentication-middleware');
+ExpressAuthenticationMiddleware.auth = jest.fn().mockImplementation(() => {});
+
 let auth: (logger: ILogger, req: object, res: object, next: () => void, authService: IAuthService) => void;
 let getSomething: (req: object, res: object) => void;
 jest.mock('express', () => {
@@ -15,27 +28,15 @@ jest.mock('express', () => {
     Router: jest.Mock;
   };
 
-  const express: unknown = jest.fn().mockImplementation(() => ({
+  const exp: unknown = jest.fn().mockImplementation(() => ({
     use,
     Router
   }));
 
-  (express as FakeExpress).Router = Router;
+  (exp as FakeExpress).Router = Router;
 
-  return express;
+  return exp;
 });
-import express from 'express';
-
-import { ExpressAuthenticationMiddleware } from './middleware/express-authentication-middleware';
-jest.mock('./middleware/express-authentication-middleware');
-ExpressAuthenticationMiddleware.auth = jest.fn().mockImplementation(() => {});
-
-import { ILogLine } from '../../services/logger/ilog-line';
-import { ILogger } from '../../services/logger/ilogger';
-import { Logger } from '../../services/logger/logger';
-import { ExpressGetSomethingAPI } from './express-get-something-api';
-import { IAuthService } from '../../model/auth/iauth-service';
-import { TDBServiceEntity } from '../../services/db/tdb-service-entity';
 
 let logLineSpy: jest.Mock;
 let warnLineSpy: jest.Mock;
@@ -104,7 +105,7 @@ describe('ExpressGetSomethingAPI', () => {
   });
 
   describe('getSomething', () => {
-    it('should call res.send with content', (done: jest.DoneCallback) => {
+    it('should call res.send with content', () => {
       expressGetSomethingAPI.registerHandlers();
 
       const send: jest.Mock = jest.fn();
@@ -112,14 +113,11 @@ describe('ExpressGetSomethingAPI', () => {
         send
       });
 
-      setTimeout(() => {
-        expect(send).toHaveBeenCalledTimes(1);
-        expect(send).toHaveBeenCalledWith({title: 'Content Title', body: 'Content Body'});
-        done();
-      }, 100);
+      expect(send).toHaveBeenCalledTimes(1);
+      expect(send).toHaveBeenCalledWith({title: 'Content Title', body: 'Content Body'});
     });
 
-    it('should call res.sendStatus 400 on exceptin', (done: jest.DoneCallback) => {
+    it('should call res.sendStatus 400 on exceptin', () => {
       expressGetSomethingAPI.registerHandlers();
 
       const sendStatus: jest.Mock = jest.fn();
@@ -127,11 +125,8 @@ describe('ExpressGetSomethingAPI', () => {
         sendStatus
       });
 
-      setTimeout(() => {
-        expect(sendStatus).toHaveBeenCalledTimes(1);
-        expect(sendStatus).toHaveBeenCalledWith(400);
-        done();
-      }, 100);
+      expect(sendStatus).toHaveBeenCalledTimes(1);
+      expect(sendStatus).toHaveBeenCalledWith(400);
     });
   });
 });

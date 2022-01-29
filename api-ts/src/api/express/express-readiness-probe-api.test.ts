@@ -1,4 +1,9 @@
+import express from 'express';
+
 import { ILogger } from '../../services/logger/ilogger';
+import { ILogLine } from '../../services/logger/ilog-line';
+import { Logger } from '../../services/logger/logger';
+import { ExpressReadinessProbeAPI } from './express-readiness-probe-api';
 
 let probe: (req: object, res: object) => void;
 jest.mock('express', () => {
@@ -15,20 +20,15 @@ jest.mock('express', () => {
     Router: jest.Mock;
   };
 
-  const express: unknown = jest.fn().mockImplementation(() => ({
+  const exp: unknown = jest.fn().mockImplementation(() => ({
     use,
     Router
   }));
 
-  (express as FakeExpress).Router = Router;
+  (exp as FakeExpress).Router = Router;
 
-  return express;
+  return exp;
 });
-import express from 'express';
-
-import { ILogLine } from '../../services/logger/ilog-line';
-import { Logger } from '../../services/logger/logger';
-import { ExpressReadinessProbeAPI } from './express-readiness-probe-api';
 
 let logLineSpy: jest.Mock;
 let warnLineSpy: jest.Mock;
@@ -78,35 +78,29 @@ describe('ExpressReadinessProbeAPI', () => {
   });
 
   describe('probe', () => {
-    it('should call res.sendStatus with 400 when NOT ready', (done: jest.DoneCallback) => {
+    it('should call res.sendStatus with 400 when NOT ready', async () => {
       expressReadinessProbeAPI.registerHandlers();
 
       const sendStatus: jest.Mock = jest.fn();
-      probe({}, {
+      await probe({}, {
         sendStatus
       });
 
-      setTimeout(() => {
-        expect(sendStatus).toHaveBeenCalledTimes(1);
-        expect(sendStatus).toHaveBeenCalledWith(400);
-        done();
-      }, 100);
+      expect(sendStatus).toHaveBeenCalledTimes(1);
+      expect(sendStatus).toHaveBeenCalledWith(400);
     });
 
-    it('should call res.sendStatus with 200 when ready', (done: jest.DoneCallback) => {
+    it('should call res.sendStatus with 200 when ready', async () => {
       expressReadinessProbeAPI.setReady();
       expressReadinessProbeAPI.registerHandlers();
 
       const sendStatus: jest.Mock = jest.fn();
-      probe({}, {
+      await probe({}, {
         sendStatus
       });
 
-      setTimeout(() => {
-        expect(sendStatus).toHaveBeenCalledTimes(1);
-        expect(sendStatus).toHaveBeenCalledWith(200);
-        done();
-      }, 100);
+      expect(sendStatus).toHaveBeenCalledTimes(1);
+      expect(sendStatus).toHaveBeenCalledWith(200);
     });
   });
 });

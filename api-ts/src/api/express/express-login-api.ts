@@ -24,24 +24,21 @@ export class ExpressLoginAPI implements IServerRouteHandler<Router> {
    * Log in an existing user.
    * @param {Request} req - express request object.
    * @param {Response} res - express response object.
-   * @return {void}
+   * @return {Promise<void>} completion promise.
    */
-  private login(req: Request, res: Response): void {
+  private async login(req: Request, res: Response): Promise<void> {
     try {
       const validation: Result<ValidationError> = validationResult(req);
       if (validation.isEmpty()) {
-        this.userService.login(req.body.email, req.body.password)
-          .then((token: string) => res.send({token}))
-          .catch((err: Error) => {
-            this.logger.error(err.message);
-            res.sendStatus(401);
-          });
+        const token: string = await this.userService.login(req.body.email, req.body.password);
+        res.send({ token });
       } else {
         this.logger.error(`Validation failed: ${JSON.stringify(validation.mapped())}`);
         res.sendStatus(400);
       }
-    } catch (_) {
-      res.sendStatus(400);
+    } catch (error: unknown) {
+      this.logger.error((error as Error).message);
+      res.sendStatus(401);
     }
   }
 
